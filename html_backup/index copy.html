@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logic Packs — Build Once, Reuse Everywhere</title>
+    <meta name="description" content="The operating system for reusable software. Create, compose, and self-heal verified packs instead of rebuilding from scratch.">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Iconify -->
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <!-- Three.js -->
+    <script type="importmap">
+    {
+    "imports": {
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+    }
+    }
+    </script>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                fontFamily: {
+                    sans: ['Inter', 'system-ui', 'sans-serif'],
+                }
+            }
+        }
+    }
+    </script>
+
+    <style>
+    /* ── Base ── */
+    body {
+        background-color: #0a0a0a;
+        color: #ededed;
+        font-family: 'Inter', system-ui, sans-serif;
+    }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #0a0a0a; }
+    ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+
+    /* ── Scroll Reveal ── */
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(16px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .reveal { animation: fadeInUp 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+    .reveal-hidden { opacity: 0; }
+
+    /* ── Marquee ── */
+    @keyframes marquee {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(-50%); }
+    }
+    .animate-marquee { animation: marquee 45s linear infinite; }
+    .animate-marquee:hover { animation-play-state: paused; }
+
+    /* ── Glitch (subtle) ── */
+    .glitch-target { will-change: transform; backface-visibility: hidden; }
+    .glitch-active { animation: glitch 0.2s ease both; }
+    @keyframes glitch {
+        0% { transform: translate(0); }
+        25% { transform: translate(-1px, 1px); }
+        50% { transform: translate(1px, -1px); }
+        100% { transform: translate(0); }
+    }
+
+    /* ── Wireframe animation ── */
+    @keyframes wireframe-loop {
+        0% { opacity: 0; transform: translateY(8px) scale(0.98); }
+        10%, 80% { opacity: 1; transform: translateY(0) scale(1); }
+        90%, 100% { opacity: 0; transform: translateY(-4px) scale(0.98); }
+    }
+    .animate-wireframe {
+        opacity: 0;
+        animation: wireframe-loop 6s cubic-bezier(0.4, 0, 0.2, 1) infinite both;
+    }
+
+    /* ── Typing animation ── */
+    .typing-line {
+        overflow: hidden; white-space: nowrap; width: 0;
+        border-right: 2px solid transparent; will-change: width;
+    }
+    @keyframes type1 {
+        0% { width: 0; border-color: #22c55e; } 12% { width: 100%; border-color: transparent; }
+        90% { width: 100%; } 100% { width: 0; }
+    }
+    @keyframes type2 {
+        0%,15% { width: 0; border-color: #22c55e; } 27% { width: 100%; border-color: transparent; }
+        90% { width: 100%; } 100% { width: 0; }
+    }
+    @keyframes type3 {
+        0%,30% { width: 0; border-color: #22c55e; } 42% { width: 100%; border-color: transparent; }
+        90% { width: 100%; } 100% { width: 0; }
+    }
+    @keyframes type4 {
+        0%,45% { width: 0; border-color: #22c55e; } 55% { width: 100%; border-color: transparent; }
+        90% { width: 100%; } 100% { width: 0; }
+    }
+    @keyframes type5 {
+        0%,58% { width: 0; border-color: #22c55e; } 68% { width: 100%; border-color: transparent; }
+        90% { width: 100%; } 100% { width: 0; }
+    }
+    .line-1 { animation: type1 8s infinite; }
+    .line-2 { animation: type2 8s infinite; }
+    .line-3 { animation: type3 8s infinite; }
+    .line-4 { animation: type4 8s infinite; }
+    .line-5 { animation: type5 8s infinite; }
+
+    /* ── Cube animation ── */
+    @keyframes cube-left {
+        0%,100% { opacity:0; transform:translate(-12px,0) scale(0.98); }
+        15% { opacity:1; transform:translate(0,0) scale(1); }
+        60% { opacity:1; transform:translate(0,0) scale(1); }
+        75% { opacity:0; transform:translate(-12px,0) scale(0.98); }
+    }
+    @keyframes cube-right {
+        0%,100% { opacity:0; transform:translate(12px,0) scale(0.98); }
+        15% { opacity:1; transform:translate(0,0) scale(1); }
+        60% { opacity:1; transform:translate(0,0) scale(1); }
+        75% { opacity:0; transform:translate(12px,0) scale(0.98); }
+    }
+    @keyframes cube-bottom {
+        0%,100% { opacity:0; transform:translate(0,12px) scale(0.98); }
+        15% { opacity:1; transform:translate(0,0) scale(1); }
+        60% { opacity:1; transform:translate(0,0) scale(1); }
+        75% { opacity:0; transform:translate(0,12px) scale(0.98); }
+    }
+    .anim-cube-l { animation: cube-left 4s cubic-bezier(0.22,1,0.36,1) infinite; }
+    .anim-cube-r { animation: cube-right 4s cubic-bezier(0.22,1,0.36,1) infinite; animation-delay:160ms; }
+    .anim-cube-b { animation: cube-bottom 4s cubic-bezier(0.22,1,0.36,1) infinite; animation-delay:320ms; }
+
+    /* ── Bar chart animation ── */
+    @keyframes barReveal {
+        0% { transform: scaleY(0); opacity: 0; }
+        15% { transform: scaleY(1); opacity: 1; }
+        85% { transform: scaleY(1); opacity: 1; }
+        100% { transform: scaleY(0); opacity: 0; }
+    }
+    .animate-bar { animation: barReveal 6s cubic-bezier(0.22,1,0.36,1) infinite; transform-origin: bottom; }
+    </style>
+</head>
+
+<body class="selection:bg-green-500/30 selection:text-white overflow-x-hidden">
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <!-- LOADING OVERLAY                                    -->
+    <!-- ══════════════════════════════════════════════════ -->
+    <div id="loader" class="fixed inset-0 z-[100] flex items-center justify-center bg-[#0a0a0a] transition-opacity duration-1000">
+        <div class="flex flex-col items-center gap-4">
+            <div class="h-px w-24 bg-neutral-800 overflow-hidden relative">
+                <div class="absolute inset-0 bg-green-500 w-full -translate-x-full animate-[shimmer_1.5s_infinite]"></div>
+            </div>
+            <p class="text-xs uppercase tracking-[0.2em] text-neutral-500 font-mono">Loading</p>
+        </div>
+        <style>@keyframes shimmer { 100% { transform: translateX(100%); } }</style>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <!-- FIXED HEADER                                       -->
+    <!-- ══════════════════════════════════════════════════ -->
+    <header class="fixed top-0 left-0 w-full z-50 bg-[#0a0a0a]/80 backdrop-blur-xl border-b border-white/[0.06] h-14 transition-all duration-300">
+        <div class="flex w-full h-full max-w-[1440px] mx-auto px-6 md:px-8 items-center justify-between">
+            <!-- Logo -->
+            <a href="index.html" class="flex items-center gap-2.5 group">
+                <div class="w-7 h-7 rounded-md border border-white/10 flex items-center justify-center bg-white/[0.03] group-hover:border-green-500/40 transition-colors">
+                    <iconify-icon icon="solar:widget-5-linear" class="text-green-500 text-sm"></iconify-icon>
+        </div>
+                <span class="text-sm font-semibold tracking-tight text-white">Logic Packs</span>
+            </a>
+
+            <!-- Nav -->
+            <nav class="hidden md:flex items-center gap-8">
+                <a href="#modes" class="text-[11px] hover:text-white transition-colors uppercase font-medium text-neutral-400 tracking-[0.15em]">Platform</a>
+                <a href="store.html" class="text-[11px] hover:text-white transition-colors uppercase font-medium text-neutral-400 tracking-[0.15em]">Marketplace</a>
+                <a href="shop.html" class="text-[11px] hover:text-white transition-colors uppercase font-medium text-neutral-400 tracking-[0.15em]">Shop</a>
+                <a href="ventures.html" class="text-[11px] hover:text-white transition-colors uppercase font-medium text-neutral-400 tracking-[0.15em]">Ventures</a>
+                <a href="courses.html" class="text-[11px] hover:text-white transition-colors uppercase font-medium text-neutral-400 tracking-[0.15em]">Learn</a>
+                <a href="ambassadors.html" class="text-[11px] hover:text-white transition-colors uppercase font-medium text-neutral-400 tracking-[0.15em]">Ambassadors</a>
+                <a href="cli.html" class="text-[11px] hover:text-white transition-colors uppercase font-medium text-neutral-400 tracking-[0.15em]">CLI</a>
+                <a href="#pricing" class="text-[11px] hover:text-white transition-colors uppercase font-medium text-neutral-400 tracking-[0.15em]">Pricing</a>
+            </nav>
+
+            <!-- CTA -->
+            <a href="#" class="hidden md:flex bg-white text-black text-xs font-semibold tracking-wide uppercase rounded-md px-5 py-2 hover:bg-neutral-200 transition-colors">
+                Get Started
+            </a>
+
+            <!-- Mobile menu -->
+            <button class="md:hidden text-white" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
+                <iconify-icon icon="solar:hamburger-menu-linear" width="22"></iconify-icon>
+                </button>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden absolute top-full left-0 w-full bg-[#0a0a0a]/95 backdrop-blur-xl border-b border-white/[0.06] p-4 flex flex-col gap-2">
+            <a href="index.html#modes" class="px-4 py-2 text-sm text-neutral-400 hover:text-white hover:bg-white/5 rounded-md">Platform</a>
+            <a href="store.html" class="px-4 py-2 text-sm text-neutral-400 hover:text-white hover:bg-white/5 rounded-md">Marketplace</a>
+            <a href="shop.html" class="px-4 py-2 text-sm text-neutral-400 hover:text-white hover:bg-white/5 rounded-md">Shop</a>
+            <a href="ventures.html" class="px-4 py-2 text-sm text-neutral-400 hover:text-white hover:bg-white/5 rounded-md">Ventures</a>
+            <a href="courses.html" class="px-4 py-2 text-sm text-neutral-400 hover:text-white hover:bg-white/5 rounded-md">Learn</a>
+            <a href="ambassadors.html" class="px-4 py-2 text-sm text-neutral-400 hover:text-white hover:bg-white/5 rounded-md">Ambassadors</a>
+            <a href="cli.html" class="px-4 py-2 text-sm text-neutral-400 hover:text-white hover:bg-white/5 rounded-md">CLI</a>
+            <a href="index.html#pricing" class="px-4 py-2 text-sm text-neutral-400 hover:text-white hover:bg-white/5 rounded-md">Pricing</a>
+        </div>
+    </header>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <!-- HERO SECTION (3D Sphere + Disperse)                -->
+    <!-- ══════════════════════════════════════════════════ -->
+    <div class="relative h-screen w-full overflow-hidden pt-14">
+        <!-- WebGL Canvas -->
+        <div class="absolute inset-0 z-0">
+            <canvas id="webgl-canvas" class="w-full h-full outline-none cursor-grab active:cursor-grabbing"></canvas>
+        </div>
+
+        <!-- Hero Overlay -->
+        <div class="relative z-10 flex flex-col h-full pointer-events-none">
+            <!-- Main Content -->
+            <main class="flex-grow flex flex-col justify-center px-6 md:px-12 lg:px-24">
+                <div class="max-w-3xl space-y-7">
+                    <!-- Status -->
+                    <div class="overflow-hidden">
+                        <div class="hero-reveal flex items-center gap-2.5">
+                            <span id="status-light" class="flex h-2 w-2 rounded-full bg-green-500 shadow-[0_0_12px_rgba(34,197,94,0.5)] transition-colors"></span>
+                            <p id="status-text" class="text-xs uppercase tracking-[0.2em] text-green-500/80 font-medium font-mono transition-colors">Platform Status: Operational</p>
+                        </div>
+                    </div>
+
+                    <!-- Headlines -->
+                    <div class="space-y-1">
+                        <div class="overflow-hidden">
+                            <h1 class="hero-reveal text-5xl md:text-7xl lg:text-8xl font-semibold tracking-tight leading-[0.95] text-white glitch-target">Build Once,</h1>
+                        </div>
+                        <div class="overflow-hidden">
+                            <h1 class="hero-reveal text-5xl md:text-7xl lg:text-8xl font-light tracking-tight leading-[0.95] text-neutral-400 italic glitch-target">Reuse Everywhere.</h1>
+                        </div>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="overflow-hidden max-w-lg">
+                        <p class="hero-reveal text-sm md:text-base text-neutral-500 leading-relaxed">
+                            The operating system for reusable software. Create verified packs for backend, UI, automation, and creative assets — then compose them into production apps that self-heal over time.
+                            <span class="text-green-500/60 text-xs block mt-3 font-mono uppercase tracking-widest">&gt; Click the core to initialize</span>
+                        </p>
+                    </div>
+
+                    <!-- CTAs -->
+                    <div class="overflow-hidden pt-4">
+                        <div class="hero-reveal flex flex-wrap pointer-events-auto gap-3">
+                            <a href="#" class="inline-flex items-center gap-2 bg-white text-black font-medium rounded-md px-7 py-3 text-sm hover:bg-neutral-200 transition-colors">
+                                Get Started
+                                <iconify-icon icon="solar:arrow-right-linear" width="16"></iconify-icon>
+                            </a>
+                            <a href="#" class="inline-flex items-center gap-2 border border-white/15 text-white font-medium rounded-md px-7 py-3 text-sm hover:bg-white/5 transition-colors">
+                                Documentation
+                                <iconify-icon icon="solar:document-text-linear" width="16" class="text-neutral-400"></iconify-icon>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            <!-- Bottom Bar -->
+            <footer class="pointer-events-auto nav-item flex justify-between items-end w-full px-6 pb-6 opacity-0">
+                <div class="flex flex-col gap-1">
+                    <span class="text-[10px] uppercase tracking-widest text-neutral-700 font-medium">Vector</span>
+                    <span id="coords" class="text-xs font-mono text-green-500/70">0.50.0.50.00</span>
+                </div>
+                <div class="hidden md:flex gap-4">
+                    <a href="#"><iconify-icon icon="simple-icons:github" class="text-neutral-600 hover:text-white transition-colors text-lg"></iconify-icon></a>
+                    <a href="#"><iconify-icon icon="simple-icons:discord" class="text-neutral-600 hover:text-[#5865F2] transition-colors text-lg"></iconify-icon></a>
+                    <a href="#"><iconify-icon icon="simple-icons:x" class="text-neutral-600 hover:text-white transition-colors text-lg"></iconify-icon></a>
+                </div>
+            </footer>
+        </div>
+
+        <!-- Bottom Fade -->
+        <div class="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-[#0a0a0a] to-transparent z-[5] pointer-events-none"></div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <!-- MARQUEE — Tech Stack                               -->
+    <!-- ══════════════════════════════════════════════════ -->
+    <section class="overflow-hidden border-t border-white/[0.06] relative">
+        <div class="flex overflow-hidden py-8 relative items-center">
+            <div class="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-[#0a0a0a] to-transparent z-10 pointer-events-none"></div>
+            <div class="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-[#0a0a0a] to-transparent z-10 pointer-events-none"></div>
+            <div class="flex gap-16 animate-marquee whitespace-nowrap min-w-full">
+                <div class="flex items-center gap-16 shrink-0">
+                    <div class="flex items-center gap-2.5 opacity-30 hover:opacity-80 transition-opacity"><iconify-icon icon="simple-icons:react" width="22"></iconify-icon><span class="text-sm font-medium text-white tracking-tight">React</span></div>
+                    <div class="flex items-center gap-2.5 opacity-30 hover:opacity-80 transition-opacity"><iconify-icon icon="simple-icons:python" width="22"></iconify-icon><span class="text-sm font-medium text-white tracking-tight">Python</span></div>
+                    <div class="flex items-center gap-2.5 opacity-30 hover:opacity-80 transition-opacity"><iconify-icon icon="simple-icons:fastapi" width="22"></iconify-icon><span class="text-sm font-medium text-white tracking-tight">FastAPI</span></div>
+                    <div class="flex items-center gap-2.5 opacity-30 hover:opacity-80 transition-opacity"><iconify-icon icon="simple-icons:typescript" width="22"></iconify-icon><span class="text-sm font-medium text-white tracking-tight">TypeScript</span></div>
+                    <div class="flex items-center gap-2.5 opacity-30 hover:opacity-80 transition-opacity"><iconify-icon icon="simple-icons:puppeteer" width="22"></iconify-icon><span class="text-sm font-medium text-white tracking-tight">Puppeteer</span></div>
+                    <div class="flex items-center gap-2.5 opacity-30 hover:opacity-80 transition-opacity"><iconify-icon icon="simple-icons:selenium" width="22"></iconify-icon><span class="text-sm font-medium text-white tracking-tight">Selenium</span></div>
+                    <div class="flex items-center gap-2.5 opacity-30 hover:opacity-80 transition-opacity"><iconify-icon icon="simple-icons:docker" width="22"></iconify-icon><span class="text-sm font-medium text-white tracking-tight">Docker</span></div>
+                    <div class="flex items-center gap-2.5 opacity-30 hover:opacity-80 transition-opacity"><iconify-icon icon="simple-icons:tailwindcss" width="22"></iconify-icon><span class="text-sm font-medium text-white tracking-tight">Tailwind</span></div>
+                </div>
+                <div class="flex items-center gap-16 shrink-0">
+                    <div class="flex items-center gap-2.5 opacity-30 hover:opacity-80 transition-opacity"><iconify-icon icon="simple-icons:react" width="22"></iconify-icon><span class="text-sm font-medium text-white tracking-tight">React</span></div>
+                    <div class="flex items-center gap-2.5 opacity-30 hover:opacity-80 transition-opacity"><iconify-icon icon="simple-icons:python" width="22"></iconify-icon><span class="text-sm font-medium text-white tracking-tight">Python</span></div>
+                    <div class="flex items-center gap-2.5 opacity-30 hover:opacity-80 transition-opacity"><iconify-icon icon="simple-icons:fastapi" width="22"></iconify-icon><span class="text-sm font-medium text-white tracking-tight">FastAPI</span></div>
+                    <div class="flex items-center gap-2.5 opacity-30 hover:opacity-80 transition-opacity"><iconify-icon icon="simple-icons:typescript" width="22"></iconify-icon><span class="text-sm font-medium text-white tracking-tight">TypeScript</span></div>
+                    <div class="flex items-center gap-2.5 opacity-30 hover:opacity-80 transition-opacity"><iconify-icon icon="simple-icons:puppeteer" width="22"></iconify-icon><span class="text-sm font-medium text-white tracking-tight">Puppeteer</span></div>
+                    <div class="flex items-center gap-2.5 opacity-30 hover:opacity-80 transition-opacity"><iconify-icon icon="simple-icons:selenium" width="22"></iconify-icon><span class="text-sm font-medium text-white tracking-tight">Selenium</span></div>
+                    <div class="flex items-center gap-2.5 opacity-30 hover:opacity-80 transition-opacity"><iconify-icon icon="simple-icons:docker" width="22"></iconify-icon><span class="text-sm font-medium text-white tracking-tight">Docker</span></div>
+                    <div class="flex items-center gap-2.5 opacity-30 hover:opacity-80 transition-opacity"><iconify-icon icon="simple-icons:tailwindcss" width="22"></iconify-icon><span class="text-sm font-medium text-white tracking-tight">Tailwind</span></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <!-- ABOUT — What is Logic Packs                        -->
+    <!-- ══════════════════════════════════════════════════ -->
+    <section class="border-t border-white/[0.06]">
+        <div class="grid grid-cols-1 md:grid-cols-4 md:divide-x divide-white/[0.06]">
+            <!-- Sidebar -->
+            <div class="md:col-span-1 flex flex-col p-8 md:p-10 justify-between min-h-[200px]">
+                <div>
+                    <span class="font-mono text-neutral-600 text-[11px] block mb-1">/// About</span>
+                    <h2 class="text-3xl font-semibold text-white tracking-tight mb-4 reveal-hidden">Logic Packs</h2>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="md:col-span-3 p-8 md:p-14 flex flex-col justify-center">
+                <h2 class="text-3xl md:text-5xl lg:text-6xl font-medium text-white tracking-tight leading-[1.05] mb-8 reveal-hidden">
+                    A browser-based, real-time collaborative AI IDE that produces reusable <span class="text-neutral-500 italic">Packs</span> — not just code.
+            </h2>
+                <div class="flex flex-col md:flex-row gap-10 md:items-end justify-between">
+                    <p class="text-base text-neutral-500 leading-relaxed max-w-xl reveal-hidden">
+                        Apps are built by assembling and composing packs inside one workspace. Every pack ships with tests, telemetry, versioning, and self-healing — so software gets more reliable over time, not more fragile.
+                        </p>
+                    <a href="#modes" class="inline-flex items-center gap-2 border border-white/10 text-neutral-300 px-5 py-2.5 rounded-md text-sm font-medium hover:bg-white/5 hover:border-white/20 transition-all shrink-0 reveal-hidden">
+                        Explore Platform
+                        <iconify-icon icon="solar:arrow-right-up-linear" width="16" class="text-neutral-500"></iconify-icon>
+                    </a>
+                </div>
+        </div>
+
+            <!-- Stats -->
+            <div class="md:col-span-1 p-8 md:p-10 flex flex-col justify-end border-t md:border-t-0 border-white/[0.06] min-h-[220px] hover:bg-white/[0.02] transition-colors reveal-hidden">
+                <div class="text-5xl md:text-6xl font-medium text-white tracking-tight mb-3">5</div>
+                <p class="text-neutral-500 text-sm leading-relaxed">Pack types: Logic, UI, Automation, Creative, Provider</p>
+            </div>
+            <div class="md:col-span-1 p-8 md:p-10 flex flex-col justify-end border-t border-white/[0.06] min-h-[220px] hover:bg-white/[0.02] transition-colors reveal-hidden">
+                <div class="text-5xl md:text-6xl font-medium text-white tracking-tight mb-3">5</div>
+                <p class="text-neutral-500 text-sm leading-relaxed">Strategic surfaces: Build, Design, Automate, Compose, Discover</p>
+            </div>
+            <div class="md:col-span-1 p-8 md:p-10 flex flex-col justify-end border-t border-white/[0.06] min-h-[220px] hover:bg-white/[0.02] transition-colors reveal-hidden">
+                <div class="text-5xl md:text-6xl font-medium text-white tracking-tight mb-3">8+</div>
+                <p class="text-neutral-500 text-sm leading-relaxed">Real engineering problems solved, from rebuild hell to integration chaos</p>
+            </div>
+            <div class="md:col-span-1 p-8 md:p-10 flex flex-col justify-end border-t border-white/[0.06] min-h-[220px] bg-green-500/[0.04] hover:bg-green-500/[0.06] transition-colors reveal-hidden">
+                <div class="text-5xl md:text-6xl font-medium text-green-500 tracking-tight mb-3">∞</div>
+                <p class="text-neutral-500 text-sm leading-relaxed">Self-healing loops — packs improve automatically over time</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <!-- 4 MODES — The Build Surfaces                       -->
+    <!-- ══════════════════════════════════════════════════ -->
+    <section id="modes" class="border-t border-white/[0.06]">
+        <div class="grid grid-cols-1 md:grid-cols-4 md:divide-x divide-white/[0.06]">
+            <!-- Sidebar -->
+            <div class="md:col-span-1 flex flex-col p-8 md:p-10 justify-between min-h-[280px]">
+                <div>
+                    <span class="font-mono text-neutral-600 text-[11px] block mb-3">/// Platform</span>
+                    <h2 class="text-3xl font-semibold text-white tracking-tight mb-4 reveal-hidden">Four Modes</h2>
+                    <p class="text-neutral-500 text-sm leading-relaxed mb-6 reveal-hidden">One workspace, four surfaces. Each mode produces a different pack type, all composable together.</p>
+                </div>
+                <a href="#" class="inline-flex items-center gap-2 border border-white/10 text-neutral-300 px-5 py-2.5 rounded-md text-xs font-medium hover:bg-white/5 transition-all w-max reveal-hidden">
+                    View Docs
+                    <iconify-icon icon="solar:arrow-right-up-linear" width="14" class="text-neutral-500"></iconify-icon>
+                </a>
+            </div>
+
+            <!-- Cards Grid -->
+            <div class="md:col-span-3 grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y md:divide-x divide-white/[0.06]">
+
+                <!-- MODE 1: UI -->
+                <div class="group flex flex-col hover:bg-white/[0.015] transition-colors p-8 reveal-hidden">
+                    <!-- Illustration: Wireframe Dashboard -->
+                    <div class="aspect-video overflow-hidden flex flex-col select-none bg-neutral-900/30 w-full border border-white/[0.06] rounded-lg mb-7 p-5 relative">
+                        <div class="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent pointer-events-none"></div>
+                        <div class="flex items-center gap-1.5 mb-4 relative z-10 animate-wireframe" style="animation-delay:0ms">
+                            <div class="w-2.5 h-2.5 rounded-full bg-green-500/60"></div>
+                            <div class="w-2.5 h-2.5 rounded-full bg-white/15"></div>
+                            <div class="w-2.5 h-2.5 rounded-full bg-white/15"></div>
+            </div>
+                        <div class="flex gap-4 w-full h-full min-h-0 relative z-10">
+                            <div class="w-[28%] h-full border border-white/[0.04] p-3 flex flex-col animate-wireframe" style="animation-delay:100ms">
+                                <div class="w-1/2 h-1.5 bg-white/10 mb-2 animate-wireframe" style="animation-delay:200ms"></div>
+                                <div class="w-3/4 h-1.5 bg-white/10 opacity-40 mb-5 animate-wireframe" style="animation-delay:300ms"></div>
+                                <div class="w-1/3 h-1 bg-green-500/30 mb-2 animate-wireframe" style="animation-delay:400ms"></div>
+                                <div class="w-2/3 h-1 bg-white/10 opacity-30 animate-wireframe" style="animation-delay:500ms"></div>
+                </div>
+                            <div class="flex-1 h-full flex flex-col gap-3">
+                                <div class="flex-1 bg-white/[0.02] border border-white/[0.04] p-4 flex items-center gap-4 animate-wireframe" style="animation-delay:200ms">
+                                    <div class="w-14 h-14 bg-green-500/10 border border-green-500/20 shrink-0 rounded animate-wireframe" style="animation-delay:300ms"></div>
+                                    <div class="flex flex-col gap-2 w-full"><div class="w-2/5 h-2 bg-white/15 animate-wireframe" style="animation-delay:400ms"></div><div class="w-full h-2 bg-white/8 animate-wireframe" style="animation-delay:500ms"></div></div>
+                                </div>
+                                <div class="h-[38%] flex gap-3">
+                                    <div class="flex-1 bg-white/[0.02] border border-white/[0.04] p-3 flex flex-col justify-end gap-2 animate-wireframe" style="animation-delay:400ms"><div class="w-1/2 h-1.5 bg-white/15"></div><div class="w-3/4 h-1.5 bg-white/8"></div></div>
+                                    <div class="flex-1 bg-white/[0.02] border border-white/[0.04] p-3 flex flex-col justify-end gap-2 animate-wireframe" style="animation-delay:500ms"><div class="w-2/3 h-1.5 bg-white/15"></div><div class="w-1/3 h-1.5 bg-white/8"></div></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <span class="font-mono text-green-500 text-xs block mb-2">01</span>
+                    <h3 class="text-lg text-white font-medium tracking-tight mb-2">UI Mode</h3>
+                    <p class="text-neutral-500 text-sm leading-relaxed mb-4">Generate pack-aware React screens. Forms, tables, and routes bind directly to pack schemas and endpoints.</p>
+                    <div class="mt-auto pt-4 border-t border-white/[0.04]">
+                        <span class="text-xs text-neutral-600 group-hover:text-neutral-300 transition-colors flex items-center gap-1.5">React + TypeScript<iconify-icon icon="solar:arrow-right-linear" class="group-hover:translate-x-0.5 transition-transform"></iconify-icon></span>
+                    </div>
+            </div>
+
+                <!-- MODE 2: Logic -->
+                <div class="group flex flex-col hover:bg-white/[0.015] transition-colors p-8 reveal-hidden">
+                    <!-- Illustration: Code Typing -->
+                    <div class="aspect-video overflow-hidden flex bg-neutral-900/30 w-full border border-white/[0.06] rounded-lg mb-7 relative items-center justify-center">
+                        <div class="absolute -top-8 left-1/2 -translate-x-1/2 w-2/3 h-1/3 bg-green-600/10 blur-[60px] rounded-full pointer-events-none"></div>
+                        <div class="relative w-[88%] h-auto min-h-[70%] bg-[#0d0d0d] rounded-lg border border-white/[0.06] overflow-hidden flex flex-col font-mono text-[10px] sm:text-xs">
+                            <div class="h-8 border-b border-white/[0.04] flex items-center px-3 gap-1.5 bg-white/[0.02]">
+                                <div class="w-2.5 h-2.5 rounded-full bg-neutral-700"></div>
+                                <div class="w-2.5 h-2.5 rounded-full bg-neutral-800"></div>
+                                <div class="w-2.5 h-2.5 rounded-full bg-neutral-800"></div>
+                </div>
+                            <div class="flex-1 p-3 md:p-4 relative overflow-hidden">
+                                <div class="flex gap-3 md:gap-5 relative z-10">
+                                    <div class="flex flex-col text-neutral-800 text-right select-none space-y-1"><div>1</div><div>2</div><div>3</div><div>4</div><div>5</div><div>6</div></div>
+                                    <div class="flex flex-col text-neutral-500 font-mono w-full space-y-1">
+                                        <div class="-mx-1.5 flex h-4 px-1.5 relative items-center"><div class="absolute inset-0 bg-green-500/5 rounded border border-green-500/10 w-fit pr-8"></div><div class="relative z-10 w-fit typing-line line-1"><span class="text-green-500">from</span> <span class="text-white">fastapi</span> <span class="text-green-500">import</span> <span class="text-white">FastAPI</span></div></div>
+                                        <div class="w-fit typing-line line-2 h-4"><span class="text-green-500">from</span> <span class="text-neutral-300">packs</span> <span class="text-green-500">import</span> <span class="text-white">AuthPack</span></div>
+                                        <div class="h-4"></div>
+                                        <div class="w-fit typing-line line-3 h-4"><span class="text-neutral-300">app</span> <span class="text-neutral-600">=</span> <span class="text-white">FastAPI</span><span class="text-neutral-600">()</span></div>
+                                        <div class="w-fit typing-line line-4 h-4"><span class="text-neutral-300">auth</span> <span class="text-neutral-600">=</span> <span class="text-white">AuthPack</span><span class="text-neutral-600">.</span><span class="text-white">install</span><span class="text-neutral-600">(</span><span class="text-neutral-300">app</span><span class="text-neutral-600">)</span></div>
+                                        <div class="pl-0 w-fit typing-line line-5 h-4"><span class="text-neutral-300">auth</span><span class="text-neutral-600">.</span><span class="text-white">verify</span><span class="text-neutral-600">()</span> <span class="text-green-700"># ✓ tests pass</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <span class="font-mono text-green-500 text-xs block mb-2">02</span>
+                    <h3 class="text-lg text-white font-medium tracking-tight mb-2">Logic Mode</h3>
+                    <p class="text-neutral-500 text-sm leading-relaxed mb-4">Build reusable backend features as Logic Packs. Endpoints, schemas, auth, tests, and versioning — all in one artifact.</p>
+                    <div class="mt-auto pt-4 border-t border-white/[0.04]">
+                        <span class="text-xs text-neutral-600 group-hover:text-neutral-300 transition-colors flex items-center gap-1.5">Python + FastAPI<iconify-icon icon="solar:arrow-right-linear" class="group-hover:translate-x-0.5 transition-transform"></iconify-icon></span>
+                    </div>
+            </div>
+
+                <!-- MODE 3: Notebook -->
+                <div class="group flex flex-col hover:bg-white/[0.015] transition-colors p-8 reveal-hidden">
+                    <!-- Illustration: Notebook Cells -->
+                    <div class="aspect-video overflow-hidden flex flex-col select-none bg-neutral-900/30 w-full border border-white/[0.06] rounded-lg mb-7 relative items-center justify-center">
+                        <div class="absolute inset-0 z-0">
+                            <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.03)_0%,transparent_55%)]"></div>
+                            <div class="absolute inset-0 opacity-[0.12] bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:24px_24px] [mask-image:radial-gradient(ellipse_at_center,black_40%,transparent_100%)]"></div>
+                </div>
+                        <div class="relative z-10 w-[85%] flex flex-col gap-2.5">
+                            <div class="flex items-start gap-2 animate-wireframe" style="animation-delay:0ms">
+                                <div class="text-[9px] font-mono text-green-500/60 mt-1 shrink-0">[1]</div>
+                                <div class="flex-1 bg-white/[0.03] border border-white/[0.06] rounded p-2.5">
+                                    <div class="w-3/4 h-1.5 bg-white/10 mb-1.5"></div>
+                                    <div class="w-1/2 h-1.5 bg-white/8"></div>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-2 animate-wireframe" style="animation-delay:200ms">
+                                <div class="text-[9px] font-mono text-green-500/60 mt-1 shrink-0">[2]</div>
+                                <div class="flex-1 bg-green-500/[0.04] border border-green-500/10 rounded p-2.5">
+                                    <div class="w-full h-1.5 bg-green-500/15 mb-1.5"></div>
+                                    <div class="w-2/3 h-1.5 bg-green-500/10"></div>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-2 animate-wireframe" style="animation-delay:400ms">
+                                <div class="text-[9px] font-mono text-neutral-700 mt-1 shrink-0">out</div>
+                                <div class="flex-1 bg-white/[0.02] border border-white/[0.04] rounded p-2.5">
+                                    <div class="w-2/5 h-1.5 bg-white/8 mb-1.5"></div>
+                                    <div class="w-3/5 h-1.5 bg-white/6"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <span class="font-mono text-green-500 text-xs block mb-2">03</span>
+                    <h3 class="text-lg text-white font-medium tracking-tight mb-2">Notebook Mode</h3>
+                    <p class="text-neutral-500 text-sm leading-relaxed mb-4">The lab for experiments and integrations. Prototype actions, then promote working notebooks into Automation Packs or Logic Pack actions.</p>
+                    <div class="mt-auto pt-4 border-t border-white/[0.04]">
+                        <span class="text-xs text-neutral-600 group-hover:text-neutral-300 transition-colors flex items-center gap-1.5">Jupyter-style cells<iconify-icon icon="solar:arrow-right-linear" class="group-hover:translate-x-0.5 transition-transform"></iconify-icon></span>
+                    </div>
+            </div>
+
+                <!-- MODE 4: Canvas -->
+                <div class="group flex flex-col hover:bg-white/[0.015] transition-colors p-8 reveal-hidden">
+                    <!-- Illustration: SVG Cubes -->
+                    <div class="aspect-video overflow-hidden flex bg-neutral-900/30 w-full border border-white/[0.06] rounded-lg mb-7 relative items-center justify-center">
+                        <div class="absolute left-1/2 top-1/2 h-40 w-40 -translate-x-1/2 -translate-y-1/2 bg-green-500/[0.06] blur-[50px] rounded-full"></div>
+                        <div class="absolute top-4 left-4 z-20 flex items-center gap-1.5"><span class="h-1.5 w-1.5 rounded-full bg-green-500"></span><span class="font-mono text-[9px] uppercase tracking-[0.3em] text-neutral-500">Canvas</span></div>
+                        <svg viewBox="0 0 200 160" class="w-[60%] max-w-[400px] h-auto drop-shadow-[0_40px_80px_rgba(0,0,0,0.6)]" aria-hidden="true">
+                            <defs>
+                                <linearGradient id="ct" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#ffffff" stop-opacity="0.9"/><stop offset="100%" stop-color="#d4d4d4" stop-opacity="0.9"/></linearGradient>
+                                <linearGradient id="cl" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#a3a3a3" stop-opacity="0.9"/><stop offset="100%" stop-color="#636363" stop-opacity="0.9"/></linearGradient>
+                                <linearGradient id="cr" x1="100%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#737373" stop-opacity="0.9"/><stop offset="100%" stop-color="#404040" stop-opacity="0.9"/></linearGradient>
+                                <radialGradient id="sg" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#22c55e" stop-opacity="0.12"/><stop offset="100%" stop-color="#22c55e" stop-opacity="0"/></radialGradient>
+                            </defs>
+                            <g transform="translate(100,108)"><g class="anim-cube-b opacity-0"><path d="M0,-14 L24,0 L0,14 L-24,0 Z" fill="rgba(100,100,100,0.3)"/><path d="M-24,0 L0,14 V40 L-24,26 Z" fill="rgba(20,20,20,0.85)"/><path d="M0,14 L24,0 V26 L0,40 Z" fill="rgba(10,10,10,0.9)"/></g></g>
+                            <g transform="translate(56,82)"><g class="anim-cube-l opacity-0"><path d="M0,-14 L24,0 L0,14 L-24,0 Z" fill="rgba(100,100,100,0.28)"/><path d="M-24,0 L0,14 V40 L-24,26 Z" fill="rgba(15,15,15,0.85)"/><path d="M0,14 L24,0 V26 L0,40 Z" fill="rgba(8,8,8,0.9)"/></g></g>
+                            <g transform="translate(144,82)"><g class="anim-cube-r opacity-0"><path d="M0,-14 L24,0 L0,14 L-24,0 Z" fill="rgba(100,100,100,0.28)"/><path d="M-24,0 L0,14 V40 L-24,26 Z" fill="rgba(15,15,15,0.85)"/><path d="M0,14 L24,0 V26 L0,40 Z" fill="rgba(8,8,8,0.9)"/></g></g>
+                            <g transform="translate(100,56) scale(1.12)"><circle cx="0" cy="18" r="38" fill="url(#sg)"/><path d="M0,-14 L24,0 L0,14 L-24,0 Z" fill="url(#ct)"/><path d="M-24,0 L0,14 V40 L-24,26 Z" fill="url(#cl)"/><path d="M0,14 L24,0 V26 L0,40 Z" fill="url(#cr)"/></g>
+                    </svg>
+                </div>
+                    <span class="font-mono text-green-500 text-xs block mb-2">04</span>
+                    <h3 class="text-lg text-white font-medium tracking-tight mb-2">Canvas Mode</h3>
+                    <p class="text-neutral-500 text-sm leading-relaxed mb-4">Infinite board for product flows, architecture, and rapid HTML prototyping. Access multi-model image generation and export Creative Packs.</p>
+                    <div class="mt-auto pt-4 border-t border-white/[0.04]">
+                        <span class="text-xs text-neutral-600 group-hover:text-neutral-300 transition-colors flex items-center gap-1.5">Design + Prototype<iconify-icon icon="solar:arrow-right-linear" class="group-hover:translate-x-0.5 transition-transform"></iconify-icon></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <!-- BANNER                                             -->
+    <!-- ══════════════════════════════════════════════════ -->
+    <section class="border-t border-white/[0.06]">
+        <div class="py-20 md:py-28 px-6 md:px-12">
+            <h2 class="text-4xl md:text-7xl lg:text-8xl font-medium text-white tracking-tight leading-[0.95] max-w-5xl reveal-hidden">
+                Software that <span class="text-neutral-500 italic">stays working.</span>
+                </h2>
+            </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <!-- KEY FEATURES                                       -->
+    <!-- ══════════════════════════════════════════════════ -->
+    <section id="features" class="border-t border-white/[0.06]">
+        <div class="grid grid-cols-1 md:grid-cols-4 md:divide-x divide-white/[0.06]">
+            <!-- Sidebar -->
+            <div class="md:col-span-1 flex flex-col p-8 md:p-10 justify-between min-h-[280px]">
+                <div>
+                    <span class="font-mono text-neutral-600 text-[11px] block mb-3">/// Core</span>
+                    <h2 class="text-3xl font-semibold text-white tracking-tight mb-4 reveal-hidden">What Makes It Different</h2>
+                    <p class="text-neutral-500 text-sm leading-relaxed reveal-hidden">The three pillars that turn Logic Packs from "another AI builder" into a production platform.</p>
+                        </div>
+            </div>
+
+            <!-- Features -->
+            <div class="md:col-span-3 flex flex-col divide-y divide-white/[0.06]">
+                <!-- Feature 1: Pack Standard -->
+                <div class="group grid grid-cols-1 lg:grid-cols-[1fr_1.2fr] gap-8 p-8 md:p-12 hover:bg-white/[0.015] transition-colors reveal-hidden">
+                    <div class="flex flex-col justify-center">
+                        <span class="text-green-500 font-mono text-[10px] mb-3">01 — STANDARD</span>
+                        <h3 class="text-xl text-white font-medium tracking-tight mb-3">Pack Manifest & Contracts</h3>
+                        <p class="text-neutral-500 text-sm leading-relaxed">Every pack declares its inputs, outputs, permissions, schemas, tests, and telemetry requirements. This is the spine — if the spec is crisp, reuse is real. If it's vague, it's just templates with marketing.</p>
+                    </div>
+                    <div class="bg-neutral-900/30 border border-white/[0.06] rounded-lg p-6 flex flex-col gap-2 font-mono text-xs">
+                        <div class="text-neutral-600 mb-1"># pack.manifest.yaml</div>
+                        <div><span class="text-green-500">name:</span> <span class="text-white">auth-pack</span></div>
+                        <div><span class="text-green-500">version:</span> <span class="text-neutral-300">2.1.0</span></div>
+                        <div><span class="text-green-500">type:</span> <span class="text-neutral-300">logic</span></div>
+                        <div><span class="text-green-500">runtime:</span> <span class="text-neutral-300">python</span></div>
+                        <div><span class="text-green-500">contracts:</span></div>
+                        <div class="pl-3"><span class="text-neutral-400">actions:</span> <span class="text-neutral-500">[login, signup, verify]</span></div>
+                        <div class="pl-3"><span class="text-neutral-400">scopes:</span> <span class="text-neutral-500">[db.read, db.write]</span></div>
+                        <div><span class="text-green-500">tests:</span> <span class="text-neutral-300">pytest</span></div>
+                    </div>
+                </div>
+
+                <!-- Feature 2: Compose -->
+                <div class="group grid grid-cols-1 lg:grid-cols-[1fr_1.2fr] gap-8 p-8 md:p-12 hover:bg-white/[0.015] transition-colors reveal-hidden">
+                    <div class="flex flex-col justify-center">
+                        <span class="text-green-500 font-mono text-[10px] mb-3">02 — COMPOSE</span>
+                        <h3 class="text-xl text-white font-medium tracking-tight mb-3">Wire Everything Together</h3>
+                        <p class="text-neutral-500 text-sm leading-relaxed">Compose binds UI to Logic Pack actions, connects packs to each other via events, maps secrets and env vars, and runs end-to-end checks. Apps = composed packs.</p>
+                        </div>
+                    <div class="bg-neutral-900/30 border border-white/[0.06] rounded-lg p-6 flex flex-col gap-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-md bg-green-500/10 border border-green-500/20 flex items-center justify-center"><iconify-icon icon="solar:widget-linear" class="text-green-500 text-sm"></iconify-icon></div>
+                            <span class="text-xs text-white font-medium">UI Pack</span>
+                            <div class="flex-1 h-px bg-white/10 mx-2"></div>
+                            <span class="text-[10px] text-green-500 font-mono">bind</span>
+                            <div class="flex-1 h-px bg-white/10 mx-2"></div>
+                            <div class="w-9 h-9 rounded-md bg-white/5 border border-white/10 flex items-center justify-center"><iconify-icon icon="solar:server-linear" class="text-neutral-400 text-sm"></iconify-icon></div>
+                            <span class="text-xs text-white font-medium">Logic Pack</span>
+                    </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-md bg-white/5 border border-white/10 flex items-center justify-center"><iconify-icon icon="solar:server-linear" class="text-neutral-400 text-sm"></iconify-icon></div>
+                            <span class="text-xs text-white font-medium">Auth Pack</span>
+                            <div class="flex-1 h-px bg-white/10 mx-2"></div>
+                            <span class="text-[10px] text-green-500 font-mono">event</span>
+                            <div class="flex-1 h-px bg-white/10 mx-2"></div>
+                            <div class="w-9 h-9 rounded-md bg-white/5 border border-white/10 flex items-center justify-center"><iconify-icon icon="solar:letter-linear" class="text-neutral-400 text-sm"></iconify-icon></div>
+                            <span class="text-xs text-white font-medium">Email Pack</span>
+                </div>
+                        <div class="mt-2 pt-3 border-t border-white/[0.04] flex items-center gap-2">
+                            <span class="h-1.5 w-1.5 rounded-full bg-green-500"></span>
+                            <span class="text-[10px] text-neutral-500 font-mono">compose.test → all checks passed</span>
+            </div>
+        </div>
+                </div>
+
+                <!-- Feature 3: Self-Healing -->
+                <div class="group grid grid-cols-1 lg:grid-cols-[1fr_1.2fr] gap-8 p-8 md:p-12 hover:bg-white/[0.015] transition-colors reveal-hidden">
+                    <div class="flex flex-col justify-center">
+                        <span class="text-green-500 font-mono text-[10px] mb-3">03 — RELIABILITY</span>
+                        <h3 class="text-xl text-white font-medium tracking-tight mb-3">Self-Healing Packs</h3>
+                        <p class="text-neutral-500 text-sm leading-relaxed">When something breaks, agents inspect logs, propose a patch, rerun tests, and ship a fix — automatically. Packs get more reliable over time, not more fragile.</p>
+        </div>
+                    <div class="bg-neutral-900/30 border border-white/[0.06] rounded-lg p-6 flex flex-col gap-2.5 text-xs font-mono">
+                        <div class="flex items-center gap-2"><span class="text-red-400">✕</span><span class="text-neutral-400">test_auth_flow failed</span><span class="text-neutral-700 ml-auto">12:04</span></div>
+                        <div class="flex items-center gap-2"><span class="text-yellow-400">⟳</span><span class="text-neutral-400">agent: inspecting logs + traces</span><span class="text-neutral-700 ml-auto">12:04</span></div>
+                        <div class="flex items-center gap-2"><span class="text-yellow-400">⟳</span><span class="text-neutral-400">agent: patch proposed → PR #142</span><span class="text-neutral-700 ml-auto">12:05</span></div>
+                        <div class="flex items-center gap-2"><span class="text-green-500">✓</span><span class="text-neutral-400">tests rerun → all passing</span><span class="text-neutral-700 ml-auto">12:05</span></div>
+                        <div class="flex items-center gap-2"><span class="text-green-500">✓</span><span class="text-white">v2.1.1 released (patch)</span><span class="text-neutral-700 ml-auto">12:06</span></div>
+                        <div class="mt-2 pt-2 border-t border-white/[0.04] text-neutral-600">MTTR: 2 minutes • automated</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <!-- HOW IT WORKS                                       -->
+    <!-- ══════════════════════════════════════════════════ -->
+    <section class="border-t border-white/[0.06]">
+        <div class="grid grid-cols-1 md:grid-cols-4 md:divide-x divide-white/[0.06]">
+            <!-- Sidebar -->
+            <div class="md:col-span-1 flex flex-col p-8 md:p-10 min-h-[350px] justify-between">
+                <div>
+                    <span class="font-mono text-neutral-600 text-[11px] block mb-3">/// Journey</span>
+                    <h2 class="text-3xl font-semibold text-white tracking-tight mb-4 reveal-hidden">How It Works</h2>
+                    <p class="text-neutral-500 text-sm leading-relaxed reveal-hidden">From idea to deployed app in four steps. The experience should feel like assembling LEGO, not writing boilerplate.</p>
+                    </div>
+                <a href="#" class="inline-flex items-center gap-2 border border-white/10 text-neutral-300 px-5 py-2.5 rounded-md text-xs font-medium hover:bg-white/5 transition-all w-max reveal-hidden mt-8">
+                    Start Building
+                    <iconify-icon icon="solar:arrow-right-up-linear" width="14" class="text-neutral-500"></iconify-icon>
+                </a>
+                </div>
+
+            <!-- Steps -->
+            <div class="md:col-span-3 flex flex-col">
+                <div class="group grid grid-cols-[100px_1fr] md:grid-cols-[120px_1fr] border-b border-white/[0.06] hover:bg-white/[0.015] transition-colors reveal-hidden">
+                    <div class="p-6 md:p-8 flex flex-col justify-between border-r border-white/[0.06]">
+                        <iconify-icon icon="solar:download-minimalistic-linear" width="20" class="text-neutral-500 group-hover:text-green-500 transition-colors"></iconify-icon>
+                        <span class="font-mono text-xs text-neutral-700 group-hover:text-green-500/50 mt-4">01</span>
+                    </div>
+                    <div class="p-6 md:p-8 flex flex-col justify-center">
+                        <h3 class="text-lg text-white font-medium tracking-tight mb-2">Install Packs</h3>
+                        <p class="text-neutral-500 text-sm leading-relaxed max-w-lg">Browse the marketplace and install verified packs — auth, payments, notifications, CRUD, scraping — with one click. Each pack ships with tests, scopes, and contracts.</p>
+                </div>
+                    </div>
+                <div class="group grid grid-cols-[100px_1fr] md:grid-cols-[120px_1fr] border-b border-white/[0.06] hover:bg-white/[0.015] transition-colors reveal-hidden">
+                    <div class="p-6 md:p-8 flex flex-col justify-between border-r border-white/[0.06]">
+                        <iconify-icon icon="solar:settings-linear" width="20" class="text-neutral-500 group-hover:text-green-500 transition-colors"></iconify-icon>
+                        <span class="font-mono text-xs text-neutral-700 group-hover:text-green-500/50 mt-4">02</span>
+                </div>
+                    <div class="p-6 md:p-8 flex flex-col justify-center">
+                        <h3 class="text-lg text-white font-medium tracking-tight mb-2">Configure</h3>
+                        <p class="text-neutral-500 text-sm leading-relaxed max-w-lg">Set environment variables, wire secrets, configure scopes and permissions. The workspace validates everything before you move forward.</p>
+                    </div>
+                </div>
+                <div class="group grid grid-cols-[100px_1fr] md:grid-cols-[120px_1fr] border-b border-white/[0.06] hover:bg-white/[0.015] transition-colors reveal-hidden">
+                    <div class="p-6 md:p-8 flex flex-col justify-between border-r border-white/[0.06]">
+                        <iconify-icon icon="solar:link-round-linear" width="20" class="text-neutral-500 group-hover:text-green-500 transition-colors"></iconify-icon>
+                        <span class="font-mono text-xs text-neutral-700 group-hover:text-green-500/50 mt-4">03</span>
+            </div>
+                    <div class="p-6 md:p-8 flex flex-col justify-center">
+                        <h3 class="text-lg text-white font-medium tracking-tight mb-2">Compose</h3>
+                        <p class="text-neutral-500 text-sm leading-relaxed max-w-lg">Bind UI to pack actions, connect packs via events, apply auth guards and role-based routes. Run end-to-end checks to validate the whole graph.</p>
+        </div>
+            </div>
+                <div class="group grid grid-cols-[100px_1fr] md:grid-cols-[120px_1fr] hover:bg-white/[0.015] transition-colors reveal-hidden">
+                    <div class="p-6 md:p-8 flex flex-col justify-between border-r border-white/[0.06]">
+                        <iconify-icon icon="solar:rocket-2-linear" width="20" class="text-neutral-500 group-hover:text-green-500 transition-colors"></iconify-icon>
+                        <span class="font-mono text-xs text-neutral-700 group-hover:text-green-500/50 mt-4">04</span>
+                </div>
+                    <div class="p-6 md:p-8 flex flex-col justify-center">
+                        <h3 class="text-lg text-white font-medium tracking-tight mb-2">Deploy & Publish</h3>
+                        <p class="text-neutral-500 text-sm leading-relaxed max-w-lg">Tests pass → deploy-ready. Publish your improved packs back to the marketplace so others can install them. Build once, distribute everywhere.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <!-- QUOTE                                              -->
+    <!-- ══════════════════════════════════════════════════ -->
+    <section class="border-t border-white/[0.06] py-24 md:py-32 px-6">
+        <div class="max-w-4xl mx-auto text-center">
+            <blockquote class="text-2xl md:text-4xl text-neutral-300 font-light leading-snug tracking-tight mb-8 reveal-hidden">
+                "In a world where anyone can generate code, the real problem is keeping software <span class="text-white italic">working</span>. Logic Packs solves the gap between code generation and production software."
+            </blockquote>
+            <p class="text-sm text-neutral-600 font-mono uppercase tracking-widest reveal-hidden">— The Logic Packs Thesis</p>
+        </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <!-- PRICING                                            -->
+    <!-- ══════════════════════════════════════════════════ -->
+    <section id="pricing" class="border-t border-white/[0.06]">
+        <div class="grid grid-cols-1 md:grid-cols-12 md:divide-x divide-white/[0.06]">
+            <!-- Sidebar -->
+            <div class="md:col-span-4 flex flex-col p-8 md:p-12 justify-between">
+                <div class="max-w-sm">
+                    <span class="font-mono text-neutral-600 text-[11px] block mb-3">/// Pricing</span>
+                    <h2 class="text-4xl md:text-5xl font-semibold text-white tracking-tight leading-[0.95] mb-6 reveal-hidden">
+                        Simple,<br><span class="text-neutral-500 italic">transparent</span><br>pricing.
+                </h2>
+                    <p class="text-neutral-500 text-sm leading-relaxed reveal-hidden">Start free. Scale as you grow. Enterprise when you need governance and SLA.</p>
+            </div>
+                <div class="mt-10 pt-6 border-t border-white/[0.04] flex items-center gap-6">
+                    <div><span class="block text-[9px] font-mono text-neutral-600 uppercase mb-1">Status</span><span class="text-green-500 text-xs font-mono">● Open Beta</span></div>
+        </div>
+            </div>
+
+            <!-- Pricing Cards -->
+            <div class="md:col-span-8 flex flex-col divide-y divide-white/[0.06]">
+                <!-- Tier 1: Starter -->
+                <div class="group p-8 md:p-12 hover:bg-white/[0.015] transition-colors reveal-hidden">
+                    <div class="flex flex-col md:flex-row md:items-start justify-between gap-6">
+                        <div class="flex-1">
+                            <span class="font-mono text-green-500 text-[10px] tracking-widest uppercase mb-3 block">Starter</span>
+                            <h3 class="text-3xl text-white font-medium tracking-tight mb-4">Free</h3>
+                            <p class="text-neutral-500 text-sm max-w-sm mb-6 leading-relaxed">Everything you need to explore. Personal workspace, community packs, and basic automation.</p>
+                            <ul class="flex flex-wrap gap-x-5 gap-y-1.5 text-[10px] font-mono text-neutral-400 uppercase">
+                                <li class="flex items-center gap-1.5"><span class="w-1 h-1 bg-green-500 rounded-full"></span>1 workspace</li>
+                                <li class="flex items-center gap-1.5"><span class="w-1 h-1 bg-green-500 rounded-full"></span>Community packs</li>
+                                <li class="flex items-center gap-1.5"><span class="w-1 h-1 bg-green-500 rounded-full"></span>100 runs/mo</li>
+                            </ul>
+                        </div>
+                        <a href="#" class="inline-flex items-center gap-2 bg-white text-black px-5 py-2.5 rounded-md text-xs font-semibold hover:bg-neutral-200 transition-colors shrink-0">
+                            Get Started Free
+                        </a>
+                    </div>
+            </div>
+
+                <!-- Tier 2: Pro -->
+                <div class="group p-8 md:p-12 bg-green-500/[0.02] hover:bg-green-500/[0.04] transition-colors reveal-hidden">
+                    <div class="flex flex-col md:flex-row md:items-start justify-between gap-6">
+                        <div class="flex-1">
+                            <span class="font-mono text-green-500 text-[10px] tracking-widest uppercase mb-3 block">Pro</span>
+                            <div class="flex items-baseline gap-1 mb-4">
+                                <h3 class="text-3xl text-white font-medium tracking-tight">$29</h3>
+                                <span class="text-neutral-500 text-sm">/month</span>
+                    </div>
+                            <p class="text-neutral-500 text-sm max-w-sm mb-6 leading-relaxed">For teams shipping real products. Unlimited packs, full automation runtime, self-healing, and collaboration.</p>
+                            <ul class="flex flex-wrap gap-x-5 gap-y-1.5 text-[10px] font-mono text-neutral-400 uppercase">
+                                <li class="flex items-center gap-1.5"><span class="w-1 h-1 bg-green-500 rounded-full"></span>Team workspace</li>
+                                <li class="flex items-center gap-1.5"><span class="w-1 h-1 bg-green-500 rounded-full"></span>Verified packs</li>
+                                <li class="flex items-center gap-1.5"><span class="w-1 h-1 bg-green-500 rounded-full"></span>Unlimited runs</li>
+                                <li class="flex items-center gap-1.5"><span class="w-1 h-1 bg-green-500 rounded-full"></span>Self-healing</li>
+                            </ul>
+                        </div>
+                        <a href="#" class="inline-flex items-center gap-2 bg-green-500 text-black px-5 py-2.5 rounded-md text-xs font-semibold hover:bg-green-400 transition-colors shrink-0">
+                            Start Pro Trial
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Tier 3: Enterprise -->
+                <div class="group p-8 md:p-12 hover:bg-white/[0.015] transition-colors reveal-hidden">
+                    <div class="flex flex-col md:flex-row md:items-start justify-between gap-6">
+                        <div class="flex-1">
+                            <span class="font-mono text-green-500 text-[10px] tracking-widest uppercase mb-3 block">Enterprise</span>
+                            <h3 class="text-3xl text-white font-medium tracking-tight mb-4">Custom</h3>
+                            <p class="text-neutral-500 text-sm max-w-sm mb-6 leading-relaxed">For organizations needing governance, audit trails, dedicated support, SLA, and on-premise deployment options.</p>
+                            <ul class="flex flex-wrap gap-x-5 gap-y-1.5 text-[10px] font-mono text-neutral-400 uppercase">
+                                <li class="flex items-center gap-1.5"><span class="w-1 h-1 bg-green-500 rounded-full"></span>Dedicated infra</li>
+                                <li class="flex items-center gap-1.5"><span class="w-1 h-1 bg-green-500 rounded-full"></span>SLA support</li>
+                                <li class="flex items-center gap-1.5"><span class="w-1 h-1 bg-green-500 rounded-full"></span>Audit & compliance</li>
+                    </ul>
+                </div>
+                        <a href="#" class="inline-flex items-center gap-2 border border-white/10 text-white px-5 py-2.5 rounded-md text-xs font-medium hover:bg-white/5 transition-colors shrink-0">
+                            Contact Sales
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <!-- CTA                                                -->
+    <!-- ══════════════════════════════════════════════════ -->
+    <section class="border-t border-white/[0.06] py-28 md:py-40 px-6 relative overflow-hidden">
+        <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <div class="w-[35vw] h-[35vw] bg-green-500/[0.04] blur-[120px] rounded-full"></div>
+        </div>
+        <div class="relative z-10 flex flex-col items-center text-center max-w-2xl mx-auto">
+            <h2 class="text-4xl md:text-6xl lg:text-7xl font-semibold text-white tracking-tight mb-5 reveal-hidden">Start building.</h2>
+            <p class="text-neutral-500 text-base md:text-lg leading-relaxed mb-10 reveal-hidden">Build once, install everywhere, compose into apps, publish and reuse. Join the developers who are done rebuilding from scratch.</p>
+            <div class="flex flex-wrap gap-3 justify-center reveal-hidden">
+                <a href="#" class="inline-flex items-center gap-2 bg-white text-black font-semibold rounded-md px-8 py-3 text-sm hover:bg-neutral-200 transition-colors">
+                    Get Started Free
+                    <iconify-icon icon="solar:arrow-right-linear" width="16"></iconify-icon>
+                </a>
+                <a href="#" class="inline-flex items-center gap-2 border border-white/15 text-white font-medium rounded-md px-8 py-3 text-sm hover:bg-white/5 transition-colors">
+                    View Documentation
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <!-- ═══ FOOTER ═══ -->
+    <footer class="border-t border-white/[0.06]">
+        <div class="grid grid-cols-1 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-white/[0.06]">
+            <!-- Brand -->
+            <div class="p-8 md:col-span-1 flex flex-col justify-between min-h-[280px]">
+                <div>
+                    <div class="flex items-center gap-2 mb-4">
+                        <iconify-icon icon="solar:widget-5-linear" class="text-green-500 text-lg"></iconify-icon>
+                        <span class="text-white font-semibold text-sm tracking-tight">Logic Packs</span>
+                    </div>
+                    <p class="text-neutral-500 text-sm leading-relaxed mb-6">The operating system for reusable software.</p>
+                </div>
+                <div class="flex gap-3">
+                    <a href="#" class="w-8 h-8 rounded-md border border-white/[0.06] flex items-center justify-center hover:bg-white/5 transition-colors"><iconify-icon icon="simple-icons:github" class="text-neutral-500 text-sm"></iconify-icon></a>
+                    <a href="#" class="w-8 h-8 rounded-md border border-white/[0.06] flex items-center justify-center hover:bg-white/5 transition-colors"><iconify-icon icon="simple-icons:discord" class="text-neutral-500 text-sm"></iconify-icon></a>
+                    <a href="#" class="w-8 h-8 rounded-md border border-white/[0.06] flex items-center justify-center hover:bg-white/5 transition-colors"><iconify-icon icon="simple-icons:x" class="text-neutral-500 text-sm"></iconify-icon></a>
+                </div>
+            </div>
+
+            <!-- Links -->
+            <div class="p-8 md:col-span-3 grid grid-cols-2 md:grid-cols-4 gap-8">
+                <div>
+                    <h4 class="text-white text-xs font-semibold uppercase tracking-widest mb-5">Platform</h4>
+                    <ul class="space-y-3">
+                        <li><a href="index.html#modes" class="text-neutral-500 text-sm hover:text-white transition-colors">UI Mode</a></li>
+                        <li><a href="index.html#modes" class="text-neutral-500 text-sm hover:text-white transition-colors">Logic Mode</a></li>
+                        <li><a href="index.html#modes" class="text-neutral-500 text-sm hover:text-white transition-colors">Notebook</a></li>
+                        <li><a href="index.html#modes" class="text-neutral-500 text-sm hover:text-white transition-colors">Canvas</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-white text-xs font-semibold uppercase tracking-widest mb-5">Ventures</h4>
+                    <ul class="space-y-3">
+                        <li><a href="ventures.html" class="text-neutral-500 text-sm hover:text-white transition-colors">Overview</a></li>
+                        <li><a href="founders.html" class="text-neutral-500 text-sm hover:text-white transition-colors">For Founders</a></li>
+                        <li><a href="investors.html" class="text-neutral-500 text-sm hover:text-white transition-colors">For Investors</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-white text-xs font-semibold uppercase tracking-widest mb-5">Resources</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-neutral-500 text-sm hover:text-white transition-colors">Documentation</a></li>
+                        <li><a href="cli.html" class="text-neutral-500 text-sm hover:text-white transition-colors">LPC CLI</a></li>
+                        <li><a href="store.html" class="text-neutral-500 text-sm hover:text-white transition-colors">Pack Marketplace</a></li>
+                        <li><a href="shop.html" class="text-neutral-500 text-sm hover:text-white transition-colors">Hardware Shop</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-white text-xs font-semibold uppercase tracking-widest mb-5">Newsletter</h4>
+                    <form class="flex flex-col gap-3" onsubmit="return false">
+                        <input type="email" placeholder="you@email.com" class="w-full bg-transparent border-b border-white/15 py-2 text-white text-sm focus:outline-none focus:border-green-500 transition-colors placeholder:text-neutral-700">
+                        <button class="self-start text-xs text-neutral-500 uppercase tracking-widest hover:text-white transition-colors">Subscribe</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="border-t border-white/[0.06]">
+            <div class="px-8 py-5 flex flex-col md:flex-row justify-between items-center gap-3">
+                <span class="text-neutral-700 text-xs">&copy; 2026 Logic Packs. All rights reserved.</span>
+                <div class="flex gap-4">
+                    <a href="#" class="text-neutral-700 text-xs hover:text-white transition-colors">Privacy</a>
+                    <a href="#" class="text-neutral-700 text-xs hover:text-white transition-colors">Terms</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <!-- THREE.JS — Hero 3D Sphere + Explosion              -->
+    <!-- ══════════════════════════════════════════════════ -->
+    <script type="module">
+    import * as THREE from 'three';
+    import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+    import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+    import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+
+    const config = {
+        colors: { bg: 0x0a0a0a, primary: 0x22c55e, secondary: 0x86efac, wireframe: 0x0f172a }
+    };
+
+    const canvas = document.querySelector('#webgl-canvas');
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(config.colors.bg);
+    scene.fog = new THREE.FogExp2(config.colors.bg, 0.035);
+
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
+    camera.position.z = 6;
+
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, powerPreference: "high-performance", alpha: false });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.0;
+
+    const mainGroup = new THREE.Group();
+    scene.add(mainGroup);
+
+    // Core Sphere
+    const geoCore = new THREE.IcosahedronGeometry(2, 10);
+    const matCore = new THREE.MeshPhysicalMaterial({
+        color: 0x000000, metalness: 0.8, roughness: 0.2, clearcoat: 1.0, clearcoatRoughness: 0.1,
+        emissive: config.colors.primary, emissiveIntensity: 0.08
+    });
+    const sphereCore = new THREE.Mesh(geoCore, matCore);
+    mainGroup.add(sphereCore);
+
+    // Wireframe
+    const geoWire = new THREE.IcosahedronGeometry(2.2, 2);
+    const matWire = new THREE.MeshBasicMaterial({ color: config.colors.primary, wireframe: true, transparent: true, opacity: 0.12, side: THREE.DoubleSide });
+    const sphereWire = new THREE.Mesh(geoWire, matWire);
+    mainGroup.add(sphereWire);
+
+    // Particles
+    const pGeo = new THREE.BufferGeometry();
+    const pCount = 180;
+    const pArr = new Float32Array(pCount * 3);
+    for (let i = 0; i < pCount * 3; i++) pArr[i] = (Math.random() - 0.5) * 12;
+    pGeo.setAttribute('position', new THREE.BufferAttribute(pArr, 3));
+    const pMat = new THREE.PointsMaterial({ size: 0.035, color: config.colors.primary, transparent: true, opacity: 0.5, blending: THREE.AdditiveBlending });
+    const pMesh = new THREE.Points(pGeo, pMat);
+    scene.add(pMesh);
+
+    // Explosion
+    const eCount = 4000;
+    const eGeo = new THREE.BufferGeometry();
+    const eInit = new Float32Array(eCount * 3);
+    const eTarget = new Float32Array(eCount * 3);
+    const eCurrent = new Float32Array(eCount * 3);
+
+    for (let i = 0; i < eCount; i++) {
+        const phi = Math.acos(-1 + (2 * i) / eCount);
+        const theta = Math.sqrt(eCount * Math.PI) * phi;
+        const r = 2.0;
+        const x = r * Math.cos(theta) * Math.sin(phi);
+        const y = r * Math.sin(theta) * Math.sin(phi);
+        const z = r * Math.cos(phi);
+
+        eInit[i*3] = x; eInit[i*3+1] = y; eInit[i*3+2] = z;
+        eCurrent[i*3] = x; eCurrent[i*3+1] = y; eCurrent[i*3+2] = z;
+
+        const dir = new THREE.Vector3(x, y, z).normalize();
+        const dist = 2.0 + Math.random() * 6.0;
+        eTarget[i*3] = dir.x * dist; eTarget[i*3+1] = dir.y * dist; eTarget[i*3+2] = dir.z * dist;
+    }
+
+    eGeo.setAttribute('position', new THREE.BufferAttribute(eCurrent, 3));
+    const eMat = new THREE.PointsMaterial({ size: 0.035, color: config.colors.primary, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false });
+    const eSys = new THREE.Points(eGeo, eMat);
+    eSys.visible = false;
+    mainGroup.add(eSys);
+
+    // Lighting
+    scene.add(new THREE.AmbientLight(0xffffff, 0.08));
+    const l1 = new THREE.PointLight(config.colors.primary, 300); l1.position.set(4, 2, 4); scene.add(l1);
+    const l2 = new THREE.PointLight(config.colors.secondary, 300); l2.position.set(-4, -2, 2); scene.add(l2);
+
+    // Post Processing
+    const renderPass = new RenderPass(scene, camera);
+    const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
+    bloomPass.strength = 0.8; bloomPass.radius = 0.4; bloomPass.threshold = 0.15;
+    const composer = new EffectComposer(renderer);
+    composer.addPass(renderPass); composer.addPass(bloomPass);
+
+    // Interactions
+    let mouseX = 0, mouseY = 0, targetX = 0, targetY = 0;
+    const halfW = window.innerWidth / 2, halfH = window.innerHeight / 2;
+    const raycaster = new THREE.Raycaster();
+    const pointer = new THREE.Vector2();
+    let isHovered = false, isAnimating = false;
+    const animState = { progress: 0 };
+
+    function updateExplosion() {
+        const pos = eGeo.attributes.position.array;
+        for (let i = 0; i < eCount; i++) {
+            const ix = i*3, iy = i*3+1, iz = i*3+2;
+            pos[ix] = eInit[ix] + (eTarget[ix] - eInit[ix]) * animState.progress;
+            pos[iy] = eInit[iy] + (eTarget[iy] - eInit[iy]) * animState.progress;
+            pos[iz] = eInit[iz] + (eTarget[iz] - eInit[iz]) * animState.progress;
+            if (animState.progress > 0.01) {
+                const a = animState.progress * 0.5, x = pos[ix], z = pos[iz];
+                pos[ix] = x * Math.cos(a) - z * Math.sin(a);
+                pos[iz] = x * Math.sin(a) + z * Math.cos(a);
+            }
+        }
+        eGeo.attributes.position.needsUpdate = true;
+    }
+
+    document.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX - halfW; mouseY = e.clientY - halfH;
+        const coords = document.getElementById('coords');
+        if (coords) coords.innerText = `${(e.clientX / window.innerWidth).toFixed(2)}.${(e.clientY / window.innerHeight).toFixed(2)}.00`;
+        pointer.x = (e.clientX / window.innerWidth) * 2 - 1;
+        pointer.y = -(e.clientY / window.innerHeight) * 2 + 1;
+        raycaster.setFromCamera(pointer, camera);
+        const hits = raycaster.intersectObject(sphereCore);
+        if (hits.length > 0 && !isHovered) {
+                document.body.style.cursor = 'pointer';
+            gsap.to(sphereWire.scale, { x:1.08, y:1.08, z:1.08, duration:0.5 });
+            gsap.to(matCore, { emissiveIntensity: 0.15, duration: 0.3 });
+                isHovered = true;
+        } else if (hits.length === 0 && isHovered) {
+                document.body.style.cursor = 'default';
+            gsap.to(sphereWire.scale, { x:1, y:1, z:1, duration:0.5 });
+            gsap.to(matCore, { emissiveIntensity: 0.08, duration: 0.3 });
+                isHovered = false;
+        }
+    });
+
+    window.addEventListener('click', () => {
+        if (!isHovered || isAnimating) return;
+            isAnimating = true;
+        const sl = document.getElementById('status-light'), st = document.getElementById('status-text');
+        sl.classList.remove('bg-green-500'); sl.classList.add('bg-white');
+        st.innerText = "Status: Re-indexing"; st.classList.remove('text-green-500/80'); st.classList.add('text-white');
+
+        gsap.to([matCore, matWire], { opacity: 0, duration: 0.2, onComplete: () => { sphereCore.visible = false; sphereWire.visible = false; } });
+        eSys.visible = true;
+        gsap.to(eMat, { opacity: 1, duration: 0.1 });
+        gsap.to(animState, { progress: 1, duration: 1.5, ease: "power4.out", onUpdate: updateExplosion, onComplete: () => {
+            gsap.to(animState, { progress: 0, duration: 2, delay: 0.2, ease: "elastic.out(1,0.5)", onUpdate: updateExplosion, onComplete: () => {
+                sphereCore.visible = true; sphereWire.visible = true;
+                gsap.to(eMat, { opacity: 0, duration: 0.3 });
+                gsap.to([matCore, matWire], { opacity: 1, duration: 0.5 });
+                matWire.opacity = 0.12; eSys.visible = false; isAnimating = false;
+                sl.classList.add('bg-green-500'); sl.classList.remove('bg-white');
+                st.innerText = "Platform Status: Operational"; st.classList.add('text-green-500/80'); st.classList.remove('text-white');
+            }});
+        }});
+    });
+
+    // Animate
+    const clock = new THREE.Clock();
+    function animate() {
+        const t = clock.getElapsedTime();
+        targetX = mouseX * 0.001; targetY = mouseY * 0.001;
+        if (!isAnimating || animState.progress < 0.5) { mainGroup.rotation.y += 0.002; mainGroup.rotation.x += 0.001; }
+        mainGroup.rotation.y += 0.05 * (targetX - mainGroup.rotation.y);
+        mainGroup.rotation.x += 0.05 * (targetY - mainGroup.rotation.x);
+        if (!isAnimating) { const s = 1 + Math.sin(t * 2) * 0.015; sphereWire.scale.set(s, s, s); }
+        l1.position.x = Math.sin(t * 0.7) * 4; l1.position.y = Math.cos(t * 0.5) * 4;
+        l2.position.x = Math.cos(t * 0.3) * 5; l2.position.z = Math.sin(t * 0.5) * 5;
+        pMesh.rotation.y = t * 0.05; pMesh.rotation.x = -mouseY * 0.0002;
+        composer.render();
+        requestAnimationFrame(animate);
+    }
+
+    window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        composer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    window.onload = () => {
+        animate();
+        const tl = gsap.timeline();
+        tl.to("#loader", { opacity: 0, duration: 0.8, onComplete: () => { document.getElementById("loader").style.display = "none"; } })
+          .from(sphereCore.scale, { x:0, y:0, z:0, duration:1.5, ease:"elastic.out(1,0.7)" }, "-=0.5")
+          .from(sphereWire.scale, { x:0, y:0, z:0, duration:1.5, ease:"elastic.out(1,0.7)" }, "<")
+          .to(".nav-item", { opacity:1, y:0, duration:1, stagger:0.1, ease:"power3.out" }, "-=1")
+          .from(".hero-reveal", { y:80, opacity:0, duration:1.2, stagger:0.1, ease:"power4.out" }, "-=0.8");
+    };
+    </script>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <!-- GLITCH EFFECT (subtle)                             -->
+    <!-- ══════════════════════════════════════════════════ -->
+    <script>
+    (function() {
+        const t = document.querySelectorAll('.glitch-target');
+        let lX = 0, lY = 0, lT = 0;
+        document.addEventListener('mousemove', e => {
+            const now = Date.now(), dt = now - lT;
+            if (dt > 40) {
+                const dx = e.clientX - lX, dy = e.clientY - lY, s = Math.sqrt(dx*dx + dy*dy) / dt;
+                if (s > 3) t.forEach(el => { if (!el.classList.contains('glitch-active')) { el.classList.add('glitch-active'); setTimeout(() => el.classList.remove('glitch-active'), 200); } });
+                lX = e.clientX; lY = e.clientY; lT = now;
+            }
+        });
+    })();
+    </script>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <!-- SCROLL REVEAL                                      -->
+    <!-- ══════════════════════════════════════════════════ -->
+    <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, i) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.classList.remove("reveal-hidden");
+                        entry.target.classList.add("reveal");
+                    }, i * 80);
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll(".reveal-hidden").forEach(el => observer.observe(el));
+    });
+    </script>
+
+</body>
+</html>

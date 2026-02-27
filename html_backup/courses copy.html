@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Courses & Education — Logic Packs</title>
+    <meta name="description" content="Learn full-stack development, Python backend, React frontend, and browser automation with Selenium & Puppeteer. Free courses on Logic Packs.">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+    tailwind.config = {
+        theme: { extend: { fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] } } }
+    }
+    </script>
+
+    <style>
+    body { background-color: #0a0a0a; color: #ededed; font-family: 'Inter', system-ui, sans-serif; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #0a0a0a; }
+    ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+    @keyframes fadeInUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+    .reveal { animation: fadeInUp 0.5s cubic-bezier(0.2,0.8,0.2,1) both; }
+    .reveal-hidden { opacity: 0; }
+    .module-item { transition: all 0.2s; }
+    .module-item:hover { background: rgba(255,255,255,0.015); }
+    .tab-btn.active { color: #fff; border-color: #22c55e; }
+    </style>
+</head>
+
+<body class="selection:bg-green-500/30 selection:text-white overflow-x-hidden">
+
+    <!-- ═══ HEADER ═══ -->
+    <header class="fixed top-0 left-0 w-full z-50 bg-[#0a0a0a]/80 backdrop-blur-xl border-b border-white/[0.06] h-14">
+        <div class="flex w-full h-full max-w-[1440px] mx-auto px-6 md:px-8 items-center justify-between">
+            <a href="index.html" class="flex items-center gap-2.5 group">
+                <div class="w-7 h-7 rounded-md border border-white/10 flex items-center justify-center bg-white/[0.03] group-hover:border-green-500/40 transition-colors">
+                    <iconify-icon icon="solar:widget-5-linear" class="text-green-500 text-sm"></iconify-icon>
+                </div>
+                <span class="text-sm font-semibold tracking-tight text-white">Logic Packs</span>
+            </a>
+            <nav class="hidden md:flex items-center gap-8">
+                <a href="index.html#modes" class="text-[11px] hover:text-white transition-colors uppercase font-medium text-neutral-400 tracking-[0.15em]">Platform</a>
+                <a href="store.html" class="text-[11px] hover:text-white transition-colors uppercase font-medium text-neutral-400 tracking-[0.15em]">Marketplace</a>
+                <a href="shop.html" class="text-[11px] hover:text-white transition-colors uppercase font-medium text-neutral-400 tracking-[0.15em]">Shop</a>
+                <a href="ventures.html" class="text-[11px] hover:text-white transition-colors uppercase font-medium text-neutral-400 tracking-[0.15em]">Ventures</a>
+                <a href="courses.html" class="text-[11px] uppercase font-medium text-white tracking-[0.15em]">Learn</a>
+                <a href="ambassadors.html" class="text-[11px] hover:text-white transition-colors uppercase font-medium text-neutral-400 tracking-[0.15em]">Ambassadors</a>
+            </nav>
+            <a href="#" class="hidden md:flex bg-white text-black text-xs font-semibold tracking-wide uppercase rounded-md px-5 py-2 hover:bg-neutral-200 transition-colors">Get Started</a>
+            <button class="md:hidden text-white" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
+                <iconify-icon icon="solar:hamburger-menu-linear" width="22"></iconify-icon>
+            </button>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden absolute top-full left-0 w-full bg-[#0a0a0a]/95 backdrop-blur-xl border-b border-white/[0.06] p-4 flex flex-col gap-2">
+            <a href="index.html#modes" class="px-4 py-2 text-sm text-neutral-400 hover:text-white hover:bg-white/5 rounded-md">Platform</a>
+            <a href="store.html" class="px-4 py-2 text-sm text-neutral-400 hover:text-white hover:bg-white/5 rounded-md">Marketplace</a>
+            <a href="shop.html" class="px-4 py-2 text-sm text-neutral-400 hover:text-white hover:bg-white/5 rounded-md">Shop</a>
+            <a href="ventures.html" class="px-4 py-2 text-sm text-neutral-400 hover:text-white hover:bg-white/5 rounded-md">Ventures</a>
+            <a href="courses.html" class="px-4 py-2 text-sm text-white bg-white/5 rounded-md">Learn</a>
+            <a href="ambassadors.html" class="px-4 py-2 text-sm text-neutral-400 hover:text-white hover:bg-white/5 rounded-md">Ambassadors</a>
+        </div>
+    </header>
+
+    <!-- ═══ HERO ═══ -->
+    <section class="pt-14 relative overflow-hidden">
+        <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <div class="w-[50vw] h-[50vw] bg-green-500/[0.04] blur-[150px] rounded-full translate-y-[-10%]"></div>
+        </div>
+        <div class="relative z-10 border-b border-white/[0.06]">
+            <div class="max-w-[1440px] mx-auto px-6 md:px-8 py-24 md:py-36 text-center">
+                <div class="flex items-center justify-center gap-2 mb-6">
+                    <iconify-icon icon="solar:square-academic-cap-linear" class="text-green-500 text-lg"></iconify-icon>
+                    <span class="text-xs uppercase tracking-[0.2em] text-green-500/80 font-mono">Logic Packs Academy</span>
+                </div>
+                <h1 class="text-5xl md:text-7xl lg:text-8xl font-semibold text-white tracking-tight leading-[0.95] mb-6 reveal-hidden">
+                    Learn to Build<br><span class="text-neutral-500 italic">Real Software</span>
+                </h1>
+                <p class="text-neutral-500 text-base md:text-lg leading-relaxed max-w-2xl mx-auto mb-10 reveal-hidden">
+                    From Python backends to React frontends to browser automation — hands-on courses that teach you to build production apps on the Logic Packs platform.
+                </p>
+                <div class="flex flex-wrap gap-3 justify-center reveal-hidden">
+                    <a href="#courses" class="inline-flex items-center gap-2 bg-white text-black font-semibold rounded-md px-8 py-3 text-sm hover:bg-neutral-200 transition-colors">
+                        Browse Courses
+                        <iconify-icon icon="solar:arrow-right-linear" width="16"></iconify-icon>
+                    </a>
+                    <a href="#paths" class="inline-flex items-center gap-2 border border-white/10 text-neutral-300 font-medium rounded-md px-8 py-3 text-sm hover:bg-white/5 transition-colors">
+                        Learning Paths
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ STATS ═══ -->
+    <section class="border-b border-white/[0.06]">
+        <div class="max-w-[1440px] mx-auto grid grid-cols-2 md:grid-cols-4 divide-x divide-y md:divide-y-0 divide-white/[0.06]">
+            <div class="p-6 md:p-8 text-center hover:bg-white/[0.015] transition-colors">
+                <div class="text-3xl md:text-4xl font-semibold text-white tracking-tight mb-1">12</div>
+                <p class="text-neutral-600 text-xs font-mono uppercase tracking-wider">Courses</p>
+            </div>
+            <div class="p-6 md:p-8 text-center hover:bg-white/[0.015] transition-colors">
+                <div class="text-3xl md:text-4xl font-semibold text-white tracking-tight mb-1">180+</div>
+                <p class="text-neutral-600 text-xs font-mono uppercase tracking-wider">Lessons</p>
+            </div>
+            <div class="p-6 md:p-8 text-center hover:bg-white/[0.015] transition-colors">
+                <div class="text-3xl md:text-4xl font-semibold text-green-500 tracking-tight mb-1">Free</div>
+                <p class="text-neutral-600 text-xs font-mono uppercase tracking-wider">For All Users</p>
+            </div>
+            <div class="p-6 md:p-8 text-center hover:bg-white/[0.015] transition-colors">
+                <div class="text-3xl md:text-4xl font-semibold text-white tracking-tight mb-1">4</div>
+                <p class="text-neutral-600 text-xs font-mono uppercase tracking-wider">Learning Paths</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ LEARNING PATHS OVERVIEW ═══ -->
+    <section id="paths" class="border-b border-white/[0.06]">
+        <div class="grid grid-cols-1 md:grid-cols-4 md:divide-x divide-white/[0.06]">
+            <div class="md:col-span-1 p-8 md:p-10 flex flex-col justify-between min-h-[280px]">
+                <div>
+                    <span class="font-mono text-neutral-600 text-[11px] block mb-3">/// Paths</span>
+                    <h2 class="text-3xl font-semibold text-white tracking-tight mb-4 reveal-hidden">Learning<br>Paths</h2>
+                    <p class="text-neutral-500 text-sm leading-relaxed reveal-hidden">Structured curricula that take you from zero to production. Each path leads to a certificate and a real deployed app.</p>
+                </div>
+            </div>
+
+            <div class="md:col-span-3 grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y md:divide-x divide-white/[0.06]">
+                <!-- Full Stack -->
+                <a href="#fullstack" class="p-8 hover:bg-white/[0.015] transition-colors group reveal-hidden block">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 rounded-lg bg-green-500/10 border border-green-500/20 flex items-center justify-center">
+                            <iconify-icon icon="solar:layers-linear" class="text-green-500 text-lg"></iconify-icon>
+                        </div>
+                        <span class="px-2 py-0.5 rounded text-[9px] font-semibold bg-green-500/15 text-green-400 border border-green-500/20 uppercase tracking-wider">Recommended</span>
+                    </div>
+                    <h3 class="text-white text-lg font-medium tracking-tight mb-2 group-hover:text-green-50 transition-colors">Full Stack Development</h3>
+                    <p class="text-neutral-500 text-sm leading-relaxed mb-3">Learn the complete stack — Python backend + React frontend + deployment. Build and ship a production app from scratch.</p>
+                    <div class="flex gap-3 text-[10px] font-mono text-neutral-600">
+                        <span>12 weeks</span><span>·</span><span>48 lessons</span><span>·</span><span>3 projects</span>
+                    </div>
+                </a>
+
+                <!-- Python Backend -->
+                <a href="#python" class="p-8 hover:bg-white/[0.015] transition-colors group reveal-hidden block">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center">
+                            <iconify-icon icon="simple-icons:python" class="text-blue-400 text-lg"></iconify-icon>
+                        </div>
+                        <span class="px-2 py-0.5 rounded text-[9px] font-semibold bg-blue-500/15 text-blue-400 border border-blue-500/20 uppercase tracking-wider">Backend</span>
+                    </div>
+                    <h3 class="text-white text-lg font-medium tracking-tight mb-2 group-hover:text-green-50 transition-colors">Python Backend</h3>
+                    <p class="text-neutral-500 text-sm leading-relaxed mb-3">Flask & FastAPI from fundamentals to production APIs. Authentication, databases, ORM, middleware, and deployment.</p>
+                    <div class="flex gap-3 text-[10px] font-mono text-neutral-600">
+                        <span>8 weeks</span><span>·</span><span>36 lessons</span><span>·</span><span>2 projects</span>
+                    </div>
+                </a>
+
+                <!-- React Frontend -->
+                <a href="#react" class="p-8 hover:bg-white/[0.015] transition-colors group reveal-hidden block">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center">
+                            <iconify-icon icon="simple-icons:react" class="text-cyan-400 text-lg"></iconify-icon>
+                        </div>
+                        <span class="px-2 py-0.5 rounded text-[9px] font-semibold bg-cyan-500/15 text-cyan-400 border border-cyan-500/20 uppercase tracking-wider">Frontend</span>
+                    </div>
+                    <h3 class="text-white text-lg font-medium tracking-tight mb-2 group-hover:text-green-50 transition-colors">React Frontend</h3>
+                    <p class="text-neutral-500 text-sm leading-relaxed mb-3">Modern React — components, hooks, state management, routing, and building beautiful UIs with Tailwind CSS.</p>
+                    <div class="flex gap-3 text-[10px] font-mono text-neutral-600">
+                        <span>8 weeks</span><span>·</span><span>40 lessons</span><span>·</span><span>2 projects</span>
+                    </div>
+                </a>
+
+                <!-- Automation -->
+                <a href="#automation" class="p-8 hover:bg-white/[0.015] transition-colors group reveal-hidden block">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 rounded-lg bg-purple-500/10 border border-purple-500/20 flex items-center justify-center">
+                            <iconify-icon icon="solar:robot-linear" class="text-purple-400 text-lg"></iconify-icon>
+                        </div>
+                        <span class="px-2 py-0.5 rounded text-[9px] font-semibold bg-purple-500/15 text-purple-400 border border-purple-500/20 uppercase tracking-wider">Automation</span>
+                    </div>
+                    <h3 class="text-white text-lg font-medium tracking-tight mb-2 group-hover:text-green-50 transition-colors">Browser Automation</h3>
+                    <p class="text-neutral-500 text-sm leading-relaxed mb-3">Selenium & Puppeteer — web scraping, testing, bot building, headless browsers, and deploying on managed infra.</p>
+                    <div class="flex gap-3 text-[10px] font-mono text-neutral-600">
+                        <span>6 weeks</span><span>·</span><span>28 lessons</span><span>·</span><span>3 projects</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ COURSE 1: FULL STACK ═══ -->
+    <section id="fullstack" class="border-b border-white/[0.06]">
+        <div class="max-w-[1440px] mx-auto px-6 md:px-8 py-16 md:py-20">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Course Info -->
+                <div class="lg:col-span-1">
+                    <div class="sticky top-20">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-12 h-12 rounded-xl bg-green-500/10 border border-green-500/20 flex items-center justify-center">
+                                <iconify-icon icon="solar:layers-linear" class="text-green-500 text-xl"></iconify-icon>
+                            </div>
+                            <span class="px-2 py-0.5 rounded text-[9px] font-semibold bg-green-500/15 text-green-400 border border-green-500/20 uppercase">Recommended</span>
+                        </div>
+                        <h2 class="text-3xl font-semibold text-white tracking-tight mb-3 reveal-hidden">Full Stack Development</h2>
+                        <p class="text-neutral-500 text-sm leading-relaxed mb-6 reveal-hidden">The complete guide to building production applications — from database to deployed frontend. Learn Python (FastAPI), React, and how they connect.</p>
+
+                        <div class="space-y-3 mb-8">
+                            <div class="flex items-center gap-3 text-xs text-neutral-500"><iconify-icon icon="solar:clock-circle-linear" class="text-green-500/60" width="14"></iconify-icon> 12 weeks · Self-paced</div>
+                            <div class="flex items-center gap-3 text-xs text-neutral-500"><iconify-icon icon="solar:document-text-linear" class="text-green-500/60" width="14"></iconify-icon> 48 lessons · 3 projects</div>
+                            <div class="flex items-center gap-3 text-xs text-neutral-500"><iconify-icon icon="solar:user-linear" class="text-green-500/60" width="14"></iconify-icon> Beginner to Intermediate</div>
+                            <div class="flex items-center gap-3 text-xs text-neutral-500"><iconify-icon icon="solar:diploma-verified-linear" class="text-green-500/60" width="14"></iconify-icon> Certificate on completion</div>
+                        </div>
+
+                        <h4 class="text-xs text-neutral-400 uppercase tracking-widest font-semibold mb-3">What is Full Stack?</h4>
+                        <p class="text-neutral-500 text-xs leading-relaxed mb-6">"Full stack" means you build <span class="text-white">both</span> sides of an application — the <span class="text-blue-400">backend</span> (server, APIs, database) and the <span class="text-cyan-400">frontend</span> (what users see and interact with). A full-stack developer can take an idea from concept to a complete, deployed app.</p>
+
+                        <a href="#" class="block text-center bg-white text-black font-semibold rounded-md px-6 py-3 text-sm hover:bg-neutral-200 transition-colors">Start Course — Free</a>
+                    </div>
+                </div>
+
+                <!-- Curriculum -->
+                <div class="lg:col-span-2">
+                    <span class="font-mono text-neutral-600 text-[11px] block mb-6">/// Curriculum</span>
+
+                    <!-- Module 1 -->
+                    <div class="border border-white/[0.06] rounded-xl mb-4 overflow-hidden reveal-hidden">
+                        <div class="p-5 bg-white/[0.01] flex items-center gap-3 border-b border-white/[0.04]">
+                            <span class="text-green-500 font-mono text-xs font-semibold w-8">M1</span>
+                            <h4 class="text-white text-sm font-medium flex-1">Foundations — How the Web Works</h4>
+                            <span class="text-neutral-600 text-[10px] font-mono">6 lessons</span>
+                        </div>
+                        <div class="divide-y divide-white/[0.04]">
+                            <div class="module-item px-5 py-3 flex items-center gap-3"><iconify-icon icon="solar:play-circle-linear" class="text-neutral-700" width="14"></iconify-icon><span class="text-neutral-400 text-xs">HTTP, APIs, and Client-Server Architecture</span></div>
+                            <div class="module-item px-5 py-3 flex items-center gap-3"><iconify-icon icon="solar:play-circle-linear" class="text-neutral-700" width="14"></iconify-icon><span class="text-neutral-400 text-xs">What is a Backend? What is a Frontend?</span></div>
+                            <div class="module-item px-5 py-3 flex items-center gap-3"><iconify-icon icon="solar:play-circle-linear" class="text-neutral-700" width="14"></iconify-icon><span class="text-neutral-400 text-xs">Databases: SQL vs NoSQL</span></div>
+                            <div class="module-item px-5 py-3 flex items-center gap-3"><iconify-icon icon="solar:play-circle-linear" class="text-neutral-700" width="14"></iconify-icon><span class="text-neutral-400 text-xs">REST vs GraphQL</span></div>
+                            <div class="module-item px-5 py-3 flex items-center gap-3"><iconify-icon icon="solar:play-circle-linear" class="text-neutral-700" width="14"></iconify-icon><span class="text-neutral-400 text-xs">Setting Up Your Logic Packs Workspace</span></div>
+                            <div class="module-item px-5 py-3 flex items-center gap-3"><iconify-icon icon="solar:play-circle-linear" class="text-neutral-700" width="14"></iconify-icon><span class="text-neutral-400 text-xs">Your First API Call</span></div>
+                        </div>
+                    </div>
+
+                    <!-- Module 2 -->
+                    <div class="border border-white/[0.06] rounded-xl mb-4 overflow-hidden reveal-hidden">
+                        <div class="p-5 bg-white/[0.01] flex items-center gap-3 border-b border-white/[0.04]">
+                            <span class="text-green-500 font-mono text-xs font-semibold w-8">M2</span>
+                            <h4 class="text-white text-sm font-medium flex-1">Python Backend with FastAPI</h4>
+                            <span class="text-neutral-600 text-[10px] font-mono">12 lessons</span>
+                        </div>
+                        <div class="divide-y divide-white/[0.04]">
+                            <div class="module-item px-5 py-3 flex items-center gap-3"><iconify-icon icon="solar:play-circle-linear" class="text-neutral-700" width="14"></iconify-icon><span class="text-neutral-400 text-xs">Python Essentials: Types, Functions, Classes</span></div>
+                            <div class="module-item px-5 py-3 flex items-center gap-3"><iconify-icon icon="solar:play-circle-linear" class="text-neutral-700" width="14"></iconify-icon><span class="text-neutral-400 text-xs">FastAPI Setup & Your First Endpoint</span></div>
+                            <div class="module-item px-5 py-3 flex items-center gap-3"><iconify-icon icon="solar:play-circle-linear" class="text-neutral-700" width="14"></iconify-icon><span class="text-neutral-400 text-xs">Request Validation with Pydantic</span></div>
+                            <div class="module-item px-5 py-3 flex items-center gap-3"><iconify-icon icon="solar:play-circle-linear" class="text-neutral-700" width="14"></iconify-icon><span class="text-neutral-400 text-xs">Database Integration (SQLAlchemy + PostgreSQL)</span></div>
+                            <div class="module-item px-5 py-3 flex items-center gap-3"><iconify-icon icon="solar:play-circle-linear" class="text-neutral-700" width="14"></iconify-icon><span class="text-neutral-400 text-xs">Authentication: JWT Tokens & OAuth</span></div>
+                            <div class="module-item px-5 py-3 flex items-center gap-3 text-neutral-700 text-[11px]"><iconify-icon icon="solar:alt-arrow-down-linear" width="12"></iconify-icon>+ 7 more lessons</div>
+                        </div>
+                    </div>
+
+                    <!-- Module 3 -->
+                    <div class="border border-white/[0.06] rounded-xl mb-4 overflow-hidden reveal-hidden">
+                        <div class="p-5 bg-white/[0.01] flex items-center gap-3 border-b border-white/[0.04]">
+                            <span class="text-green-500 font-mono text-xs font-semibold w-8">M3</span>
+                            <h4 class="text-white text-sm font-medium flex-1">React Frontend</h4>
+                            <span class="text-neutral-600 text-[10px] font-mono">14 lessons</span>
+                        </div>
+                        <div class="divide-y divide-white/[0.04]">
+                            <div class="module-item px-5 py-3 flex items-center gap-3"><iconify-icon icon="solar:play-circle-linear" class="text-neutral-700" width="14"></iconify-icon><span class="text-neutral-400 text-xs">React Fundamentals: JSX, Components, Props</span></div>
+                            <div class="module-item px-5 py-3 flex items-center gap-3"><iconify-icon icon="solar:play-circle-linear" class="text-neutral-700" width="14"></iconify-icon><span class="text-neutral-400 text-xs">State & Hooks: useState, useEffect, useContext</span></div>
+                            <div class="module-item px-5 py-3 flex items-center gap-3"><iconify-icon icon="solar:play-circle-linear" class="text-neutral-700" width="14"></iconify-icon><span class="text-neutral-400 text-xs">Routing with React Router</span></div>
+                            <div class="module-item px-5 py-3 flex items-center gap-3"><iconify-icon icon="solar:play-circle-linear" class="text-neutral-700" width="14"></iconify-icon><span class="text-neutral-400 text-xs">Connecting to Your FastAPI Backend</span></div>
+                            <div class="module-item px-5 py-3 flex items-center gap-3"><iconify-icon icon="solar:play-circle-linear" class="text-neutral-700" width="14"></iconify-icon><span class="text-neutral-400 text-xs">Styling with Tailwind CSS</span></div>
+                            <div class="module-item px-5 py-3 flex items-center gap-3 text-neutral-700 text-[11px]"><iconify-icon icon="solar:alt-arrow-down-linear" width="12"></iconify-icon>+ 9 more lessons</div>
+                        </div>
+                    </div>
+
+                    <!-- Module 4 -->
+                    <div class="border border-white/[0.06] rounded-xl mb-4 overflow-hidden reveal-hidden">
+                        <div class="p-5 bg-white/[0.01] flex items-center gap-3 border-b border-white/[0.04]">
+                            <span class="text-green-500 font-mono text-xs font-semibold w-8">M4</span>
+                            <h4 class="text-white text-sm font-medium flex-1">Connecting It All — Full Stack App</h4>
+                            <span class="text-neutral-600 text-[10px] font-mono">10 lessons</span>
+                        </div>
+                        <div class="divide-y divide-white/[0.04]">
+                            <div class="module-item px-5 py-3 flex items-center gap-3"><iconify-icon icon="solar:play-circle-linear" class="text-neutral-700" width="14"></iconify-icon><span class="text-neutral-400 text-xs">Project Architecture: Frontend ↔ Backend</span></div>
+                            <div class="module-item px-5 py-3 flex items-center gap-3"><iconify-icon icon="solar:play-circle-linear" class="text-neutral-700" width="14"></iconify-icon><span class="text-neutral-400 text-xs">Installing Logic Packs: Auth, Payments, Dashboard</span></div>
+                            <div class="module-item px-5 py-3 flex items-center gap-3"><iconify-icon icon="solar:play-circle-linear" class="text-neutral-700" width="14"></iconify-icon><span class="text-neutral-400 text-xs">Testing, Self-Healing, and Telemetry</span></div>
+                            <div class="module-item px-5 py-3 flex items-center gap-3"><iconify-icon icon="solar:play-circle-linear" class="text-neutral-700" width="14"></iconify-icon><span class="text-neutral-400 text-xs">Deployment to Production</span></div>
+                            <div class="module-item px-5 py-3 flex items-center gap-3 text-neutral-700 text-[11px]"><iconify-icon icon="solar:alt-arrow-down-linear" width="12"></iconify-icon>+ 6 more lessons</div>
+                        </div>
+                    </div>
+
+                    <!-- Project Card -->
+                    <div class="border border-green-500/20 rounded-xl p-6 bg-green-500/[0.02] reveal-hidden">
+                        <div class="flex items-center gap-2 mb-3">
+                            <iconify-icon icon="solar:star-bold" class="text-green-500"></iconify-icon>
+                            <span class="text-green-400 text-xs font-semibold uppercase tracking-wider">Final Project</span>
+                        </div>
+                        <h4 class="text-white text-sm font-medium mb-2">Build & Deploy a SaaS App</h4>
+                        <p class="text-neutral-500 text-xs leading-relaxed">Build a complete SaaS application using Logic Packs — Python backend, React frontend, Auth + Payments packs. Deploy, enable telemetry, and optionally apply to Ventures for funding.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ COURSE 2: PYTHON BACKEND ═══ -->
+    <section id="python" class="border-b border-white/[0.06]">
+        <div class="max-w-[1440px] mx-auto px-6 md:px-8 py-16 md:py-20">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="lg:col-span-1">
+                    <div class="sticky top-20">
+                        <div class="w-12 h-12 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center mb-4">
+                            <iconify-icon icon="simple-icons:python" class="text-blue-400 text-xl"></iconify-icon>
+                        </div>
+                        <h2 class="text-3xl font-semibold text-white tracking-tight mb-3 reveal-hidden">Python Backend</h2>
+                        <p class="text-neutral-500 text-sm leading-relaxed mb-6 reveal-hidden">Master Python for web development. Learn Flask & FastAPI, build REST APIs, connect databases, handle authentication, and deploy to production.</p>
+
+                        <h4 class="text-xs text-neutral-400 uppercase tracking-widest font-semibold mb-3">What is a Backend?</h4>
+                        <p class="text-neutral-500 text-xs leading-relaxed mb-6">The <span class="text-blue-400">backend</span> is the server-side of an application. It handles data storage, business logic, authentication, and API endpoints. Python (with Flask or FastAPI) is one of the most popular choices because of its readability and powerful ecosystem.</p>
+
+                        <div class="space-y-3 mb-8">
+                            <div class="flex items-center gap-3 text-xs text-neutral-500"><iconify-icon icon="solar:clock-circle-linear" class="text-blue-400/60" width="14"></iconify-icon> 8 weeks · Self-paced</div>
+                            <div class="flex items-center gap-3 text-xs text-neutral-500"><iconify-icon icon="solar:document-text-linear" class="text-blue-400/60" width="14"></iconify-icon> 36 lessons · 2 projects</div>
+                            <div class="flex items-center gap-3 text-xs text-neutral-500"><iconify-icon icon="solar:diploma-verified-linear" class="text-blue-400/60" width="14"></iconify-icon> Certificate on completion</div>
+                        </div>
+
+                        <div class="mb-6">
+                            <h4 class="text-xs text-neutral-400 uppercase tracking-widest font-semibold mb-3">Tech Stack</h4>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="px-2.5 py-1 rounded-md bg-white/[0.03] border border-white/[0.06] text-neutral-400 text-[10px] font-mono">Python 3.12</span>
+                                <span class="px-2.5 py-1 rounded-md bg-white/[0.03] border border-white/[0.06] text-neutral-400 text-[10px] font-mono">FastAPI</span>
+                                <span class="px-2.5 py-1 rounded-md bg-white/[0.03] border border-white/[0.06] text-neutral-400 text-[10px] font-mono">Flask</span>
+                                <span class="px-2.5 py-1 rounded-md bg-white/[0.03] border border-white/[0.06] text-neutral-400 text-[10px] font-mono">SQLAlchemy</span>
+                                <span class="px-2.5 py-1 rounded-md bg-white/[0.03] border border-white/[0.06] text-neutral-400 text-[10px] font-mono">PostgreSQL</span>
+                                <span class="px-2.5 py-1 rounded-md bg-white/[0.03] border border-white/[0.06] text-neutral-400 text-[10px] font-mono">JWT / OAuth</span>
+                                <span class="px-2.5 py-1 rounded-md bg-white/[0.03] border border-white/[0.06] text-neutral-400 text-[10px] font-mono">Pydantic</span>
+                            </div>
+                        </div>
+
+                        <a href="#" class="block text-center bg-blue-500 text-white font-semibold rounded-md px-6 py-3 text-sm hover:bg-blue-400 transition-colors">Start Course — Free</a>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-2">
+                    <span class="font-mono text-neutral-600 text-[11px] block mb-6">/// Curriculum</span>
+                    <div class="border border-white/[0.06] rounded-xl mb-4 overflow-hidden reveal-hidden"><div class="p-5 bg-white/[0.01] flex items-center gap-3 border-b border-white/[0.04]"><span class="text-blue-400 font-mono text-xs font-semibold w-8">M1</span><h4 class="text-white text-sm font-medium flex-1">Python Fundamentals</h4><span class="text-neutral-600 text-[10px] font-mono">8 lessons</span></div><div class="divide-y divide-white/[0.04]"><div class="module-item px-5 py-3 flex items-center gap-3"><iconify-icon icon="solar:play-circle-linear" class="text-neutral-700" width="14"></iconify-icon><span class="text-neutral-400 text-xs">Variables, Types, Strings & Numbers</span></div><div class="module-item px-5 py-3 flex items-center gap-3"><iconify-icon icon="solar:play-circle-linear" class="text-neutral-700" width="14"></iconify-icon><span class="text-neutral-400 text-xs">Control Flow: if/else, loops, comprehensions</span></div><div class="module-item px-5 py-3 flex items-center gap-3"><iconify-icon icon="solar:play-circle-linear" class="text-neutral-700" width="14"></iconify-icon><span class="text-neutral-400 text-xs">Functions, Decorators & Generators</span></div><div class="module-item px-5 py-3 flex items-center gap-3"><iconify-icon icon="solar:play-circle-linear" class="text-neutral-700" width="14"></iconify-icon><span class="text-neutral-400 text-xs">OOP: Classes, Inheritance, Data Classes</span></div><div class="module-item px-5 py-3 flex items-center gap-3 text-neutral-700 text-[11px]"><iconify-icon icon="solar:alt-arrow-down-linear" width="12"></iconify-icon>+ 4 more lessons</div></div></div>
+                    <div class="border border-white/[0.06] rounded-xl mb-4 overflow-hidden reveal-hidden"><div class="p-5 bg-white/[0.01] flex items-center gap-3 border-b border-white/[0.04]"><span class="text-blue-400 font-mono text-xs font-semibold w-8">M2</span><h4 class="text-white text-sm font-medium flex-1">Flask — Your First Web Framework</h4><span class="text-neutral-600 text-[10px] font-mono">8 lessons</span></div><div class="divide-y divide-white/[0.04]"><div class="module-item px-5 py-3 flex items-center gap-3"><iconify-icon icon="solar:play-circle-linear" class="text-neutral-700" width="14"></iconify-icon><span class="text-neutral-400 text-xs">Flask Setup, Routes & Templates</span></div><div class="module-item px-5 py-3 flex items-center gap-3"><iconify-icon icon="solar:play-circle-linear" class="text-neutral-700" width="14"></iconify-icon><span class="text-neutral-400 text-xs">Request/Response Cycle</span></div><div class="module-item px-5 py-3 flex items-center gap-3"><iconify-icon icon="solar:play-circle-linear" class="text-neutral-700" width="14"></iconify-icon><span class="text-neutral-400 text-xs">Database with SQLAlchemy</span></div><div class="module-item px-5 py-3 flex items-center gap-3 text-neutral-700 text-[11px]"><iconify-icon icon="solar:alt-arrow-down-linear" width="12"></iconify-icon>+ 5 more lessons</div></div></div>
+                    <div class="border border-white/[0.06] rounded-xl mb-4 overflow-hidden reveal-hidden"><div class="p-5 bg-white/[0.01] flex items-center gap-3 border-b border-white/[0.04]"><span class="text-blue-400 font-mono text-xs font-semibold w-8">M3</span><h4 class="text-white text-sm font-medium flex-1">FastAPI — Production-Grade APIs</h4><span class="text-neutral-600 text-[10px] font-mono">12 lessons</span></div><div class="divide-y divide-white/[0.04]"><div class="module-item px-5 py-3 flex items-center gap-3"><iconify-icon icon="solar:play-circle-linear" class="text-neutral-700" width="14"></iconify-icon><span class="text-neutral-400 text-xs">FastAPI vs Flask — When to Use What</span></div><div class="module-item px-5 py-3 flex items-center gap-3"><iconify-icon icon="solar:play-circle-linear" class="text-neutral-700" width="14"></iconify-icon><span class="text-neutral-400 text-xs">Async/Await & Concurrency</span></div><div class="module-item px-5 py-3 flex items-center gap-3"><iconify-icon icon="solar:play-circle-linear" class="text-neutral-700" width="14"></iconify-icon><span class="text-neutral-400 text-xs">Pydantic Models & Validation</span></div><div class="module-item px-5 py-3 flex items-center gap-3"><iconify-icon icon="solar:play-circle-linear" class="text-neutral-700" width="14"></iconify-icon><span class="text-neutral-400 text-xs">JWT Auth & Middleware</span></div><div class="module-item px-5 py-3 flex items-center gap-3 text-neutral-700 text-[11px]"><iconify-icon icon="solar:alt-arrow-down-linear" width="12"></iconify-icon>+ 8 more lessons</div></div></div>
+                    <div class="border border-white/[0.06] rounded-xl overflow-hidden reveal-hidden"><div class="p-5 bg-white/[0.01] flex items-center gap-3 border-b border-white/[0.04]"><span class="text-blue-400 font-mono text-xs font-semibold w-8">M4</span><h4 class="text-white text-sm font-medium flex-1">Deployment & Logic Packs Integration</h4><span class="text-neutral-600 text-[10px] font-mono">8 lessons</span></div><div class="divide-y divide-white/[0.04]"><div class="module-item px-5 py-3 flex items-center gap-3"><iconify-icon icon="solar:play-circle-linear" class="text-neutral-700" width="14"></iconify-icon><span class="text-neutral-400 text-xs">Docker & Containerization</span></div><div class="module-item px-5 py-3 flex items-center gap-3"><iconify-icon icon="solar:play-circle-linear" class="text-neutral-700" width="14"></iconify-icon><span class="text-neutral-400 text-xs">Installing Logic Packs for Backend</span></div><div class="module-item px-5 py-3 flex items-center gap-3"><iconify-icon icon="solar:play-circle-linear" class="text-neutral-700" width="14"></iconify-icon><span class="text-neutral-400 text-xs">Production Deployment & Monitoring</span></div><div class="module-item px-5 py-3 flex items-center gap-3 text-neutral-700 text-[11px]"><iconify-icon icon="solar:alt-arrow-down-linear" width="12"></iconify-icon>+ 5 more lessons</div></div></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ COURSE 3: REACT FRONTEND ═══ -->
+    <section id="react" class="border-b border-white/[0.06]">
+        <div class="max-w-[1440px] mx-auto px-6 md:px-8 py-16 md:py-20">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="lg:col-span-1">
+                    <div class="sticky top-20">
+                        <div class="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center mb-4">
+                            <iconify-icon icon="simple-icons:react" class="text-cyan-400 text-xl"></iconify-icon>
+                        </div>
+                        <h2 class="text-3xl font-semibold text-white tracking-tight mb-3 reveal-hidden">React Frontend</h2>
+                        <p class="text-neutral-500 text-sm leading-relaxed mb-6 reveal-hidden">Build modern, interactive user interfaces with React. Components, hooks, state management, routing, and styling — everything you need for production frontends.</p>
+
+                        <h4 class="text-xs text-neutral-400 uppercase tracking-widest font-semibold mb-3">What is a Frontend?</h4>
+                        <p class="text-neutral-500 text-xs leading-relaxed mb-6">The <span class="text-cyan-400">frontend</span> is everything the user sees and interacts with — buttons, forms, layouts, animations. React is a JavaScript library that makes building complex UIs simple through reusable components and a reactive data flow.</p>
+
+                        <div class="space-y-3 mb-8">
+                            <div class="flex items-center gap-3 text-xs text-neutral-500"><iconify-icon icon="solar:clock-circle-linear" class="text-cyan-400/60" width="14"></iconify-icon> 8 weeks · Self-paced</div>
+                            <div class="flex items-center gap-3 text-xs text-neutral-500"><iconify-icon icon="solar:document-text-linear" class="text-cyan-400/60" width="14"></iconify-icon> 40 lessons · 2 projects</div>
+                            <div class="flex items-center gap-3 text-xs text-neutral-500"><iconify-icon icon="solar:diploma-verified-linear" class="text-cyan-400/60" width="14"></iconify-icon> Certificate on completion</div>
+                        </div>
+
+                        <div class="mb-6">
+                            <h4 class="text-xs text-neutral-400 uppercase tracking-widest font-semibold mb-3">Tech Stack</h4>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="px-2.5 py-1 rounded-md bg-white/[0.03] border border-white/[0.06] text-neutral-400 text-[10px] font-mono">React 19</span>
+                                <span class="px-2.5 py-1 rounded-md bg-white/[0.03] border border-white/[0.06] text-neutral-400 text-[10px] font-mono">TypeScript</span>
+                                <span class="px-2.5 py-1 rounded-md bg-white/[0.03] border border-white/[0.06] text-neutral-400 text-[10px] font-mono">Tailwind CSS</span>
+                                <span class="px-2.5 py-1 rounded-md bg-white/[0.03] border border-white/[0.06] text-neutral-400 text-[10px] font-mono">React Router</span>
+                                <span class="px-2.5 py-1 rounded-md bg-white/[0.03] border border-white/[0.06] text-neutral-400 text-[10px] font-mono">Zustand</span>
+                                <span class="px-2.5 py-1 rounded-md bg-white/[0.03] border border-white/[0.06] text-neutral-400 text-[10px] font-mono">Vite</span>
+                            </div>
+                        </div>
+
+                        <a href="#" class="block text-center bg-cyan-500 text-white font-semibold rounded-md px-6 py-3 text-sm hover:bg-cyan-400 transition-colors">Start Course — Free</a>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-2">
+                    <span class="font-mono text-neutral-600 text-[11px] block mb-6">/// Curriculum</span>
+                    <div class="border border-white/[0.06] rounded-xl mb-4 overflow-hidden reveal-hidden"><div class="p-5 bg-white/[0.01] flex items-center gap-3 border-b border-white/[0.04]"><span class="text-cyan-400 font-mono text-xs font-semibold w-8">M1</span><h4 class="text-white text-sm font-medium flex-1">JavaScript & TypeScript Essentials</h4><span class="text-neutral-600 text-[10px] font-mono">10 lessons</span></div><div class="divide-y divide-white/[0.04]"><div class="module-item px-5 py-3 flex items-center gap-3"><iconify-icon icon="solar:play-circle-linear" class="text-neutral-700" width="14"></iconify-icon><span class="text-neutral-400 text-xs">ES6+ Syntax: Arrow functions, destructuring, spread</span></div><div class="module-item px-5 py-3 flex items-center gap-3"><iconify-icon icon="solar:play-circle-linear" class="text-neutral-700" width="14"></iconify-icon><span class="text-neutral-400 text-xs">Async JavaScript: Promises, async/await, fetch</span></div><div class="module-item px-5 py-3 flex items-center gap-3"><iconify-icon icon="solar:play-circle-linear" class="text-neutral-700" width="14"></iconify-icon><span class="text-neutral-400 text-xs">TypeScript Basics: Types, interfaces, generics</span></div><div class="module-item px-5 py-3 flex items-center gap-3 text-neutral-700 text-[11px]"><iconify-icon icon="solar:alt-arrow-down-linear" width="12"></iconify-icon>+ 7 more lessons</div></div></div>
+                    <div class="border border-white/[0.06] rounded-xl mb-4 overflow-hidden reveal-hidden"><div class="p-5 bg-white/[0.01] flex items-center gap-3 border-b border-white/[0.04]"><span class="text-cyan-400 font-mono text-xs font-semibold w-8">M2</span><h4 class="text-white text-sm font-medium flex-1">React Core — Components & Hooks</h4><span class="text-neutral-600 text-[10px] font-mono">12 lessons</span></div><div class="divide-y divide-white/[0.04]"><div class="module-item px-5 py-3 flex items-center gap-3"><iconify-icon icon="solar:play-circle-linear" class="text-neutral-700" width="14"></iconify-icon><span class="text-neutral-400 text-xs">Your First React App with Vite</span></div><div class="module-item px-5 py-3 flex items-center gap-3"><iconify-icon icon="solar:play-circle-linear" class="text-neutral-700" width="14"></iconify-icon><span class="text-neutral-400 text-xs">JSX, Components & Props</span></div><div class="module-item px-5 py-3 flex items-center gap-3"><iconify-icon icon="solar:play-circle-linear" class="text-neutral-700" width="14"></iconify-icon><span class="text-neutral-400 text-xs">useState, useEffect, useRef</span></div><div class="module-item px-5 py-3 flex items-center gap-3"><iconify-icon icon="solar:play-circle-linear" class="text-neutral-700" width="14"></iconify-icon><span class="text-neutral-400 text-xs">Lists, Keys & Conditional Rendering</span></div><div class="module-item px-5 py-3 flex items-center gap-3 text-neutral-700 text-[11px]"><iconify-icon icon="solar:alt-arrow-down-linear" width="12"></iconify-icon>+ 8 more lessons</div></div></div>
+                    <div class="border border-white/[0.06] rounded-xl mb-4 overflow-hidden reveal-hidden"><div class="p-5 bg-white/[0.01] flex items-center gap-3 border-b border-white/[0.04]"><span class="text-cyan-400 font-mono text-xs font-semibold w-8">M3</span><h4 class="text-white text-sm font-medium flex-1">Routing, State & Styling</h4><span class="text-neutral-600 text-[10px] font-mono">10 lessons</span></div><div class="divide-y divide-white/[0.04]"><div class="module-item px-5 py-3 flex items-center gap-3"><iconify-icon icon="solar:play-circle-linear" class="text-neutral-700" width="14"></iconify-icon><span class="text-neutral-400 text-xs">React Router: Pages, Params, Guards</span></div><div class="module-item px-5 py-3 flex items-center gap-3"><iconify-icon icon="solar:play-circle-linear" class="text-neutral-700" width="14"></iconify-icon><span class="text-neutral-400 text-xs">Global State with Zustand</span></div><div class="module-item px-5 py-3 flex items-center gap-3"><iconify-icon icon="solar:play-circle-linear" class="text-neutral-700" width="14"></iconify-icon><span class="text-neutral-400 text-xs">Tailwind CSS: Utility-First Styling</span></div><div class="module-item px-5 py-3 flex items-center gap-3 text-neutral-700 text-[11px]"><iconify-icon icon="solar:alt-arrow-down-linear" width="12"></iconify-icon>+ 7 more lessons</div></div></div>
+                    <div class="border border-white/[0.06] rounded-xl overflow-hidden reveal-hidden"><div class="p-5 bg-white/[0.01] flex items-center gap-3 border-b border-white/[0.04]"><span class="text-cyan-400 font-mono text-xs font-semibold w-8">M4</span><h4 class="text-white text-sm font-medium flex-1">Production React & Logic Packs</h4><span class="text-neutral-600 text-[10px] font-mono">8 lessons</span></div><div class="divide-y divide-white/[0.04]"><div class="module-item px-5 py-3 flex items-center gap-3"><iconify-icon icon="solar:play-circle-linear" class="text-neutral-700" width="14"></iconify-icon><span class="text-neutral-400 text-xs">Forms, Validation & Error Handling</span></div><div class="module-item px-5 py-3 flex items-center gap-3"><iconify-icon icon="solar:play-circle-linear" class="text-neutral-700" width="14"></iconify-icon><span class="text-neutral-400 text-xs">Connecting to APIs (Fetch, SWR, React Query)</span></div><div class="module-item px-5 py-3 flex items-center gap-3"><iconify-icon icon="solar:play-circle-linear" class="text-neutral-700" width="14"></iconify-icon><span class="text-neutral-400 text-xs">Installing UI Packs from the Marketplace</span></div><div class="module-item px-5 py-3 flex items-center gap-3 text-neutral-700 text-[11px]"><iconify-icon icon="solar:alt-arrow-down-linear" width="12"></iconify-icon>+ 5 more lessons</div></div></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ COURSE 4: AUTOMATION ═══ -->
+    <section id="automation" class="border-b border-white/[0.06]">
+        <div class="max-w-[1440px] mx-auto px-6 md:px-8 py-16 md:py-20">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="lg:col-span-1">
+                    <div class="sticky top-20">
+                        <div class="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center mb-4">
+                            <iconify-icon icon="solar:robot-linear" class="text-purple-400 text-xl"></iconify-icon>
+                        </div>
+                        <h2 class="text-3xl font-semibold text-white tracking-tight mb-3 reveal-hidden">Browser Automation</h2>
+                        <p class="text-neutral-500 text-sm leading-relaxed mb-6 reveal-hidden">Automate the web with Selenium & Puppeteer. Build scrapers, bots, test suites, and automated workflows — and deploy them on managed infrastructure.</p>
+
+                        <h4 class="text-xs text-neutral-400 uppercase tracking-widest font-semibold mb-3">What is Browser Automation?</h4>
+                        <p class="text-neutral-500 text-xs leading-relaxed mb-6"><span class="text-purple-400">Browser automation</span> means programmatically controlling a web browser — clicking buttons, filling forms, extracting data, taking screenshots. <span class="text-white">Selenium</span> (Python) and <span class="text-white">Puppeteer</span> (Node.js) are the two most popular tools. Use them for web scraping, testing, monitoring, and building bots.</p>
+
+                        <div class="space-y-3 mb-8">
+                            <div class="flex items-center gap-3 text-xs text-neutral-500"><iconify-icon icon="solar:clock-circle-linear" class="text-purple-400/60" width="14"></iconify-icon> 6 weeks · Self-paced</div>
+                            <div class="flex items-center gap-3 text-xs text-neutral-500"><iconify-icon icon="solar:document-text-linear" class="text-purple-400/60" width="14"></iconify-icon> 28 lessons · 3 projects</div>
+                            <div class="flex items-center gap-3 text-xs text-neutral-500"><iconify-icon icon="solar:diploma-verified-linear" class="text-purple-400/60" width="14"></iconify-icon> Certificate on completion</div>
+                        </div>
+
+                        <div class="mb-6">
+                            <h4 class="text-xs text-neutral-400 uppercase tracking-widest font-semibold mb-3">Tech Stack</h4>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="px-2.5 py-1 rounded-md bg-white/[0.03] border border-white/[0.06] text-neutral-400 text-[10px] font-mono">Selenium</span>
+                                <span class="px-2.5 py-1 rounded-md bg-white/[0.03] border border-white/[0.06] text-neutral-400 text-[10px] font-mono">Puppeteer</span>
+                                <span class="px-2.5 py-1 rounded-md bg-white/[0.03] border border-white/[0.06] text-neutral-400 text-[10px] font-mono">Playwright</span>
+                                <span class="px-2.5 py-1 rounded-md bg-white/[0.03] border border-white/[0.06] text-neutral-400 text-[10px] font-mono">Python</span>
+                                <span class="px-2.5 py-1 rounded-md bg-white/[0.03] border border-white/[0.06] text-neutral-400 text-[10px] font-mono">Node.js</span>
+                                <span class="px-2.5 py-1 rounded-md bg-white/[0.03] border border-white/[0.06] text-neutral-400 text-[10px] font-mono">Headless Chrome</span>
+                            </div>
+                        </div>
+
+                        <a href="#" class="block text-center bg-purple-500 text-white font-semibold rounded-md px-6 py-3 text-sm hover:bg-purple-400 transition-colors">Start Course — Free</a>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-2">
+                    <span class="font-mono text-neutral-600 text-[11px] block mb-6">/// Curriculum</span>
+                    <div class="border border-white/[0.06] rounded-xl mb-4 overflow-hidden reveal-hidden"><div class="p-5 bg-white/[0.01] flex items-center gap-3 border-b border-white/[0.04]"><span class="text-purple-400 font-mono text-xs font-semibold w-8">M1</span><h4 class="text-white text-sm font-medium flex-1">Automation Fundamentals</h4><span class="text-neutral-600 text-[10px] font-mono">6 lessons</span></div><div class="divide-y divide-white/[0.04]"><div class="module-item px-5 py-3 flex items-center gap-3"><iconify-icon icon="solar:play-circle-linear" class="text-neutral-700" width="14"></iconify-icon><span class="text-neutral-400 text-xs">What is Browser Automation? Use Cases</span></div><div class="module-item px-5 py-3 flex items-center gap-3"><iconify-icon icon="solar:play-circle-linear" class="text-neutral-700" width="14"></iconify-icon><span class="text-neutral-400 text-xs">The DOM: Selectors, XPath & CSS</span></div><div class="module-item px-5 py-3 flex items-center gap-3"><iconify-icon icon="solar:play-circle-linear" class="text-neutral-700" width="14"></iconify-icon><span class="text-neutral-400 text-xs">Headless vs Headed Browsers</span></div><div class="module-item px-5 py-3 flex items-center gap-3"><iconify-icon icon="solar:play-circle-linear" class="text-neutral-700" width="14"></iconify-icon><span class="text-neutral-400 text-xs">Ethics & Legal: Responsible Automation</span></div><div class="module-item px-5 py-3 flex items-center gap-3 text-neutral-700 text-[11px]"><iconify-icon icon="solar:alt-arrow-down-linear" width="12"></iconify-icon>+ 2 more lessons</div></div></div>
+                    <div class="border border-white/[0.06] rounded-xl mb-4 overflow-hidden reveal-hidden"><div class="p-5 bg-white/[0.01] flex items-center gap-3 border-b border-white/[0.04]"><span class="text-purple-400 font-mono text-xs font-semibold w-8">M2</span><h4 class="text-white text-sm font-medium flex-1">Selenium with Python</h4><span class="text-neutral-600 text-[10px] font-mono">8 lessons</span></div><div class="divide-y divide-white/[0.04]"><div class="module-item px-5 py-3 flex items-center gap-3"><iconify-icon icon="solar:play-circle-linear" class="text-neutral-700" width="14"></iconify-icon><span class="text-neutral-400 text-xs">Selenium Setup & WebDriver</span></div><div class="module-item px-5 py-3 flex items-center gap-3"><iconify-icon icon="solar:play-circle-linear" class="text-neutral-700" width="14"></iconify-icon><span class="text-neutral-400 text-xs">Finding Elements & Interactions</span></div><div class="module-item px-5 py-3 flex items-center gap-3"><iconify-icon icon="solar:play-circle-linear" class="text-neutral-700" width="14"></iconify-icon><span class="text-neutral-400 text-xs">Waits, Screenshots & File Downloads</span></div><div class="module-item px-5 py-3 flex items-center gap-3"><iconify-icon icon="solar:play-circle-linear" class="text-neutral-700" width="14"></iconify-icon><span class="text-neutral-400 text-xs">Building a Web Scraper</span></div><div class="module-item px-5 py-3 flex items-center gap-3 text-neutral-700 text-[11px]"><iconify-icon icon="solar:alt-arrow-down-linear" width="12"></iconify-icon>+ 4 more lessons</div></div></div>
+                    <div class="border border-white/[0.06] rounded-xl mb-4 overflow-hidden reveal-hidden"><div class="p-5 bg-white/[0.01] flex items-center gap-3 border-b border-white/[0.04]"><span class="text-purple-400 font-mono text-xs font-semibold w-8">M3</span><h4 class="text-white text-sm font-medium flex-1">Puppeteer & Playwright</h4><span class="text-neutral-600 text-[10px] font-mono">8 lessons</span></div><div class="divide-y divide-white/[0.04]"><div class="module-item px-5 py-3 flex items-center gap-3"><iconify-icon icon="solar:play-circle-linear" class="text-neutral-700" width="14"></iconify-icon><span class="text-neutral-400 text-xs">Puppeteer Setup & Page Navigation</span></div><div class="module-item px-5 py-3 flex items-center gap-3"><iconify-icon icon="solar:play-circle-linear" class="text-neutral-700" width="14"></iconify-icon><span class="text-neutral-400 text-xs">JavaScript Execution & Network Interception</span></div><div class="module-item px-5 py-3 flex items-center gap-3"><iconify-icon icon="solar:play-circle-linear" class="text-neutral-700" width="14"></iconify-icon><span class="text-neutral-400 text-xs">Playwright: Cross-Browser Automation</span></div><div class="module-item px-5 py-3 flex items-center gap-3"><iconify-icon icon="solar:play-circle-linear" class="text-neutral-700" width="14"></iconify-icon><span class="text-neutral-400 text-xs">PDF Generation & Visual Testing</span></div><div class="module-item px-5 py-3 flex items-center gap-3 text-neutral-700 text-[11px]"><iconify-icon icon="solar:alt-arrow-down-linear" width="12"></iconify-icon>+ 4 more lessons</div></div></div>
+                    <div class="border border-white/[0.06] rounded-xl mb-4 overflow-hidden reveal-hidden"><div class="p-5 bg-white/[0.01] flex items-center gap-3 border-b border-white/[0.04]"><span class="text-purple-400 font-mono text-xs font-semibold w-8">M4</span><h4 class="text-white text-sm font-medium flex-1">Deploying Automations on Logic Packs</h4><span class="text-neutral-600 text-[10px] font-mono">6 lessons</span></div><div class="divide-y divide-white/[0.04]"><div class="module-item px-5 py-3 flex items-center gap-3"><iconify-icon icon="solar:play-circle-linear" class="text-neutral-700" width="14"></iconify-icon><span class="text-neutral-400 text-xs">Automation Pack: Managed Browser Infrastructure</span></div><div class="module-item px-5 py-3 flex items-center gap-3"><iconify-icon icon="solar:play-circle-linear" class="text-neutral-700" width="14"></iconify-icon><span class="text-neutral-400 text-xs">Scheduling, Retries & Error Handling</span></div><div class="module-item px-5 py-3 flex items-center gap-3"><iconify-icon icon="solar:play-circle-linear" class="text-neutral-700" width="14"></iconify-icon><span class="text-neutral-400 text-xs">Building an Automation Pack for the Marketplace</span></div><div class="module-item px-5 py-3 flex items-center gap-3 text-neutral-700 text-[11px]"><iconify-icon icon="solar:alt-arrow-down-linear" width="12"></iconify-icon>+ 3 more lessons</div></div></div>
+
+                    <!-- Project Card -->
+                    <div class="border border-purple-500/20 rounded-xl p-6 bg-purple-500/[0.02] reveal-hidden">
+                        <div class="flex items-center gap-2 mb-3">
+                            <iconify-icon icon="solar:star-bold" class="text-purple-400"></iconify-icon>
+                            <span class="text-purple-400 text-xs font-semibold uppercase tracking-wider">Final Projects</span>
+                        </div>
+                        <h4 class="text-white text-sm font-medium mb-2">Build 3 Real Automation Tools</h4>
+                        <p class="text-neutral-500 text-xs leading-relaxed">1) A price-tracking scraper with alerts · 2) An automated testing suite for a web app · 3) A data collection bot deployed as an Automation Pack on the marketplace.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ CTA ═══ -->
+    <section class="border-b border-white/[0.06]">
+        <div class="max-w-[1440px] mx-auto px-6 md:px-8 py-20 md:py-28 text-center relative overflow-hidden">
+            <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <div class="w-[40vw] h-[40vw] bg-green-500/[0.04] blur-[150px] rounded-full"></div>
+            </div>
+            <div class="relative z-10">
+                <h2 class="text-4xl md:text-5xl font-semibold text-white tracking-tight mb-4 reveal-hidden">Start Learning Today</h2>
+                <p class="text-neutral-500 text-base mb-3 reveal-hidden">All courses are free. Learn at your own pace. Build real projects. Earn certificates.</p>
+                <p class="text-neutral-600 text-sm mb-8 reveal-hidden">Ambassadors get priority access and mentorship. <a href="ambassadors.html" class="text-green-500 hover:underline">Join the program →</a></p>
+                <div class="flex flex-wrap gap-3 justify-center reveal-hidden">
+                    <a href="#fullstack" class="inline-flex items-center gap-2 bg-white text-black font-semibold rounded-md px-8 py-3 text-sm hover:bg-neutral-200 transition-colors">
+                        Start Full Stack <iconify-icon icon="solar:arrow-right-linear" width="16"></iconify-icon>
+                    </a>
+                    <a href="#python" class="inline-flex items-center gap-2 border border-blue-500/20 text-blue-400 font-medium rounded-md px-6 py-3 text-sm hover:bg-blue-500/5 transition-colors">Python</a>
+                    <a href="#react" class="inline-flex items-center gap-2 border border-cyan-500/20 text-cyan-400 font-medium rounded-md px-6 py-3 text-sm hover:bg-cyan-500/5 transition-colors">React</a>
+                    <a href="#automation" class="inline-flex items-center gap-2 border border-purple-500/20 text-purple-400 font-medium rounded-md px-6 py-3 text-sm hover:bg-purple-500/5 transition-colors">Automation</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ FOOTER ═══ -->
+    <footer class="border-t border-white/[0.06]">
+        <div class="grid grid-cols-1 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-white/[0.06]">
+            <div class="p-8 md:col-span-1 flex flex-col justify-between min-h-[240px]">
+                <div>
+                    <div class="flex items-center gap-2 mb-4">
+                        <iconify-icon icon="solar:widget-5-linear" class="text-green-500 text-lg"></iconify-icon>
+                        <span class="text-white font-semibold text-sm tracking-tight">Logic Packs</span>
+                    </div>
+                    <p class="text-neutral-500 text-sm leading-relaxed">The operating system for reusable software.</p>
+                </div>
+                <div class="flex gap-3 mt-6">
+                    <a href="#" class="w-8 h-8 rounded-md border border-white/[0.06] flex items-center justify-center hover:bg-white/5 transition-colors"><iconify-icon icon="simple-icons:github" class="text-neutral-500 text-sm"></iconify-icon></a>
+                    <a href="#" class="w-8 h-8 rounded-md border border-white/[0.06] flex items-center justify-center hover:bg-white/5 transition-colors"><iconify-icon icon="simple-icons:discord" class="text-neutral-500 text-sm"></iconify-icon></a>
+                    <a href="#" class="w-8 h-8 rounded-md border border-white/[0.06] flex items-center justify-center hover:bg-white/5 transition-colors"><iconify-icon icon="simple-icons:x" class="text-neutral-500 text-sm"></iconify-icon></a>
+                </div>
+            </div>
+            <div class="p-8 md:col-span-3 grid grid-cols-2 md:grid-cols-4 gap-8">
+                <div>
+                    <h4 class="text-white text-xs font-semibold uppercase tracking-widest mb-5">Platform</h4>
+                    <ul class="space-y-3"><li><a href="index.html#modes" class="text-neutral-500 text-sm hover:text-white transition-colors">UI Mode</a></li><li><a href="index.html#modes" class="text-neutral-500 text-sm hover:text-white transition-colors">Logic Mode</a></li><li><a href="index.html#modes" class="text-neutral-500 text-sm hover:text-white transition-colors">Notebook</a></li><li><a href="index.html#modes" class="text-neutral-500 text-sm hover:text-white transition-colors">Canvas</a></li></ul>
+                </div>
+                <div>
+                    <h4 class="text-white text-xs font-semibold uppercase tracking-widest mb-5">Community</h4>
+                    <ul class="space-y-3"><li><a href="ambassadors.html" class="text-neutral-500 text-sm hover:text-white transition-colors">Ambassadors</a></li><li><a href="courses.html" class="text-neutral-500 text-sm hover:text-white transition-colors">Courses</a></li><li><a href="ventures.html" class="text-neutral-500 text-sm hover:text-white transition-colors">Ventures</a></li></ul>
+                </div>
+                <div>
+                    <h4 class="text-white text-xs font-semibold uppercase tracking-widest mb-5">Resources</h4>
+                    <ul class="space-y-3"><li><a href="#" class="text-neutral-500 text-sm hover:text-white transition-colors">Documentation</a></li><li><a href="store.html" class="text-neutral-500 text-sm hover:text-white transition-colors">Marketplace</a></li><li><a href="shop.html" class="text-neutral-500 text-sm hover:text-white transition-colors">Hardware Shop</a></li></ul>
+                </div>
+                <div>
+                    <h4 class="text-white text-xs font-semibold uppercase tracking-widest mb-5">Newsletter</h4>
+                    <form class="flex flex-col gap-3" onsubmit="return false">
+                        <input type="email" placeholder="you@email.com" class="w-full bg-transparent border-b border-white/15 py-2 text-white text-sm focus:outline-none focus:border-green-500 transition-colors placeholder:text-neutral-700">
+                        <button class="self-start text-xs text-neutral-500 uppercase tracking-widest hover:text-white transition-colors">Subscribe</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="border-t border-white/[0.06] px-8 py-5 flex flex-col md:flex-row justify-between items-center gap-3">
+            <span class="text-neutral-700 text-xs">&copy; 2026 Logic Packs. All rights reserved.</span>
+            <div class="flex gap-4"><a href="#" class="text-neutral-700 text-xs hover:text-white transition-colors">Privacy</a><a href="#" class="text-neutral-700 text-xs hover:text-white transition-colors">Terms</a></div>
+        </div>
+    </footer>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, i) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => { entry.target.classList.remove("reveal-hidden"); entry.target.classList.add("reveal"); }, i * 60);
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+        document.querySelectorAll(".reveal-hidden").forEach(el => observer.observe(el));
+    });
+    </script>
+</body>
+</html>
+

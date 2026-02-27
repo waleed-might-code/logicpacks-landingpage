@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">Product — Logic Packs Shop</title>
+    <meta name="description" content="Logic Packs hardware, accessories, and developer merch.">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+    tailwind.config = {
+        theme: { extend: { fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] } } }
+    }
+    </script>
+
+    <style>
+    body { background-color: #0a0a0a; color: #ededed; font-family: 'Inter', system-ui, sans-serif; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #0a0a0a; }
+    ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+    @keyframes fadeInUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+    .reveal { animation: fadeInUp 0.5s cubic-bezier(0.2,0.8,0.2,1) both; }
+    .tab-btn { position: relative; }
+    .tab-btn.active-tab { color: #fff; }
+    .tab-btn.active-tab::after { content:''; position:absolute; bottom:-1px; left:0; right:0; height:1px; background:#22c55e; }
+    .tab-content { display:none; }
+    .tab-content.active-content { display:block; }
+    .qty-btn { user-select: none; }
+    .qty-btn:active { transform: scale(0.92); }
+    .size-btn { transition: all 0.15s; }
+    .size-btn.active-size { border-color: rgba(34,197,94,0.6); color: #22c55e; background: rgba(34,197,94,0.08); }
+    </style>
+</head>
+
+<body class="selection:bg-green-500/30 selection:text-white overflow-x-hidden">
+
+    <!-- ═══ HEADER ═══ -->
+    <header class="fixed top-0 left-0 w-full z-50 bg-[#0a0a0a]/80 backdrop-blur-xl border-b border-white/[0.06] h-14">
+        <div class="flex w-full h-full max-w-[1440px] mx-auto px-6 md:px-8 items-center justify-between">
+            <a href="index.html" class="flex items-center gap-2.5 group">
+                <div class="w-7 h-7 rounded-md border border-white/10 flex items-center justify-center bg-white/[0.03] group-hover:border-green-500/40 transition-colors">
+                    <iconify-icon icon="solar:widget-5-linear" class="text-green-500 text-sm"></iconify-icon>
+                </div>
+                <span class="text-sm font-semibold tracking-tight text-white">Logic Packs</span>
+            </a>
+            <nav class="hidden md:flex items-center gap-8">
+                <a href="index.html#modes" class="text-[11px] hover:text-white transition-colors uppercase font-medium text-neutral-400 tracking-[0.15em]">Platform</a>
+                <a href="store.html" class="text-[11px] hover:text-white transition-colors uppercase font-medium text-neutral-400 tracking-[0.15em]">Marketplace</a>
+                <a href="shop.html" class="text-[11px] uppercase font-medium text-white tracking-[0.15em]">Shop</a>
+                <a href="ventures.html" class="text-[11px] hover:text-white transition-colors uppercase font-medium text-neutral-400 tracking-[0.15em]">Ventures</a>
+                <a href="courses.html" class="text-[11px] hover:text-white transition-colors uppercase font-medium text-neutral-400 tracking-[0.15em]">Learn</a>
+                <a href="ambassadors.html" class="text-[11px] hover:text-white transition-colors uppercase font-medium text-neutral-400 tracking-[0.15em]">Ambassadors</a>
+                <a href="index.html#pricing" class="text-[11px] hover:text-white transition-colors uppercase font-medium text-neutral-400 tracking-[0.15em]">Pricing</a>
+            </nav>
+            <a href="#" class="hidden md:flex bg-white text-black text-xs font-semibold tracking-wide uppercase rounded-md px-5 py-2 hover:bg-neutral-200 transition-colors">Get Started</a>
+            <button class="md:hidden text-white" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
+                <iconify-icon icon="solar:hamburger-menu-linear" width="22"></iconify-icon>
+            </button>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden absolute top-full left-0 w-full bg-[#0a0a0a]/95 backdrop-blur-xl border-b border-white/[0.06] p-4 flex flex-col gap-2">
+            <a href="index.html#modes" class="px-4 py-2 text-sm text-neutral-400 hover:text-white hover:bg-white/5 rounded-md">Platform</a>
+            <a href="store.html" class="px-4 py-2 text-sm text-neutral-400 hover:text-white hover:bg-white/5 rounded-md">Marketplace</a>
+            <a href="shop.html" class="px-4 py-2 text-sm text-white bg-white/5 rounded-md">Shop</a>
+            <a href="ventures.html" class="px-4 py-2 text-sm text-neutral-400 hover:text-white hover:bg-white/5 rounded-md">Ventures</a>
+            <a href="courses.html" class="px-4 py-2 text-sm text-neutral-400 hover:text-white hover:bg-white/5 rounded-md">Learn</a>
+            <a href="ambassadors.html" class="px-4 py-2 text-sm text-neutral-400 hover:text-white hover:bg-white/5 rounded-md">Ambassadors</a>
+            <a href="index.html#pricing" class="px-4 py-2 text-sm text-neutral-400 hover:text-white hover:bg-white/5 rounded-md">Pricing</a>
+        </div>
+    </header>
+
+    <!-- ═══ MAIN CONTENT ═══ -->
+    <main class="pt-14">
+        <!-- Breadcrumb -->
+        <div class="border-b border-white/[0.06]">
+            <div class="max-w-[1440px] mx-auto px-6 md:px-8 py-3">
+                <nav class="flex items-center gap-2 text-xs text-neutral-600">
+                    <a href="shop.html" class="hover:text-white transition-colors">Shop</a>
+                    <iconify-icon icon="solar:alt-arrow-right-linear" width="12"></iconify-icon>
+                    <span id="breadcrumb-cat" class="hover:text-white transition-colors cursor-pointer">Hardware</span>
+                    <iconify-icon icon="solar:alt-arrow-right-linear" width="12"></iconify-icon>
+                    <span id="breadcrumb-name" class="text-neutral-400">LPDN Node</span>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Product Hero -->
+        <section class="border-b border-white/[0.06]">
+            <div class="max-w-[1440px] mx-auto">
+                <div class="grid grid-cols-1 md:grid-cols-2 md:divide-x divide-white/[0.06]">
+                    <!-- Image -->
+                    <div id="product-image-area" class="relative aspect-square md:aspect-auto md:min-h-[520px] bg-white/[0.015] flex items-center justify-center overflow-hidden">
+                        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(34,197,94,0.05)_0%,transparent_70%)]"></div>
+                        <div class="absolute inset-0 opacity-[0.05] bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:24px_24px] [mask-image:radial-gradient(ellipse_at_center,black_40%,transparent_100%)]"></div>
+                        <div class="relative z-10" id="product-visual">
+                            <!-- Filled by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Info -->
+                    <div class="p-8 md:p-12 lg:p-16 flex flex-col justify-center">
+                        <div class="flex items-center gap-2 mb-4" id="product-badges">
+                            <!-- Filled by JS -->
+                        </div>
+                        <h1 id="product-name" class="text-3xl md:text-4xl font-semibold text-white tracking-tight mb-3">LPDN Node</h1>
+                        <p id="product-desc" class="text-neutral-500 text-base leading-relaxed mb-6 max-w-md">Logic Pack Distribution Node — run your entire app ecosystem offline via built-in Wi-Fi.</p>
+
+                        <!-- Price -->
+                        <div class="flex items-center gap-4 mb-6" id="product-price-area">
+                            <!-- Filled by JS -->
+                        </div>
+
+                        <!-- Highlights -->
+                        <div id="product-highlights" class="flex flex-wrap gap-3 mb-8 text-xs text-neutral-500">
+                            <!-- Filled by JS -->
+                        </div>
+
+                        <!-- Size selector (apparel only) -->
+                        <div id="size-selector" class="hidden mb-6">
+                            <span class="text-xs text-neutral-500 uppercase tracking-widest block mb-3">Size</span>
+                            <div class="flex gap-2" id="size-options">
+                                <!-- Filled by JS -->
+                            </div>
+                        </div>
+
+                        <!-- Quantity + Add to Cart -->
+                        <div class="flex items-center gap-4 mb-6">
+                            <div class="flex items-center border border-white/[0.08] rounded-md overflow-hidden">
+                                <button class="qty-btn w-10 h-10 flex items-center justify-center text-neutral-400 hover:bg-white/5 transition-colors" onclick="changeQty(-1)">
+                                    <iconify-icon icon="solar:minus-circle-linear" width="18"></iconify-icon>
+                                </button>
+                                <span id="qty-display" class="w-10 h-10 flex items-center justify-center text-white text-sm font-medium border-x border-white/[0.08]">1</span>
+                                <button class="qty-btn w-10 h-10 flex items-center justify-center text-neutral-400 hover:bg-white/5 transition-colors" onclick="changeQty(1)">
+                                    <iconify-icon icon="solar:add-circle-linear" width="18"></iconify-icon>
+                                </button>
+                            </div>
+                            <button id="add-to-cart-btn" class="flex-1 bg-green-500 text-black font-semibold rounded-md py-3 text-sm hover:bg-green-400 transition-colors flex items-center justify-center gap-2" onclick="addToCart()">
+                                <iconify-icon icon="solar:cart-large-minimalistic-linear" width="18"></iconify-icon>
+                                Add to Cart
+                            </button>
+                        </div>
+
+                        <!-- Stock status -->
+                        <div id="stock-status" class="flex items-center gap-2 mb-6">
+                            <span class="h-1.5 w-1.5 bg-green-500 rounded-full"></span>
+                            <span class="text-green-500 text-xs font-mono">In Stock — Ships within 3-5 days</span>
+                        </div>
+
+                        <!-- Quick specs -->
+                        <div id="quick-specs" class="border-t border-white/[0.06] pt-6 space-y-3">
+                            <!-- Filled by JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tabs -->
+        <section class="border-b border-white/[0.06] sticky top-14 z-40 bg-[#0a0a0a]/95 backdrop-blur-xl">
+            <div class="max-w-[1440px] mx-auto px-6 md:px-8">
+                <div class="flex gap-0 -mb-px overflow-x-auto">
+                    <button class="tab-btn active-tab px-5 py-3.5 text-xs font-medium uppercase tracking-[0.12em] text-neutral-500 hover:text-white transition-colors whitespace-nowrap" data-tab="description">Description</button>
+                    <button class="tab-btn px-5 py-3.5 text-xs font-medium uppercase tracking-[0.12em] text-neutral-500 hover:text-white transition-colors whitespace-nowrap" data-tab="specs">Specifications</button>
+                    <button class="tab-btn px-5 py-3.5 text-xs font-medium uppercase tracking-[0.12em] text-neutral-500 hover:text-white transition-colors whitespace-nowrap" data-tab="whats-included">What's Included</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tab Content -->
+        <section class="max-w-[1440px] mx-auto px-6 md:px-8 py-10 md:py-14">
+            <div id="tab-description" class="tab-content active-content">
+                <div class="max-w-3xl" id="description-content">
+                    <!-- Filled by JS -->
+                </div>
+            </div>
+            <div id="tab-specs" class="tab-content">
+                <div class="max-w-3xl" id="specs-content">
+                    <!-- Filled by JS -->
+                </div>
+            </div>
+            <div id="tab-whats-included" class="tab-content">
+                <div class="max-w-3xl" id="included-content">
+                    <!-- Filled by JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Related Products -->
+        <section class="border-t border-white/[0.06]">
+            <div class="max-w-[1440px] mx-auto px-6 md:px-8 py-14">
+                <div class="flex items-end justify-between mb-8">
+                    <h2 class="text-xl text-white font-medium tracking-tight">You Might Also Like</h2>
+                    <a href="shop.html" class="text-xs text-neutral-500 hover:text-white transition-colors flex items-center gap-1">View all <iconify-icon icon="solar:arrow-right-linear" width="14"></iconify-icon></a>
+                </div>
+                <div id="related-products" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <!-- Filled by JS -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ═══ FOOTER ═══ -->
+    <footer class="border-t border-white/[0.06]">
+        <div class="grid grid-cols-1 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-white/[0.06]">
+            <div class="p-8 md:col-span-1 flex flex-col justify-between min-h-[240px]">
+                <div>
+                    <div class="flex items-center gap-2 mb-4">
+                        <iconify-icon icon="solar:widget-5-linear" class="text-green-500 text-lg"></iconify-icon>
+                        <span class="text-white font-semibold text-sm tracking-tight">Logic Packs</span>
+                    </div>
+                    <p class="text-neutral-500 text-sm leading-relaxed">The operating system for reusable software.</p>
+                </div>
+                <div class="flex gap-3 mt-6">
+                    <a href="#" class="w-8 h-8 rounded-md border border-white/[0.06] flex items-center justify-center hover:bg-white/5 transition-colors"><iconify-icon icon="simple-icons:github" class="text-neutral-500 text-sm"></iconify-icon></a>
+                    <a href="#" class="w-8 h-8 rounded-md border border-white/[0.06] flex items-center justify-center hover:bg-white/5 transition-colors"><iconify-icon icon="simple-icons:discord" class="text-neutral-500 text-sm"></iconify-icon></a>
+                    <a href="#" class="w-8 h-8 rounded-md border border-white/[0.06] flex items-center justify-center hover:bg-white/5 transition-colors"><iconify-icon icon="simple-icons:x" class="text-neutral-500 text-sm"></iconify-icon></a>
+                </div>
+            </div>
+            <div class="p-8 md:col-span-3 grid grid-cols-2 md:grid-cols-4 gap-8">
+                <div><h4 class="text-white text-xs font-semibold uppercase tracking-widest mb-5">Platform</h4><ul class="space-y-3"><li><a href="index.html#modes" class="text-neutral-500 text-sm hover:text-white transition-colors">UI Mode</a></li><li><a href="index.html#modes" class="text-neutral-500 text-sm hover:text-white transition-colors">Logic Mode</a></li><li><a href="index.html#modes" class="text-neutral-500 text-sm hover:text-white transition-colors">Notebook</a></li><li><a href="index.html#modes" class="text-neutral-500 text-sm hover:text-white transition-colors">Canvas</a></li></ul></div>
+                <div><h4 class="text-white text-xs font-semibold uppercase tracking-widest mb-5">Shop</h4><ul class="space-y-3"><li><a href="product.html?id=lpdn-node" class="text-neutral-500 text-sm hover:text-white transition-colors">LPDN Node</a></li><li><a href="shop.html" class="text-neutral-500 text-sm hover:text-white transition-colors">Accessories</a></li><li><a href="shop.html" class="text-neutral-500 text-sm hover:text-white transition-colors">Apparel</a></li><li><a href="shop.html" class="text-neutral-500 text-sm hover:text-white transition-colors">IoT Sensors</a></li></ul></div>
+                <div><h4 class="text-white text-xs font-semibold uppercase tracking-widest mb-5">Resources</h4><ul class="space-y-3"><li><a href="#" class="text-neutral-500 text-sm hover:text-white transition-colors">Documentation</a></li><li><a href="store.html" class="text-neutral-500 text-sm hover:text-white transition-colors">Marketplace</a></li><li><a href="#" class="text-neutral-500 text-sm hover:text-white transition-colors">API Reference</a></li></ul></div>
+                <div><h4 class="text-white text-xs font-semibold uppercase tracking-widest mb-5">Newsletter</h4><form class="flex flex-col gap-3" onsubmit="return false"><input type="email" placeholder="you@email.com" class="w-full bg-transparent border-b border-white/15 py-2 text-white text-sm focus:outline-none focus:border-green-500 transition-colors placeholder:text-neutral-700"><button class="self-start text-xs text-neutral-500 uppercase tracking-widest hover:text-white transition-colors">Subscribe</button></form></div>
+            </div>
+        </div>
+        <div class="border-t border-white/[0.06] px-8 py-5 flex flex-col md:flex-row justify-between items-center gap-3">
+            <span class="text-neutral-700 text-xs">&copy; 2026 Logic Packs. All rights reserved.</span>
+            <div class="flex gap-4"><a href="#" class="text-neutral-700 text-xs hover:text-white transition-colors">Privacy</a><a href="#" class="text-neutral-700 text-xs hover:text-white transition-colors">Terms</a><a href="#" class="text-neutral-700 text-xs hover:text-white transition-colors">Shipping & Returns</a></div>
+        </div>
+    </footer>
+
+    <!-- ═══ PRODUCT DATA + RENDERING ═══ -->
+    <script>
+    const PRODUCT_DB = {
+        "lpdn-node": {
+            name: "LPDN Node",
+            cat: "Hardware",
+            catSlug: "hardware",
+            price: 149,
+            originalPrice: 199,
+            icon: "solar:server-minimalistic-linear",
+            iconColor: "text-green-500",
+            bgColor: "bg-green-500/10",
+            borderColor: "border-green-500/20",
+            badges: [
+                { text: "Flagship", cls: "bg-green-500/15 text-green-400 border-green-500/20" },
+                { text: "Save $50", cls: "bg-yellow-500/15 text-yellow-400 border-yellow-500/20" }
+            ],
+            desc: "The Logic Pack Distribution Node is a self-contained micro-server that runs your Logic Packs apps offline. It creates a local Wi-Fi access point — connect any device and use your apps without internet.",
+            highlights: [
+                { icon: "solar:wifi-router-minimalistic-linear", text: "Built-in Wi-Fi AP" },
+                { icon: "solar:cpu-bolt-linear", text: "Raspberry Pi 5" },
+                { icon: "solar:shield-check-linear", text: "Pre-configured" },
+                { icon: "solar:refresh-circle-linear", text: "Auto-sync" }
+            ],
+            inStock: true,
+            hasSizes: false,
+            quickSpecs: [
+                { label: "Processor", value: "Raspberry Pi 5, Quad-core ARM Cortex-A76" },
+                { label: "RAM", value: "4GB LPDDR4X" },
+                { label: "Storage", value: "64GB microSD (pre-flashed)" },
+                { label: "Wi-Fi", value: "Dual-band 802.11ac + AP mode" },
+                { label: "Ports", value: "2× USB 3.0, 1× USB-C (power), Ethernet, HDMI" },
+                { label: "Power", value: "USB-C 5V/5A (27W)" }
+            ],
+            description: `
+                <h2 class="text-xl text-white font-medium tracking-tight mb-4">About the LPDN Node</h2>
+                <p class="text-neutral-400 text-sm leading-relaxed mb-6">The Logic Pack Distribution Node (LPDN) is the hardware backbone of offline Logic Packs deployment. It's a compact, fanless micro-server built on Raspberry Pi 5 that runs the full Logic Packs runtime, creates a local Wi-Fi network, and serves your apps to any connected device.</p>
+                <p class="text-neutral-400 text-sm leading-relaxed mb-8">Perfect for field deployments, classrooms, clinics, workshops, and anywhere internet isn't available or reliable. Deploy once, and your team can access all their Logic Packs apps from any browser.</p>
+
+                <h3 class="text-lg text-white font-medium tracking-tight mb-3">Use Cases</h3>
+                <ul class="space-y-2 text-sm text-neutral-400 mb-8">
+                    <li class="flex items-start gap-2"><iconify-icon icon="solar:check-circle-linear" class="text-green-500 text-base mt-0.5 shrink-0"></iconify-icon><strong class="text-white">Remote clinics</strong> — patient management apps running offline</li>
+                    <li class="flex items-start gap-2"><iconify-icon icon="solar:check-circle-linear" class="text-green-500 text-base mt-0.5 shrink-0"></iconify-icon><strong class="text-white">Classrooms</strong> — coding workshops with no school Wi-Fi dependency</li>
+                    <li class="flex items-start gap-2"><iconify-icon icon="solar:check-circle-linear" class="text-green-500 text-base mt-0.5 shrink-0"></iconify-icon><strong class="text-white">Field operations</strong> — logistics, inspections, and data collection</li>
+                    <li class="flex items-start gap-2"><iconify-icon icon="solar:check-circle-linear" class="text-green-500 text-base mt-0.5 shrink-0"></iconify-icon><strong class="text-white">Events & demos</strong> — reliable app demos at trade shows and conferences</li>
+                    <li class="flex items-start gap-2"><iconify-icon icon="solar:check-circle-linear" class="text-green-500 text-base mt-0.5 shrink-0"></iconify-icon><strong class="text-white">IoT gateway</strong> — connect sensors and automate real-world devices</li>
+                </ul>
+
+                <h3 class="text-lg text-white font-medium tracking-tight mb-3">How It Works</h3>
+                <div class="bg-white/[0.02] border border-white/[0.06] rounded-lg p-5 text-xs font-mono text-neutral-400 space-y-2">
+                    <div class="flex items-center gap-2"><span class="text-green-500">→</span> Power on the LPDN via USB-C</div>
+                    <div class="flex items-center gap-2"><span class="text-green-500">→</span> It broadcasts "LPDN-xxxx" Wi-Fi network</div>
+                    <div class="flex items-center gap-2"><span class="text-green-500">→</span> Connect any device to the network</div>
+                    <div class="flex items-center gap-2"><span class="text-green-500">→</span> Open browser → lpdn.local</div>
+                    <div class="flex items-center gap-2"><span class="text-green-500">→</span> Full Logic Packs dashboard, running locally</div>
+                    <div class="flex items-center gap-2 mt-3 pt-2 border-t border-white/[0.04]"><span class="text-neutral-600">// When internet is available, it syncs updates automatically</span></div>
+                </div>
+            `,
+            specs: `
+                <h2 class="text-xl text-white font-medium tracking-tight mb-6">Technical Specifications</h2>
+                <div class="divide-y divide-white/[0.06]">
+                    <div class="grid grid-cols-[140px_1fr] py-3"><span class="text-neutral-600 text-sm">Processor</span><span class="text-white text-sm">Broadcom BCM2712, Quad-core ARM Cortex-A76 @ 2.4GHz</span></div>
+                    <div class="grid grid-cols-[140px_1fr] py-3"><span class="text-neutral-600 text-sm">Memory</span><span class="text-white text-sm">4GB LPDDR4X-4267</span></div>
+                    <div class="grid grid-cols-[140px_1fr] py-3"><span class="text-neutral-600 text-sm">Storage</span><span class="text-white text-sm">64GB microSD (A2 class, pre-flashed with LPDN OS)</span></div>
+                    <div class="grid grid-cols-[140px_1fr] py-3"><span class="text-neutral-600 text-sm">Wi-Fi</span><span class="text-white text-sm">Dual-band 802.11ac (2.4GHz + 5GHz), Access Point mode</span></div>
+                    <div class="grid grid-cols-[140px_1fr] py-3"><span class="text-neutral-600 text-sm">Bluetooth</span><span class="text-white text-sm">Bluetooth 5.0, BLE</span></div>
+                    <div class="grid grid-cols-[140px_1fr] py-3"><span class="text-neutral-600 text-sm">Ethernet</span><span class="text-white text-sm">Gigabit Ethernet (RJ45)</span></div>
+                    <div class="grid grid-cols-[140px_1fr] py-3"><span class="text-neutral-600 text-sm">USB</span><span class="text-white text-sm">2× USB 3.0, 1× USB 2.0</span></div>
+                    <div class="grid grid-cols-[140px_1fr] py-3"><span class="text-neutral-600 text-sm">Power</span><span class="text-white text-sm">USB-C, 5V/5A (27W PD)</span></div>
+                    <div class="grid grid-cols-[140px_1fr] py-3"><span class="text-neutral-600 text-sm">Video</span><span class="text-white text-sm">2× micro-HDMI (up to 4K60)</span></div>
+                    <div class="grid grid-cols-[140px_1fr] py-3"><span class="text-neutral-600 text-sm">GPIO</span><span class="text-white text-sm">40-pin header (IoT sensor expansion)</span></div>
+                    <div class="grid grid-cols-[140px_1fr] py-3"><span class="text-neutral-600 text-sm">Dimensions</span><span class="text-white text-sm">85 × 56 × 24 mm</span></div>
+                    <div class="grid grid-cols-[140px_1fr] py-3"><span class="text-neutral-600 text-sm">Weight</span><span class="text-white text-sm">~120g (board + heatsink)</span></div>
+                    <div class="grid grid-cols-[140px_1fr] py-3"><span class="text-neutral-600 text-sm">OS</span><span class="text-white text-sm">LPDN OS (Debian-based, custom Logic Packs runtime)</span></div>
+                    <div class="grid grid-cols-[140px_1fr] py-3"><span class="text-neutral-600 text-sm">Max Clients</span><span class="text-white text-sm">Up to 15 simultaneous Wi-Fi clients</span></div>
+                </div>
+            `,
+            included: [
+                "Raspberry Pi 5 (4GB) with LPDN OS pre-flashed",
+                "64GB A2 microSD card",
+                "Active cooler (heatsink + fan)",
+                "USB-C power supply (27W)",
+                "Quick start guide",
+                "Ethernet cable (1m)"
+            ],
+            related: ["lpdn-pro", "lpdn-case", "lpdn-starter-bundle", "wifi-adapter"]
+        },
+
+        "lpdn-pro": {
+            name: "LPDN Pro Node",
+            cat: "Hardware",
+            catSlug: "hardware",
+            price: 299,
+            originalPrice: null,
+            icon: "solar:server-square-linear",
+            iconColor: "text-green-500",
+            bgColor: "bg-green-500/10",
+            borderColor: "border-green-500/20",
+            badges: [{ text: "Pro", cls: "bg-white/[0.06] text-neutral-400 border-white/[0.08]" }],
+            desc: "High-performance LPDN node with 8GB RAM, NVMe SSD storage, and dual-band Wi-Fi for larger teams and heavier workloads.",
+            highlights: [
+                { icon: "solar:cpu-bolt-linear", text: "8GB RAM" },
+                { icon: "solar:ssd-round-linear", text: "256GB NVMe SSD" },
+                { icon: "solar:wifi-router-minimalistic-linear", text: "Dual-band Wi-Fi" },
+                { icon: "solar:users-group-rounded-linear", text: "Up to 30 clients" }
+            ],
+            inStock: true,
+            hasSizes: false,
+            quickSpecs: [
+                { label: "Processor", value: "Raspberry Pi 5, Quad-core ARM Cortex-A76" },
+                { label: "RAM", value: "8GB LPDDR4X" },
+                { label: "Storage", value: "256GB NVMe SSD + 64GB microSD" },
+                { label: "Wi-Fi", value: "Dual-band 802.11ac + External antenna" },
+                { label: "Clients", value: "Up to 30 simultaneous connections" },
+                { label: "Power", value: "USB-C 5V/5A (27W)" }
+            ],
+            description: `
+                <h2 class="text-xl text-white font-medium tracking-tight mb-4">About the LPDN Pro</h2>
+                <p class="text-neutral-400 text-sm leading-relaxed mb-6">The Pro version of the LPDN node is built for larger deployments. With 8GB of RAM, a 256GB NVMe SSD, and an external Wi-Fi antenna, it can handle up to 30 simultaneous clients running complex Logic Packs apps.</p>
+                <p class="text-neutral-400 text-sm leading-relaxed mb-6">The NVMe SSD provides significantly faster read/write speeds compared to microSD, making it ideal for data-heavy apps, databases, and high-frequency automations.</p>
+
+                <h3 class="text-lg text-white font-medium tracking-tight mb-3">Pro vs Standard</h3>
+                <div class="divide-y divide-white/[0.06] bg-white/[0.02] border border-white/[0.06] rounded-lg overflow-hidden mb-8">
+                    <div class="grid grid-cols-3 text-xs font-medium uppercase tracking-wider"><div class="p-3 text-neutral-600">Feature</div><div class="p-3 text-neutral-400">Standard</div><div class="p-3 text-green-400">Pro</div></div>
+                    <div class="grid grid-cols-3 text-sm"><div class="p-3 text-neutral-500">RAM</div><div class="p-3 text-neutral-400">4GB</div><div class="p-3 text-white">8GB</div></div>
+                    <div class="grid grid-cols-3 text-sm"><div class="p-3 text-neutral-500">Storage</div><div class="p-3 text-neutral-400">64GB SD</div><div class="p-3 text-white">256GB NVMe</div></div>
+                    <div class="grid grid-cols-3 text-sm"><div class="p-3 text-neutral-500">Max Clients</div><div class="p-3 text-neutral-400">15</div><div class="p-3 text-white">30</div></div>
+                    <div class="grid grid-cols-3 text-sm"><div class="p-3 text-neutral-500">Antenna</div><div class="p-3 text-neutral-400">Internal</div><div class="p-3 text-white">External</div></div>
+                    <div class="grid grid-cols-3 text-sm"><div class="p-3 text-neutral-500">Case</div><div class="p-3 text-neutral-400">None</div><div class="p-3 text-white">Included</div></div>
+                </div>
+            `,
+            specs: `
+                <h2 class="text-xl text-white font-medium tracking-tight mb-6">Technical Specifications</h2>
+                <div class="divide-y divide-white/[0.06]">
+                    <div class="grid grid-cols-[140px_1fr] py-3"><span class="text-neutral-600 text-sm">Processor</span><span class="text-white text-sm">Broadcom BCM2712, Quad-core ARM Cortex-A76 @ 2.4GHz</span></div>
+                    <div class="grid grid-cols-[140px_1fr] py-3"><span class="text-neutral-600 text-sm">Memory</span><span class="text-white text-sm">8GB LPDDR4X-4267</span></div>
+                    <div class="grid grid-cols-[140px_1fr] py-3"><span class="text-neutral-600 text-sm">Storage</span><span class="text-white text-sm">256GB NVMe M.2 SSD + 64GB microSD (boot)</span></div>
+                    <div class="grid grid-cols-[140px_1fr] py-3"><span class="text-neutral-600 text-sm">Wi-Fi</span><span class="text-white text-sm">Dual-band 802.11ac + external high-gain antenna</span></div>
+                    <div class="grid grid-cols-[140px_1fr] py-3"><span class="text-neutral-600 text-sm">Max Clients</span><span class="text-white text-sm">Up to 30 simultaneous Wi-Fi clients</span></div>
+                    <div class="grid grid-cols-[140px_1fr] py-3"><span class="text-neutral-600 text-sm">Case</span><span class="text-white text-sm">Aluminum enclosure with passive cooling</span></div>
+                    <div class="grid grid-cols-[140px_1fr] py-3"><span class="text-neutral-600 text-sm">Dimensions</span><span class="text-white text-sm">110 × 75 × 35 mm (with case)</span></div>
+                </div>
+            `,
+            included: [
+                "Raspberry Pi 5 (8GB) with LPDN OS",
+                "256GB NVMe M.2 SSD (pre-installed)",
+                "NVMe HAT adapter board",
+                "64GB microSD boot card",
+                "Aluminum enclosure with active cooling",
+                "External Wi-Fi antenna",
+                "USB-C power supply (27W)",
+                "Ethernet cable (1m)",
+                "Quick start guide"
+            ],
+            related: ["lpdn-node", "lpdn-case", "wifi-adapter", "iot-starter-kit"]
+        },
+
+        "lpdn-case": {
+            name: "LPDN Protective Case",
+            cat: "Accessories",
+            catSlug: "accessories",
+            price: 29,
+            originalPrice: null,
+            icon: "solar:box-linear",
+            iconColor: "text-neutral-400",
+            bgColor: "bg-white/5",
+            borderColor: "border-white/10",
+            badges: [],
+            desc: "Rugged aluminum case for your LPDN node. Passive cooling fins, wall-mount bracket, IP54 dust and splash protection.",
+            highlights: [
+                { icon: "solar:shield-check-linear", text: "IP54 Rated" },
+                { icon: "solar:temperature-linear", text: "Passive Cooling" },
+                { icon: "solar:pin-linear", text: "Wall Mount" }
+            ],
+            inStock: true,
+            hasSizes: false,
+            quickSpecs: [
+                { label: "Material", value: "CNC machined aluminum" },
+                { label: "Finish", value: "Matte black anodized" },
+                { label: "Rating", value: "IP54 (dust + splash proof)" },
+                { label: "Cooling", value: "Passive fins, open-air design" },
+                { label: "Mount", value: "VESA 75mm + wall bracket included" },
+                { label: "Compatibility", value: "LPDN Node & LPDN Pro" }
+            ],
+            description: `
+                <h2 class="text-xl text-white font-medium tracking-tight mb-4">About</h2>
+                <p class="text-neutral-400 text-sm leading-relaxed mb-6">Keep your LPDN node protected in any environment. The case is CNC-machined from solid aluminum with passive cooling fins that maintain optimal operating temperature without a fan.</p>
+                <p class="text-neutral-400 text-sm leading-relaxed mb-6">IP54 rated for dust and splash resistance. Includes a VESA 75mm mount and wall bracket for permanent installations.</p>
+            `,
+            specs: `
+                <h2 class="text-xl text-white font-medium tracking-tight mb-6">Specifications</h2>
+                <div class="divide-y divide-white/[0.06]">
+                    <div class="grid grid-cols-[140px_1fr] py-3"><span class="text-neutral-600 text-sm">Material</span><span class="text-white text-sm">6061 Aluminum, CNC machined</span></div>
+                    <div class="grid grid-cols-[140px_1fr] py-3"><span class="text-neutral-600 text-sm">Finish</span><span class="text-white text-sm">Matte black anodized</span></div>
+                    <div class="grid grid-cols-[140px_1fr] py-3"><span class="text-neutral-600 text-sm">Protection</span><span class="text-white text-sm">IP54 (dust + splash proof)</span></div>
+                    <div class="grid grid-cols-[140px_1fr] py-3"><span class="text-neutral-600 text-sm">Dimensions</span><span class="text-white text-sm">100 × 70 × 30 mm</span></div>
+                    <div class="grid grid-cols-[140px_1fr] py-3"><span class="text-neutral-600 text-sm">Weight</span><span class="text-white text-sm">180g</span></div>
+                    <div class="grid grid-cols-[140px_1fr] py-3"><span class="text-neutral-600 text-sm">Mount</span><span class="text-white text-sm">VESA 75mm, wall bracket included</span></div>
+                </div>
+            `,
+            included: ["Aluminum case (2-piece)", "Thermal pad", "VESA mount bracket", "Wall screws & anchors", "Assembly tool"],
+            related: ["lpdn-node", "lpdn-pro", "lpdn-starter-bundle", "wifi-adapter"]
+        },
+
+        "rpi5-kit": {
+            name: "Raspberry Pi 5 Kit",
+            cat: "Accessories",
+            catSlug: "accessories",
+            price: 89,
+            originalPrice: null,
+            icon: "solar:cpu-bolt-linear",
+            iconColor: "text-neutral-400",
+            bgColor: "bg-white/5",
+            borderColor: "border-white/10",
+            badges: [{ text: "DIY", cls: "bg-white/[0.06] text-neutral-400 border-white/[0.08]" }],
+            desc: "Raspberry Pi 5 (4GB) with power supply, microSD card, and heatsink. Perfect for building your own LPDN from scratch.",
+            highlights: [
+                { icon: "solar:cpu-bolt-linear", text: "Pi 5 4GB" },
+                { icon: "solar:sd-card-linear", text: "32GB microSD" },
+                { icon: "solar:temperature-linear", text: "Heatsink" }
+            ],
+            inStock: true,
+            hasSizes: false,
+            quickSpecs: [
+                { label: "Board", value: "Raspberry Pi 5, 4GB" },
+                { label: "Storage", value: "32GB microSD (blank)" },
+                { label: "Cooling", value: "Aluminum heatsink" },
+                { label: "Power", value: "USB-C 27W PSU included" }
+            ],
+            description: `
+                <h2 class="text-xl text-white font-medium tracking-tight mb-4">Build Your Own LPDN</h2>
+                <p class="text-neutral-400 text-sm leading-relaxed mb-6">This kit provides the core hardware you need to build a DIY LPDN node. Flash the LPDN OS image (free download) onto the microSD card, assemble the heatsink, and you're ready to go.</p>
+                <p class="text-neutral-400 text-sm leading-relaxed mb-6">Perfect for developers who want full control over their setup, or for schools running hands-on hardware workshops.</p>
+            `,
+            specs: `
+                <h2 class="text-xl text-white font-medium tracking-tight mb-6">Specifications</h2>
+                <div class="divide-y divide-white/[0.06]">
+                    <div class="grid grid-cols-[140px_1fr] py-3"><span class="text-neutral-600 text-sm">Board</span><span class="text-white text-sm">Raspberry Pi 5, 4GB LPDDR4X</span></div>
+                    <div class="grid grid-cols-[140px_1fr] py-3"><span class="text-neutral-600 text-sm">Storage</span><span class="text-white text-sm">32GB microSD (blank, Class 10 A2)</span></div>
+                    <div class="grid grid-cols-[140px_1fr] py-3"><span class="text-neutral-600 text-sm">Power Supply</span><span class="text-white text-sm">Official USB-C 27W</span></div>
+                    <div class="grid grid-cols-[140px_1fr] py-3"><span class="text-neutral-600 text-sm">Cooling</span><span class="text-white text-sm">Aluminum heatsink (stick-on)</span></div>
+                </div>
+            `,
+            included: ["Raspberry Pi 5 (4GB)", "32GB microSD card", "USB-C power supply (27W)", "Aluminum heatsink", "Thermal pads"],
+            related: ["lpdn-node", "lpdn-case", "wifi-adapter", "microsd-64"]
+        },
+
+        "wifi-adapter": {
+            name: "USB Wi-Fi Adapter",
+            cat: "Accessories",
+            catSlug: "accessories",
+            price: 19,
+            originalPrice: null,
+            icon: "solar:wifi-router-minimalistic-linear",
+            iconColor: "text-neutral-400",
+            bgColor: "bg-white/5",
+            borderColor: "border-white/10",
+            badges: [],
+            desc: "Dual-band USB Wi-Fi adapter with AP mode support. Extends range or adds a second network to your LPDN node.",
+            highlights: [
+                { icon: "solar:wifi-router-minimalistic-linear", text: "AP Mode" },
+                { icon: "solar:tuning-2-linear", text: "Dual-band" },
+                { icon: "solar:bolt-circle-linear", text: "USB 3.0" }
+            ],
+            inStock: true,
+            hasSizes: false,
+            quickSpecs: [
+                { label: "Interface", value: "USB 3.0" },
+                { label: "Bands", value: "2.4GHz + 5GHz" },
+                { label: "Speed", value: "Up to 1200Mbps" },
+                { label: "Antenna", value: "High-gain external" }
+            ],
+            description: `
+                <h2 class="text-xl text-white font-medium tracking-tight mb-4">Extend Your LPDN Reach</h2>
+                <p class="text-neutral-400 text-sm leading-relaxed mb-6">Add a second Wi-Fi network to your LPDN or extend the range of your existing one. This adapter supports AP (Access Point) mode natively with the LPDN OS — just plug it in and it auto-configures.</p>
+            `,
+            specs: `
+                <h2 class="text-xl text-white font-medium tracking-tight mb-6">Specifications</h2>
+                <div class="divide-y divide-white/[0.06]">
+                    <div class="grid grid-cols-[140px_1fr] py-3"><span class="text-neutral-600 text-sm">Interface</span><span class="text-white text-sm">USB 3.0 Type-A</span></div>
+                    <div class="grid grid-cols-[140px_1fr] py-3"><span class="text-neutral-600 text-sm">Bands</span><span class="text-white text-sm">2.4GHz (300Mbps) + 5GHz (867Mbps)</span></div>
+                    <div class="grid grid-cols-[140px_1fr] py-3"><span class="text-neutral-600 text-sm">Chipset</span><span class="text-white text-sm">RTL8812BU (Linux native)</span></div>
+                    <div class="grid grid-cols-[140px_1fr] py-3"><span class="text-neutral-600 text-sm">Antenna</span><span class="text-white text-sm">5dBi external, adjustable</span></div>
+                </div>
+            `,
+            included: ["USB Wi-Fi adapter", "External antenna", "USB extension cable (50cm)"],
+            related: ["lpdn-node", "lpdn-pro", "lpdn-case", "lpdn-starter-bundle"]
+        },
+
+        "lpdn-starter-bundle": {
+            name: "LPDN Starter Bundle",
+            cat: "Accessories",
+            catSlug: "accessories",
+            price: 199,
+            originalPrice: 237,
+            icon: "solar:gift-linear",
+            iconColor: "text-green-500",
+            bgColor: "bg-green-500/10",
+            borderColor: "border-green-500/20",
+            badges: [{ text: "Save $38", cls: "bg-green-500/15 text-green-400 border-green-500/20" }],
+            desc: "Everything you need: LPDN Node + Protective Case + USB Wi-Fi Adapter. The complete offline deployment kit at a bundled discount.",
+            highlights: [
+                { icon: "solar:server-minimalistic-linear", text: "LPDN Node" },
+                { icon: "solar:box-linear", text: "Protective Case" },
+                { icon: "solar:wifi-router-minimalistic-linear", text: "Wi-Fi Adapter" }
+            ],
+            inStock: true,
+            hasSizes: false,
+            quickSpecs: [
+                { label: "Includes", value: "LPDN Node + Case + Wi-Fi Adapter" },
+                { label: "Savings", value: "$38 vs buying separately" },
+                { label: "Warranty", value: "1 year on all components" }
+            ],
+            description: `
+                <h2 class="text-xl text-white font-medium tracking-tight mb-4">The Complete Kit</h2>
+                <p class="text-neutral-400 text-sm leading-relaxed mb-6">Get everything you need to deploy offline Logic Packs apps in one box. The Starter Bundle includes the LPDN Node, a protective aluminum case, and a USB Wi-Fi adapter for extended range — all pre-configured and ready to use.</p>
+            `,
+            specs: `
+                <h2 class="text-xl text-white font-medium tracking-tight mb-6">Bundle Contents</h2>
+                <div class="divide-y divide-white/[0.06]">
+                    <div class="grid grid-cols-[140px_1fr] py-3"><span class="text-neutral-600 text-sm">LPDN Node</span><span class="text-white text-sm">Raspberry Pi 5 (4GB), 64GB microSD, LPDN OS</span></div>
+                    <div class="grid grid-cols-[140px_1fr] py-3"><span class="text-neutral-600 text-sm">Case</span><span class="text-white text-sm">Aluminum, IP54, passive cooling, wall mount</span></div>
+                    <div class="grid grid-cols-[140px_1fr] py-3"><span class="text-neutral-600 text-sm">Wi-Fi Adapter</span><span class="text-white text-sm">Dual-band USB 3.0, AP mode, external antenna</span></div>
+                    <div class="grid grid-cols-[140px_1fr] py-3"><span class="text-neutral-600 text-sm">Warranty</span><span class="text-white text-sm">1 year on all components</span></div>
+                </div>
+            `,
+            included: [
+                "LPDN Node (complete, pre-configured)",
+                "Protective aluminum case",
+                "USB Wi-Fi adapter + antenna",
+                "USB-C power supply",
+                "Ethernet cable",
+                "Wall mount bracket + screws",
+                "Quick start guide"
+            ],
+            related: ["lpdn-node", "lpdn-pro", "lpdn-case", "rpi5-kit"]
+        },
+
+        "microsd-64": {
+            name: "64GB microSD Card",
+            cat: "Accessories",
+            catSlug: "accessories",
+            price: 14,
+            originalPrice: null,
+            icon: "solar:sd-card-linear",
+            iconColor: "text-neutral-400",
+            bgColor: "bg-white/5",
+            borderColor: "border-white/10",
+            badges: [],
+            desc: "Pre-flashed with LPDN OS. High-endurance A2 class for reliable offline operation.",
+            highlights: [
+                { icon: "solar:sd-card-linear", text: "64GB A2" },
+                { icon: "solar:server-minimalistic-linear", text: "LPDN OS Pre-flashed" }
+            ],
+            inStock: true,
+            hasSizes: false,
+            quickSpecs: [
+                { label: "Capacity", value: "64GB" },
+                { label: "Class", value: "A2, V30, UHS-I" },
+                { label: "OS", value: "LPDN OS pre-flashed" },
+                { label: "Endurance", value: "High-endurance rated" }
+            ],
+            description: `
+                <h2 class="text-xl text-white font-medium tracking-tight mb-4">Ready-to-Boot Storage</h2>
+                <p class="text-neutral-400 text-sm leading-relaxed mb-6">Drop this into any Raspberry Pi 5 and boot straight into LPDN OS. High-endurance A2 class ensures reliability under constant read/write workloads.</p>
+            `,
+            specs: `
+                <h2 class="text-xl text-white font-medium tracking-tight mb-6">Specifications</h2>
+                <div class="divide-y divide-white/[0.06]">
+                    <div class="grid grid-cols-[140px_1fr] py-3"><span class="text-neutral-600 text-sm">Capacity</span><span class="text-white text-sm">64GB</span></div>
+                    <div class="grid grid-cols-[140px_1fr] py-3"><span class="text-neutral-600 text-sm">Speed Class</span><span class="text-white text-sm">A2, V30, UHS-I, C10</span></div>
+                    <div class="grid grid-cols-[140px_1fr] py-3"><span class="text-neutral-600 text-sm">Read Speed</span><span class="text-white text-sm">Up to 160MB/s</span></div>
+                    <div class="grid grid-cols-[140px_1fr] py-3"><span class="text-neutral-600 text-sm">Write Speed</span><span class="text-white text-sm">Up to 120MB/s</span></div>
+                </div>
+            `,
+            included: ["64GB microSD card (pre-flashed with LPDN OS)", "SD adapter"],
+            related: ["lpdn-node", "rpi5-kit", "lpdn-starter-bundle", "wifi-adapter"]
+        },
+
+        "classic-tee": {
+            name: "Logic Packs Classic Tee",
+            cat: "Apparel",
+            catSlug: "apparel",
+            price: 32,
+            originalPrice: null,
+            icon: "solar:t-shirt-linear",
+            iconColor: "text-neutral-400",
+            bgColor: "bg-white/5",
+            borderColor: "border-white/10",
+            badges: [],
+            desc: "Premium cotton tee with minimal Logic Packs logo. Black on black. Runs true to size.",
+            highlights: [
+                { icon: "solar:t-shirt-linear", text: "100% Cotton" },
+                { icon: "solar:palette-linear", text: "Black" }
+            ],
+            inStock: true,
+            hasSizes: true,
+            sizes: ["XS", "S", "M", "L", "XL", "2XL"],
+            quickSpecs: [
+                { label: "Material", value: "100% Premium combed cotton" },
+                { label: "Weight", value: "180 GSM" },
+                { label: "Color", value: "Black" },
+                { label: "Print", value: "Embroidered logo" },
+                { label: "Fit", value: "Regular, true to size" }
+            ],
+            description: `
+                <h2 class="text-xl text-white font-medium tracking-tight mb-4">The Developer Essential</h2>
+                <p class="text-neutral-400 text-sm leading-relaxed mb-6">Clean, minimal, and comfortable. The Logic Packs Classic Tee features a small embroidered LP mark on the chest — nothing more, nothing less. 180 GSM premium combed cotton, pre-shrunk, and built to last.</p>
+            `,
+            specs: `
+                <h2 class="text-xl text-white font-medium tracking-tight mb-6">Details</h2>
+                <div class="divide-y divide-white/[0.06]">
+                    <div class="grid grid-cols-[140px_1fr] py-3"><span class="text-neutral-600 text-sm">Material</span><span class="text-white text-sm">100% Premium combed cotton, 180 GSM</span></div>
+                    <div class="grid grid-cols-[140px_1fr] py-3"><span class="text-neutral-600 text-sm">Fit</span><span class="text-white text-sm">Regular fit, true to size</span></div>
+                    <div class="grid grid-cols-[140px_1fr] py-3"><span class="text-neutral-600 text-sm">Color</span><span class="text-white text-sm">Black</span></div>
+                    <div class="grid grid-cols-[140px_1fr] py-3"><span class="text-neutral-600 text-sm">Branding</span><span class="text-white text-sm">Embroidered LP mark (chest, left)</span></div>
+                    <div class="grid grid-cols-[140px_1fr] py-3"><span class="text-neutral-600 text-sm">Care</span><span class="text-white text-sm">Machine wash cold, tumble dry low</span></div>
+                </div>
+            `,
+            included: ["1× Logic Packs Classic Tee"],
+            related: ["dev-hoodie", "dev-cap", "lpdn-node", "classic-tee"]
+        },
+
+        "dev-hoodie": {
+            name: "Developer Hoodie",
+            cat: "Apparel",
+            catSlug: "apparel",
+            price: 68,
+            originalPrice: null,
+            icon: "solar:t-shirt-linear",
+            iconColor: "text-neutral-400",
+            bgColor: "bg-white/5",
+            borderColor: "border-white/10",
+            badges: [{ text: "Popular", cls: "bg-white/[0.06] text-neutral-400 border-white/[0.08]" }],
+            desc: "Heavyweight fleece hoodie with embroidered Logic Packs mark. Black on black. Kangaroo pocket. Perfect for late-night deploys.",
+            highlights: [
+                { icon: "solar:t-shirt-linear", text: "Heavyweight Fleece" },
+                { icon: "solar:palette-linear", text: "Black on Black" }
+            ],
+            inStock: true,
+            hasSizes: true,
+            sizes: ["S", "M", "L", "XL", "2XL"],
+            quickSpecs: [
+                { label: "Material", value: "80% Cotton, 20% Polyester fleece" },
+                { label: "Weight", value: "380 GSM" },
+                { label: "Color", value: "Black" },
+                { label: "Print", value: "Embroidered LP mark" },
+                { label: "Features", value: "Kangaroo pocket, ribbed cuffs" }
+            ],
+            description: `
+                <h2 class="text-xl text-white font-medium tracking-tight mb-4">Ship Code. Stay Warm.</h2>
+                <p class="text-neutral-400 text-sm leading-relaxed mb-6">The Logic Packs Developer Hoodie is heavyweight 380 GSM fleece with an embroidered LP mark. Kangaroo pocket, drawstring hood, ribbed cuffs and hem. The unofficial uniform of developers who ship.</p>
+            `,
+            specs: `
+                <h2 class="text-xl text-white font-medium tracking-tight mb-6">Details</h2>
+                <div class="divide-y divide-white/[0.06]">
+                    <div class="grid grid-cols-[140px_1fr] py-3"><span class="text-neutral-600 text-sm">Material</span><span class="text-white text-sm">80/20 Cotton-Polyester fleece, 380 GSM</span></div>
+                    <div class="grid grid-cols-[140px_1fr] py-3"><span class="text-neutral-600 text-sm">Fit</span><span class="text-white text-sm">Relaxed fit</span></div>
+                    <div class="grid grid-cols-[140px_1fr] py-3"><span class="text-neutral-600 text-sm">Color</span><span class="text-white text-sm">Black</span></div>
+                    <div class="grid grid-cols-[140px_1fr] py-3"><span class="text-neutral-600 text-sm">Branding</span><span class="text-white text-sm">Embroidered LP mark (chest, left)</span></div>
+                    <div class="grid grid-cols-[140px_1fr] py-3"><span class="text-neutral-600 text-sm">Features</span><span class="text-white text-sm">Kangaroo pocket, drawstring hood, ribbed cuffs + hem</span></div>
+                    <div class="grid grid-cols-[140px_1fr] py-3"><span class="text-neutral-600 text-sm">Care</span><span class="text-white text-sm">Machine wash cold, tumble dry low</span></div>
+                </div>
+            `,
+            included: ["1× Developer Hoodie"],
+            related: ["classic-tee", "dev-cap", "lpdn-node", "lpdn-starter-bundle"]
+        },
+
+        "dev-cap": {
+            name: "Logic Packs Cap",
+            cat: "Apparel",
+            catSlug: "apparel",
+            price: 28,
+            originalPrice: null,
+            icon: "solar:ghost-linear",
+            iconColor: "text-neutral-400",
+            bgColor: "bg-white/5",
+            borderColor: "border-white/10",
+            badges: [],
+            desc: "Structured 6-panel cap with embroidered LP monogram. Adjustable strap. One size fits all.",
+            highlights: [
+                { icon: "solar:ghost-linear", text: "6-Panel" },
+                { icon: "solar:palette-linear", text: "Black" }
+            ],
+            inStock: true,
+            hasSizes: false,
+            quickSpecs: [
+                { label: "Material", value: "100% Cotton twill" },
+                { label: "Style", value: "Structured 6-panel" },
+                { label: "Closure", value: "Adjustable metal buckle" },
+                { label: "Color", value: "Black" }
+            ],
+            description: `
+                <h2 class="text-xl text-white font-medium tracking-tight mb-4">Cap the Stack</h2>
+                <p class="text-neutral-400 text-sm leading-relaxed mb-6">Structured 6-panel cap in black cotton twill with an embroidered LP monogram on the front. Adjustable metal buckle strap fits all head sizes.</p>
+            `,
+            specs: `
+                <h2 class="text-xl text-white font-medium tracking-tight mb-6">Details</h2>
+                <div class="divide-y divide-white/[0.06]">
+                    <div class="grid grid-cols-[140px_1fr] py-3"><span class="text-neutral-600 text-sm">Material</span><span class="text-white text-sm">100% Cotton twill</span></div>
+                    <div class="grid grid-cols-[140px_1fr] py-3"><span class="text-neutral-600 text-sm">Closure</span><span class="text-white text-sm">Adjustable metal buckle strap</span></div>
+                    <div class="grid grid-cols-[140px_1fr] py-3"><span class="text-neutral-600 text-sm">Branding</span><span class="text-white text-sm">Embroidered LP monogram (front center)</span></div>
+                </div>
+            `,
+            included: ["1× Logic Packs Cap"],
+            related: ["classic-tee", "dev-hoodie", "lpdn-node", "lpdn-starter-bundle"]
+        }
+    };
+
+    // ── Read URL param ──
+    const params = new URLSearchParams(window.location.search);
+    const productId = params.get("id") || "lpdn-node";
+    const product = PRODUCT_DB[productId];
+
+    if (!product) {
+        window.location.href = "shop.html";
+    }
+
+    // ── Populate ──
+    document.getElementById("page-title").textContent = `${product.name} — Logic Packs Shop`;
+    document.getElementById("breadcrumb-cat").textContent = product.cat;
+    document.getElementById("breadcrumb-name").textContent = product.name;
+    document.getElementById("product-name").textContent = product.name;
+    document.getElementById("product-desc").textContent = product.desc;
+
+    // Badges
+    document.getElementById("product-badges").innerHTML = product.badges.map(b => `<span class="px-2.5 py-0.5 rounded text-[10px] font-semibold border ${b.cls} uppercase tracking-wider">${b.text}</span>`).join("");
+
+    // Price
+    const priceHtml = product.originalPrice
+        ? `<span class="text-3xl font-semibold text-white">$${product.price}</span><span class="text-neutral-600 text-lg ml-2 line-through">$${product.originalPrice}</span>`
+        : `<span class="text-3xl font-semibold text-white">$${product.price}</span>`;
+    document.getElementById("product-price-area").innerHTML = priceHtml;
+
+    // Highlights
+    document.getElementById("product-highlights").innerHTML = product.highlights.map(h => `<div class="flex items-center gap-1.5"><iconify-icon icon="${h.icon}" width="14" class="text-green-500/60"></iconify-icon>${h.text}</div>`).join("");
+
+    // Visual
+    document.getElementById("product-visual").innerHTML = `
+        <div class="w-32 h-32 md:w-40 md:h-40 rounded-3xl ${product.bgColor} ${product.borderColor} border flex items-center justify-center shadow-2xl">
+            <iconify-icon icon="${product.icon}" class="${product.iconColor} text-6xl md:text-7xl"></iconify-icon>
+        </div>
+    `;
+
+    // Stock
+    if (!product.inStock) {
+        document.getElementById("stock-status").innerHTML = `<span class="h-1.5 w-1.5 bg-yellow-400 rounded-full"></span><span class="text-yellow-400 text-xs font-mono">Coming Soon — Pre-order available</span>`;
+        document.getElementById("add-to-cart-btn").innerHTML = '<iconify-icon icon="solar:bell-linear" width="18"></iconify-icon> Notify Me';
+        document.getElementById("add-to-cart-btn").classList.remove("bg-green-500", "hover:bg-green-400");
+        document.getElementById("add-to-cart-btn").classList.add("bg-white/10", "text-white", "hover:bg-white/15");
+    }
+
+    // Sizes
+    if (product.hasSizes && product.sizes) {
+        document.getElementById("size-selector").classList.remove("hidden");
+        document.getElementById("size-options").innerHTML = product.sizes.map((s, i) =>
+            `<button class="size-btn w-10 h-10 rounded-md border border-white/[0.08] text-xs font-medium text-neutral-400 hover:border-white/20 hover:text-white transition-all ${i === 2 ? 'active-size' : ''}" onclick="selectSize(this)">${s}</button>`
+        ).join("");
+    }
+
+    // Quick specs
+    document.getElementById("quick-specs").innerHTML = product.quickSpecs.map(s => `<div class="flex justify-between text-sm"><span class="text-neutral-600">${s.label}</span><span class="text-white font-mono text-xs">${s.value}</span></div>`).join("");
+
+    // Tabs content
+    document.getElementById("description-content").innerHTML = product.description;
+    document.getElementById("specs-content").innerHTML = product.specs;
+    document.getElementById("included-content").innerHTML = `
+        <h2 class="text-xl text-white font-medium tracking-tight mb-6">What's in the Box</h2>
+        <ul class="space-y-3">
+            ${product.included.map(item => `<li class="flex items-center gap-3 text-sm"><iconify-icon icon="solar:check-circle-linear" class="text-green-500 text-base shrink-0"></iconify-icon><span class="text-neutral-300">${item}</span></li>`).join("")}
+        </ul>
+    `;
+
+    // Related Products
+    const MINI_DB = {
+        "lpdn-node": { name:"LPDN Node", icon:"solar:server-minimalistic-linear", color:"text-green-500", bg:"bg-green-500/10 border-green-500/20", price:"$149" },
+        "lpdn-pro": { name:"LPDN Pro", icon:"solar:server-square-linear", color:"text-green-500", bg:"bg-green-500/10 border-green-500/20", price:"$299" },
+        "lpdn-case": { name:"Protective Case", icon:"solar:box-linear", color:"text-neutral-400", bg:"bg-white/5 border-white/10", price:"$29" },
+        "rpi5-kit": { name:"Raspberry Pi 5 Kit", icon:"solar:cpu-bolt-linear", color:"text-neutral-400", bg:"bg-white/5 border-white/10", price:"$89" },
+        "wifi-adapter": { name:"Wi-Fi Adapter", icon:"solar:wifi-router-minimalistic-linear", color:"text-neutral-400", bg:"bg-white/5 border-white/10", price:"$19" },
+        "lpdn-starter-bundle": { name:"Starter Bundle", icon:"solar:gift-linear", color:"text-green-500", bg:"bg-green-500/10 border-green-500/20", price:"$199" },
+        "microsd-64": { name:"64GB microSD", icon:"solar:sd-card-linear", color:"text-neutral-400", bg:"bg-white/5 border-white/10", price:"$14" },
+        "classic-tee": { name:"Classic Tee", icon:"solar:t-shirt-linear", color:"text-neutral-400", bg:"bg-white/5 border-white/10", price:"$32" },
+        "dev-hoodie": { name:"Developer Hoodie", icon:"solar:t-shirt-linear", color:"text-neutral-400", bg:"bg-white/5 border-white/10", price:"$68" },
+        "dev-cap": { name:"Logic Packs Cap", icon:"solar:ghost-linear", color:"text-neutral-400", bg:"bg-white/5 border-white/10", price:"$28" },
+        "iot-starter-kit": { name:"IoT Sensor Bundle", icon:"solar:tuning-square-2-linear", color:"text-blue-400", bg:"bg-blue-500/10 border-blue-500/20", price:"$89" },
+    };
+
+    document.getElementById("related-products").innerHTML = (product.related || []).map(id => {
+        const r = MINI_DB[id];
+        if (!r) return "";
+        return `<a href="product.html?id=${id}" class="group block border border-white/[0.06] rounded-xl overflow-hidden hover:bg-white/[0.02] hover:border-white/[0.1] transition-all">
+            <div class="aspect-square bg-white/[0.015] flex items-center justify-center">
+                <div class="w-14 h-14 rounded-xl ${r.bg} border flex items-center justify-center">
+                    <iconify-icon icon="${r.icon}" class="${r.color} text-2xl"></iconify-icon>
+                </div>
+            </div>
+            <div class="p-4">
+                <h3 class="text-white text-sm font-medium mb-1">${r.name}</h3>
+                <div class="flex items-center justify-between">
+                    <span class="text-white text-sm font-semibold">${r.price}</span>
+                    <span class="text-xs text-neutral-600 group-hover:text-neutral-400 transition-colors flex items-center gap-1">View <iconify-icon icon="solar:arrow-right-linear" width="12"></iconify-icon></span>
+                </div>
+            </div>
+        </a>`;
+    }).join("");
+
+    // ── Interactions ──
+    let qty = 1;
+    function changeQty(d) {
+        qty = Math.max(1, Math.min(10, qty + d));
+        document.getElementById("qty-display").textContent = qty;
+    }
+
+    function selectSize(btn) {
+        document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active-size'));
+        btn.classList.add('active-size');
+    }
+
+    function addToCart() {
+        const btn = document.getElementById("add-to-cart-btn");
+        const orig = btn.innerHTML;
+        btn.innerHTML = '<iconify-icon icon="solar:check-circle-linear" width="18"></iconify-icon> Added!';
+        btn.classList.remove('bg-green-500', 'hover:bg-green-400');
+        btn.classList.add('bg-white/10', 'text-green-400');
+        setTimeout(() => {
+            btn.innerHTML = orig;
+            btn.classList.add('bg-green-500', 'hover:bg-green-400');
+            btn.classList.remove('bg-white/10', 'text-green-400');
+        }, 2000);
+    }
+
+    // Tab switching
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active-tab'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active-content'));
+            btn.classList.add('active-tab');
+            document.getElementById(`tab-${btn.dataset.tab}`).classList.add('active-content');
+        });
+    });
+    </script>
+</body>
+</html>
+

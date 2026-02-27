@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop — Logic Packs Hardware & Merch</title>
+    <meta name="description" content="LPDN nodes, accessories, IoT sensors, and developer merch. Build offline-capable apps with the Logic Pack Distribution Node.">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+    tailwind.config = {
+        theme: { extend: { fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] } } }
+    }
+    </script>
+
+    <style>
+    body { background-color: #0a0a0a; color: #ededed; font-family: 'Inter', system-ui, sans-serif; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #0a0a0a; }
+    ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+    @keyframes fadeInUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+    .reveal { animation: fadeInUp 0.5s cubic-bezier(0.2,0.8,0.2,1) both; }
+    .reveal-hidden { opacity: 0; }
+    .product-card { transition: all 0.25s cubic-bezier(0.2,0.8,0.2,1); }
+    .product-card:hover { background: rgba(255,255,255,0.025); transform: translateY(-2px); }
+    .product-card:hover .product-img { transform: scale(1.03); }
+    .product-img { transition: transform 0.4s cubic-bezier(0.2,0.8,0.2,1); }
+    .coming-soon-overlay { backdrop-filter: blur(2px); }
+    </style>
+</head>
+
+<body class="selection:bg-green-500/30 selection:text-white overflow-x-hidden">
+
+    <!-- ═══ HEADER ═══ -->
+    <header class="fixed top-0 left-0 w-full z-50 bg-[#0a0a0a]/80 backdrop-blur-xl border-b border-white/[0.06] h-14">
+        <div class="flex w-full h-full max-w-[1440px] mx-auto px-6 md:px-8 items-center justify-between">
+            <a href="index.html" class="flex items-center gap-2.5 group">
+                <div class="w-7 h-7 rounded-md border border-white/10 flex items-center justify-center bg-white/[0.03] group-hover:border-green-500/40 transition-colors">
+                    <iconify-icon icon="solar:widget-5-linear" class="text-green-500 text-sm"></iconify-icon>
+                </div>
+                <span class="text-sm font-semibold tracking-tight text-white">Logic Packs</span>
+            </a>
+            <nav class="hidden md:flex items-center gap-8">
+                <a href="index.html#modes" class="text-[11px] hover:text-white transition-colors uppercase font-medium text-neutral-400 tracking-[0.15em]">Platform</a>
+                <a href="store.html" class="text-[11px] hover:text-white transition-colors uppercase font-medium text-neutral-400 tracking-[0.15em]">Marketplace</a>
+                <a href="shop.html" class="text-[11px] uppercase font-medium text-white tracking-[0.15em]">Shop</a>
+                <a href="ventures.html" class="text-[11px] hover:text-white transition-colors uppercase font-medium text-neutral-400 tracking-[0.15em]">Ventures</a>
+                <a href="courses.html" class="text-[11px] hover:text-white transition-colors uppercase font-medium text-neutral-400 tracking-[0.15em]">Learn</a>
+                <a href="ambassadors.html" class="text-[11px] hover:text-white transition-colors uppercase font-medium text-neutral-400 tracking-[0.15em]">Ambassadors</a>
+                <a href="index.html#pricing" class="text-[11px] hover:text-white transition-colors uppercase font-medium text-neutral-400 tracking-[0.15em]">Pricing</a>
+            </nav>
+            <a href="#" class="hidden md:flex bg-white text-black text-xs font-semibold tracking-wide uppercase rounded-md px-5 py-2 hover:bg-neutral-200 transition-colors">Get Started</a>
+            <button class="md:hidden text-white" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
+                <iconify-icon icon="solar:hamburger-menu-linear" width="22"></iconify-icon>
+            </button>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden absolute top-full left-0 w-full bg-[#0a0a0a]/95 backdrop-blur-xl border-b border-white/[0.06] p-4 flex flex-col gap-2">
+            <a href="index.html#modes" class="px-4 py-2 text-sm text-neutral-400 hover:text-white hover:bg-white/5 rounded-md">Platform</a>
+            <a href="store.html" class="px-4 py-2 text-sm text-neutral-400 hover:text-white hover:bg-white/5 rounded-md">Marketplace</a>
+            <a href="shop.html" class="px-4 py-2 text-sm text-white bg-white/5 rounded-md">Shop</a>
+            <a href="ventures.html" class="px-4 py-2 text-sm text-neutral-400 hover:text-white hover:bg-white/5 rounded-md">Ventures</a>
+            <a href="courses.html" class="px-4 py-2 text-sm text-neutral-400 hover:text-white hover:bg-white/5 rounded-md">Learn</a>
+            <a href="ambassadors.html" class="px-4 py-2 text-sm text-neutral-400 hover:text-white hover:bg-white/5 rounded-md">Ambassadors</a>
+            <a href="index.html#pricing" class="px-4 py-2 text-sm text-neutral-400 hover:text-white hover:bg-white/5 rounded-md">Pricing</a>
+        </div>
+    </header>
+
+    <!-- ═══ SHOP HERO ═══ -->
+    <section class="pt-14">
+        <div class="border-b border-white/[0.06]">
+            <div class="max-w-[1440px] mx-auto px-6 md:px-8 pt-16 md:pt-24 pb-10">
+                <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+                    <div>
+                        <span class="font-mono text-neutral-600 text-[11px] block mb-3">/// Hardware &amp; Merch</span>
+                        <h1 class="text-4xl md:text-6xl font-semibold text-white tracking-tight mb-3">Shop</h1>
+                        <p class="text-neutral-500 text-base leading-relaxed max-w-xl">LPDN nodes for offline app distribution, developer accessories, IoT sensor kits, and Logic Packs merch.</p>
+                    </div>
+                    <div class="flex items-center gap-3 shrink-0">
+                        <div class="flex items-center gap-2 px-3 py-1.5 rounded-md bg-green-500/10 border border-green-500/20">
+                            <span class="h-1.5 w-1.5 bg-green-500 rounded-full"></span>
+                            <span class="text-green-500 text-xs font-mono">Free shipping on LPDN bundles</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ LPDN HERO BANNER ═══ -->
+    <section class="border-b border-white/[0.06]">
+        <div class="max-w-[1440px] mx-auto">
+            <a href="product.html?id=lpdn-node" class="group block">
+                <div class="grid grid-cols-1 md:grid-cols-2 md:divide-x divide-white/[0.06]">
+                    <!-- Visual -->
+                    <div class="relative aspect-[4/3] md:aspect-auto md:min-h-[420px] bg-gradient-to-br from-green-500/[0.06] to-transparent flex items-center justify-center overflow-hidden">
+                        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(34,197,94,0.08)_0%,transparent_70%)]"></div>
+                        <div class="absolute inset-0 opacity-[0.06] bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:24px_24px] [mask-image:radial-gradient(ellipse_at_center,black_40%,transparent_100%)]"></div>
+                        <!-- Stylized LPDN illustration -->
+                        <div class="relative z-10 flex flex-col items-center">
+                            <div class="w-48 h-32 md:w-64 md:h-44 rounded-2xl bg-[#111] border border-white/[0.08] shadow-2xl shadow-green-500/10 group-hover:border-green-500/20 transition-all flex flex-col overflow-hidden">
+                                <div class="h-3 bg-white/[0.03] border-b border-white/[0.04] flex items-center px-2 gap-1">
+                                    <div class="w-1.5 h-1.5 rounded-full bg-green-500"></div>
+                                    <div class="w-1.5 h-1.5 rounded-full bg-white/10"></div>
+                                    <div class="w-1.5 h-1.5 rounded-full bg-white/10"></div>
+                                </div>
+                                <div class="flex-1 p-3 md:p-4 flex flex-col gap-2">
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-6 h-6 rounded bg-green-500/15 border border-green-500/20 flex items-center justify-center">
+                                            <iconify-icon icon="solar:server-minimalistic-linear" class="text-green-500 text-xs"></iconify-icon>
+                                        </div>
+                                        <div class="w-16 h-1.5 bg-white/15 rounded-sm"></div>
+                                    </div>
+                                    <div class="w-full h-1 bg-white/8 rounded-sm"></div>
+                                    <div class="w-3/4 h-1 bg-white/6 rounded-sm"></div>
+                                    <div class="mt-auto flex items-center gap-2">
+                                        <div class="flex-1 h-2 bg-green-500/20 rounded-sm"></div>
+                                        <div class="w-6 h-2 bg-green-500/10 rounded-sm"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Wi-Fi waves -->
+                            <div class="mt-4 flex items-center gap-1.5">
+                                <div class="w-1 h-3 bg-green-500/30 rounded-full"></div>
+                                <div class="w-1 h-5 bg-green-500/40 rounded-full"></div>
+                                <div class="w-1 h-7 bg-green-500/50 rounded-full"></div>
+                                <div class="w-1 h-5 bg-green-500/40 rounded-full"></div>
+                                <div class="w-1 h-3 bg-green-500/30 rounded-full"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Info -->
+                    <div class="p-8 md:p-12 lg:p-16 flex flex-col justify-center">
+                        <div class="flex items-center gap-2 mb-4">
+                            <span class="px-2.5 py-0.5 rounded text-[10px] font-semibold border bg-green-500/15 text-green-400 border-green-500/20 uppercase tracking-wider">Flagship</span>
+                            <span class="px-2.5 py-0.5 rounded text-[10px] font-medium border bg-white/[0.03] text-neutral-500 border-white/[0.06]">New</span>
+                        </div>
+                        <h2 class="text-3xl md:text-4xl lg:text-5xl font-semibold text-white tracking-tight mb-4 group-hover:text-green-50 transition-colors">LPDN Node</h2>
+                        <p class="text-neutral-500 text-base leading-relaxed mb-6 max-w-md">Logic Pack Distribution Node — install it, connect to its Wi-Fi, and run your entire Logic Packs app ecosystem offline. No internet required.</p>
+                        <div class="flex items-center gap-6 mb-8">
+                            <div>
+                                <span class="text-3xl font-semibold text-white">$149</span>
+                                <span class="text-neutral-600 text-sm ml-1 line-through">$199</span>
+                            </div>
+                            <div class="h-6 w-px bg-white/[0.08]"></div>
+                            <div class="flex items-center gap-1.5 text-green-500 text-xs font-mono">
+                                <iconify-icon icon="solar:box-minimalistic-linear" width="14"></iconify-icon>
+                                In Stock
+                            </div>
+                        </div>
+                        <div class="flex flex-wrap gap-4 text-xs text-neutral-500">
+                            <div class="flex items-center gap-1.5"><iconify-icon icon="solar:wifi-router-minimalistic-linear" width="14" class="text-green-500/60"></iconify-icon>Built-in Wi-Fi AP</div>
+                            <div class="flex items-center gap-1.5"><iconify-icon icon="solar:bolt-circle-linear" width="14" class="text-green-500/60"></iconify-icon>Raspberry Pi 5</div>
+                            <div class="flex items-center gap-1.5"><iconify-icon icon="solar:shield-check-linear" width="14" class="text-green-500/60"></iconify-icon>Pre-configured</div>
+                        </div>
+                        <div class="mt-8">
+                            <span class="inline-flex items-center gap-2 bg-white text-black font-semibold rounded-md px-6 py-3 text-sm group-hover:bg-green-500 group-hover:text-black transition-colors">
+                                View Product
+                                <iconify-icon icon="solar:arrow-right-linear" width="16"></iconify-icon>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </section>
+
+    <!-- ═══ CATEGORY FILTERS ═══ -->
+    <section class="max-w-[1440px] mx-auto px-6 md:px-8 pt-10 pb-4">
+        <div class="flex flex-wrap items-center gap-2">
+            <button data-cat="all" class="cat-btn active-cat text-xs font-medium px-4 py-2 rounded-md border transition-all">All Products</button>
+            <button data-cat="hardware" class="cat-btn text-xs font-medium px-4 py-2 rounded-md border transition-all">LPDN Hardware</button>
+            <button data-cat="accessories" class="cat-btn text-xs font-medium px-4 py-2 rounded-md border transition-all">Accessories</button>
+            <button data-cat="apparel" class="cat-btn text-xs font-medium px-4 py-2 rounded-md border transition-all">Apparel</button>
+            <button data-cat="iot" class="cat-btn text-xs font-medium px-4 py-2 rounded-md border transition-all">IoT Sensors</button>
+        </div>
+        <style>
+        .cat-btn { border-color: rgba(255,255,255,0.08); color: #a3a3a3; background: transparent; }
+        .cat-btn:hover { border-color: rgba(255,255,255,0.15); color: #fff; background: rgba(255,255,255,0.03); }
+        .cat-btn.active-cat { border-color: rgba(34,197,94,0.4); color: #22c55e; background: rgba(34,197,94,0.08); }
+        </style>
+    </section>
+
+    <!-- ═══ PRODUCT GRID ═══ -->
+    <section class="max-w-[1440px] mx-auto px-6 md:px-8 pb-16">
+        <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            <!-- Injected by JS -->
+        </div>
+        <div id="empty-state" class="hidden py-20 text-center">
+            <iconify-icon icon="solar:box-minimalistic-linear" class="text-neutral-700 text-4xl mb-4"></iconify-icon>
+            <p class="text-neutral-500 text-sm">No products in this category yet.</p>
+        </div>
+    </section>
+
+    <!-- ═══ LPDN INFO SECTION ═══ -->
+    <section class="border-t border-white/[0.06]">
+        <div class="grid grid-cols-1 md:grid-cols-4 md:divide-x divide-white/[0.06]">
+            <!-- Sidebar -->
+            <div class="md:col-span-1 flex flex-col p-8 md:p-10 justify-between min-h-[280px]">
+                <div>
+                    <span class="font-mono text-neutral-600 text-[11px] block mb-3">/// LPDN</span>
+                    <h2 class="text-3xl font-semibold text-white tracking-tight mb-4 reveal-hidden">Offline by Design</h2>
+                    <p class="text-neutral-500 text-sm leading-relaxed reveal-hidden">Run your entire app ecosystem without internet. The LPDN creates a local Wi-Fi network that serves your Logic Packs apps to any connected device.</p>
+                </div>
+            </div>
+
+            <!-- Features -->
+            <div class="md:col-span-3 grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-white/[0.06]">
+                <div class="p-8 md:p-10 flex flex-col hover:bg-white/[0.015] transition-colors reveal-hidden">
+                    <div class="w-10 h-10 rounded-lg bg-green-500/10 border border-green-500/20 flex items-center justify-center mb-5">
+                        <iconify-icon icon="solar:wifi-router-minimalistic-linear" class="text-green-500 text-lg"></iconify-icon>
+                    </div>
+                    <h3 class="text-lg text-white font-medium tracking-tight mb-2">Local Wi-Fi AP</h3>
+                    <p class="text-neutral-500 text-sm leading-relaxed">LPDN broadcasts its own Wi-Fi network. Connect any phone, tablet, or laptop — your apps run locally with zero latency.</p>
+                </div>
+                <div class="p-8 md:p-10 flex flex-col hover:bg-white/[0.015] transition-colors reveal-hidden">
+                    <div class="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center mb-5">
+                        <iconify-icon icon="solar:refresh-circle-linear" class="text-neutral-400 text-lg"></iconify-icon>
+                    </div>
+                    <h3 class="text-lg text-white font-medium tracking-tight mb-2">Auto-Sync</h3>
+                    <p class="text-neutral-500 text-sm leading-relaxed">When internet is available, the LPDN syncs pack updates, data, and telemetry. Offline-first, online-enhanced.</p>
+                </div>
+                <div class="p-8 md:p-10 flex flex-col hover:bg-white/[0.015] transition-colors reveal-hidden">
+                    <div class="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center mb-5">
+                        <iconify-icon icon="solar:cpu-bolt-linear" class="text-neutral-400 text-lg"></iconify-icon>
+                    </div>
+                    <h3 class="text-lg text-white font-medium tracking-tight mb-2">IoT Ready</h3>
+                    <p class="text-neutral-500 text-sm leading-relaxed">Expand with sensor modules, smart relays, and environmental monitors. Build real-world Logic Packs automations.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ HOW LPDN WORKS ═══ -->
+    <section class="border-t border-white/[0.06]">
+        <div class="max-w-[1440px] mx-auto px-6 md:px-8 py-20 md:py-28">
+            <div class="text-center mb-16">
+                <span class="font-mono text-neutral-600 text-[11px] block mb-3">/// How It Works</span>
+                <h2 class="text-3xl md:text-5xl font-semibold text-white tracking-tight reveal-hidden">Setup in 3 minutes</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-0 md:divide-x divide-white/[0.06] border border-white/[0.06] rounded-xl overflow-hidden">
+                <div class="p-8 md:p-10 text-center hover:bg-white/[0.015] transition-colors reveal-hidden">
+                    <div class="w-12 h-12 rounded-full bg-green-500/10 border border-green-500/20 flex items-center justify-center mx-auto mb-5">
+                        <span class="text-green-500 font-mono text-sm font-semibold">01</span>
+                    </div>
+                    <h3 class="text-white font-medium tracking-tight mb-2">Plug In</h3>
+                    <p class="text-neutral-500 text-sm leading-relaxed">Connect your LPDN to power. It boots in under 30 seconds and creates a Wi-Fi access point.</p>
+                </div>
+                <div class="p-8 md:p-10 text-center border-t md:border-t-0 border-white/[0.06] hover:bg-white/[0.015] transition-colors reveal-hidden">
+                    <div class="w-12 h-12 rounded-full bg-green-500/10 border border-green-500/20 flex items-center justify-center mx-auto mb-5">
+                        <span class="text-green-500 font-mono text-sm font-semibold">02</span>
+                    </div>
+                    <h3 class="text-white font-medium tracking-tight mb-2">Connect</h3>
+                    <p class="text-neutral-500 text-sm leading-relaxed">Join the LPDN Wi-Fi from any device. Open a browser — the local dashboard loads instantly.</p>
+                </div>
+                <div class="p-8 md:p-10 text-center border-t md:border-t-0 border-white/[0.06] hover:bg-white/[0.015] transition-colors reveal-hidden">
+                    <div class="w-12 h-12 rounded-full bg-green-500/10 border border-green-500/20 flex items-center justify-center mx-auto mb-5">
+                        <span class="text-green-500 font-mono text-sm font-semibold">03</span>
+                    </div>
+                    <h3 class="text-white font-medium tracking-tight mb-2">Deploy</h3>
+                    <p class="text-neutral-500 text-sm leading-relaxed">Install packs to the node, deploy apps, and let your team or customers use them — no internet needed.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ CTA BANNER ═══ -->
+    <section class="border-t border-white/[0.06]">
+        <div class="max-w-[1440px] mx-auto px-6 md:px-8 py-16 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div>
+                <h3 class="text-xl text-white font-medium tracking-tight mb-2">Need a custom LPDN setup?</h3>
+                <p class="text-neutral-500 text-sm max-w-md">We configure custom LPDN deployments for schools, field operations, clinics, and remote teams. Talk to us about bulk pricing and custom configurations.</p>
+            </div>
+            <a href="#" class="inline-flex items-center gap-2 bg-white text-black font-semibold rounded-md px-6 py-3 text-sm hover:bg-neutral-200 transition-colors shrink-0">
+                Contact Sales
+                <iconify-icon icon="solar:arrow-right-linear" width="16"></iconify-icon>
+            </a>
+        </div>
+    </section>
+
+    <!-- ═══ FOOTER ═══ -->
+    <footer class="border-t border-white/[0.06]">
+        <div class="grid grid-cols-1 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-white/[0.06]">
+            <div class="p-8 md:col-span-1 flex flex-col justify-between min-h-[240px]">
+                <div>
+                    <div class="flex items-center gap-2 mb-4">
+                        <iconify-icon icon="solar:widget-5-linear" class="text-green-500 text-lg"></iconify-icon>
+                        <span class="text-white font-semibold text-sm tracking-tight">Logic Packs</span>
+                    </div>
+                    <p class="text-neutral-500 text-sm leading-relaxed">The operating system for reusable software.</p>
+                </div>
+                <div class="flex gap-3 mt-6">
+                    <a href="#" class="w-8 h-8 rounded-md border border-white/[0.06] flex items-center justify-center hover:bg-white/5 transition-colors"><iconify-icon icon="simple-icons:github" class="text-neutral-500 text-sm"></iconify-icon></a>
+                    <a href="#" class="w-8 h-8 rounded-md border border-white/[0.06] flex items-center justify-center hover:bg-white/5 transition-colors"><iconify-icon icon="simple-icons:discord" class="text-neutral-500 text-sm"></iconify-icon></a>
+                    <a href="#" class="w-8 h-8 rounded-md border border-white/[0.06] flex items-center justify-center hover:bg-white/5 transition-colors"><iconify-icon icon="simple-icons:x" class="text-neutral-500 text-sm"></iconify-icon></a>
+                </div>
+            </div>
+            <div class="p-8 md:col-span-3 grid grid-cols-2 md:grid-cols-4 gap-8">
+                <div>
+                    <h4 class="text-white text-xs font-semibold uppercase tracking-widest mb-5">Platform</h4>
+                    <ul class="space-y-3"><li><a href="index.html#modes" class="text-neutral-500 text-sm hover:text-white transition-colors">UI Mode</a></li><li><a href="index.html#modes" class="text-neutral-500 text-sm hover:text-white transition-colors">Logic Mode</a></li><li><a href="index.html#modes" class="text-neutral-500 text-sm hover:text-white transition-colors">Notebook</a></li><li><a href="index.html#modes" class="text-neutral-500 text-sm hover:text-white transition-colors">Canvas</a></li></ul>
+                </div>
+                <div>
+                    <h4 class="text-white text-xs font-semibold uppercase tracking-widest mb-5">Shop</h4>
+                    <ul class="space-y-3"><li><a href="product.html?id=lpdn-node" class="text-neutral-500 text-sm hover:text-white transition-colors">LPDN Node</a></li><li><a href="shop.html" class="text-neutral-500 text-sm hover:text-white transition-colors">Accessories</a></li><li><a href="shop.html" class="text-neutral-500 text-sm hover:text-white transition-colors">Apparel</a></li><li><a href="shop.html" class="text-neutral-500 text-sm hover:text-white transition-colors">IoT Sensors</a></li></ul>
+                </div>
+                <div>
+                    <h4 class="text-white text-xs font-semibold uppercase tracking-widest mb-5">Resources</h4>
+                    <ul class="space-y-3"><li><a href="#" class="text-neutral-500 text-sm hover:text-white transition-colors">Documentation</a></li><li><a href="store.html" class="text-neutral-500 text-sm hover:text-white transition-colors">Marketplace</a></li><li><a href="#" class="text-neutral-500 text-sm hover:text-white transition-colors">API Reference</a></li><li><a href="#" class="text-neutral-500 text-sm hover:text-white transition-colors">Changelog</a></li></ul>
+                </div>
+                <div>
+                    <h4 class="text-white text-xs font-semibold uppercase tracking-widest mb-5">Newsletter</h4>
+                    <form class="flex flex-col gap-3" onsubmit="return false">
+                        <input type="email" placeholder="you@email.com" class="w-full bg-transparent border-b border-white/15 py-2 text-white text-sm focus:outline-none focus:border-green-500 transition-colors placeholder:text-neutral-700">
+                        <button class="self-start text-xs text-neutral-500 uppercase tracking-widest hover:text-white transition-colors">Subscribe</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="border-t border-white/[0.06] px-8 py-5 flex flex-col md:flex-row justify-between items-center gap-3">
+            <span class="text-neutral-700 text-xs">&copy; 2026 Logic Packs. All rights reserved.</span>
+            <div class="flex gap-4"><a href="#" class="text-neutral-700 text-xs hover:text-white transition-colors">Privacy</a><a href="#" class="text-neutral-700 text-xs hover:text-white transition-colors">Terms</a><a href="#" class="text-neutral-700 text-xs hover:text-white transition-colors">Shipping & Returns</a></div>
+        </div>
+    </footer>
+
+    <!-- ═══ PRODUCT DATA + RENDERING ═══ -->
+    <script>
+    const PRODUCTS = [
+        // ── HARDWARE ──
+        {
+            id: "lpdn-node",
+            name: "LPDN Node",
+            cat: "hardware",
+            price: 149,
+            originalPrice: 199,
+            desc: "Logic Pack Distribution Node — run your entire app ecosystem offline via built-in Wi-Fi.",
+            icon: "solar:server-minimalistic-linear",
+            iconColor: "text-green-500",
+            bgColor: "bg-green-500/10",
+            borderColor: "border-green-500/20",
+            badge: "Flagship",
+            badgeColor: "bg-green-500/15 text-green-400 border-green-500/20",
+            inStock: true,
+            comingSoon: false
+        },
+        {
+            id: "lpdn-pro",
+            name: "LPDN Pro Node",
+            cat: "hardware",
+            price: 299,
+            originalPrice: null,
+            desc: "High-performance node with 8GB RAM, SSD storage, and dual-band Wi-Fi for larger deployments.",
+            icon: "solar:server-square-linear",
+            iconColor: "text-green-500",
+            bgColor: "bg-green-500/10",
+            borderColor: "border-green-500/20",
+            badge: "Pro",
+            badgeColor: "bg-white/[0.06] text-neutral-400 border-white/[0.08]",
+            inStock: true,
+            comingSoon: false
+        },
+
+        // ── ACCESSORIES ──
+        {
+            id: "lpdn-case",
+            name: "LPDN Protective Case",
+            cat: "accessories",
+            price: 29,
+            originalPrice: null,
+            desc: "Rugged aluminum case for your LPDN node. Passive cooling fins, wall-mount bracket, IP54 rated.",
+            icon: "solar:box-linear",
+            iconColor: "text-neutral-400",
+            bgColor: "bg-white/5",
+            borderColor: "border-white/10",
+            badge: null,
+            inStock: true,
+            comingSoon: false
+        },
+        {
+            id: "rpi5-kit",
+            name: "Raspberry Pi 5 Kit",
+            cat: "accessories",
+            price: 89,
+            originalPrice: null,
+            desc: "Raspberry Pi 5 (4GB) with power supply, microSD card, and heatsink. Perfect for building your own LPDN.",
+            icon: "solar:cpu-bolt-linear",
+            iconColor: "text-neutral-400",
+            bgColor: "bg-white/5",
+            borderColor: "border-white/10",
+            badge: "DIY",
+            badgeColor: "bg-white/[0.06] text-neutral-400 border-white/[0.08]",
+            inStock: true,
+            comingSoon: false
+        },
+        {
+            id: "wifi-adapter",
+            name: "USB Wi-Fi Adapter",
+            cat: "accessories",
+            price: 19,
+            originalPrice: null,
+            desc: "Dual-band USB Wi-Fi adapter with AP mode support. Extends range or adds a second network to your LPDN.",
+            icon: "solar:wifi-router-minimalistic-linear",
+            iconColor: "text-neutral-400",
+            bgColor: "bg-white/5",
+            borderColor: "border-white/10",
+            badge: null,
+            inStock: true,
+            comingSoon: false
+        },
+        {
+            id: "lpdn-starter-bundle",
+            name: "LPDN Starter Bundle",
+            cat: "accessories",
+            price: 199,
+            originalPrice: 237,
+            desc: "Everything you need: LPDN Node + Protective Case + USB Wi-Fi Adapter. Save $38 vs buying separately.",
+            icon: "solar:gift-linear",
+            iconColor: "text-green-500",
+            bgColor: "bg-green-500/10",
+            borderColor: "border-green-500/20",
+            badge: "Bundle",
+            badgeColor: "bg-green-500/15 text-green-400 border-green-500/20",
+            inStock: true,
+            comingSoon: false
+        },
+        {
+            id: "microsd-64",
+            name: "64GB microSD Card",
+            cat: "accessories",
+            price: 14,
+            originalPrice: null,
+            desc: "Pre-flashed with LPDN OS. High-endurance A2 class for reliable offline operation.",
+            icon: "solar:sd-card-linear",
+            iconColor: "text-neutral-400",
+            bgColor: "bg-white/5",
+            borderColor: "border-white/10",
+            badge: null,
+            inStock: true,
+            comingSoon: false
+        },
+
+        // ── APPAREL ──
+        {
+            id: "classic-tee",
+            name: "Logic Packs Classic Tee",
+            cat: "apparel",
+            price: 32,
+            originalPrice: null,
+            desc: "Premium cotton tee with minimal Logic Packs logo. Available in black. Runs true to size.",
+            icon: "solar:t-shirt-linear",
+            iconColor: "text-neutral-400",
+            bgColor: "bg-white/5",
+            borderColor: "border-white/10",
+            badge: null,
+            inStock: true,
+            comingSoon: false
+        },
+        {
+            id: "dev-hoodie",
+            name: "Developer Hoodie",
+            cat: "apparel",
+            price: 68,
+            originalPrice: null,
+            desc: "Heavyweight fleece hoodie with embroidered Logic Packs mark. Black on black. Kangaroo pocket.",
+            icon: "solar:t-shirt-linear",
+            iconColor: "text-neutral-400",
+            bgColor: "bg-white/5",
+            borderColor: "border-white/10",
+            badge: "Popular",
+            badgeColor: "bg-white/[0.06] text-neutral-400 border-white/[0.08]",
+            inStock: true,
+            comingSoon: false
+        },
+        {
+            id: "dev-cap",
+            name: "Logic Packs Cap",
+            cat: "apparel",
+            price: 28,
+            originalPrice: null,
+            desc: "Structured 6-panel cap with embroidered LP monogram. Adjustable strap. One size.",
+            icon: "solar:ghost-linear",
+            iconColor: "text-neutral-400",
+            bgColor: "bg-white/5",
+            borderColor: "border-white/10",
+            badge: null,
+            inStock: true,
+            comingSoon: false
+        },
+
+        // ── IOT SENSORS (Coming Soon) ──
+        {
+            id: "temp-humidity-sensor",
+            name: "Temperature & Humidity Sensor",
+            cat: "iot",
+            price: 24,
+            originalPrice: null,
+            desc: "DHT22-based environmental sensor module. USB-C powered, auto-registers with LPDN dashboard.",
+            icon: "solar:temperature-linear",
+            iconColor: "text-blue-400",
+            bgColor: "bg-blue-500/10",
+            borderColor: "border-blue-500/20",
+            badge: "Coming Soon",
+            badgeColor: "bg-yellow-500/15 text-yellow-400 border-yellow-500/20",
+            inStock: false,
+            comingSoon: true
+        },
+        {
+            id: "motion-sensor",
+            name: "Motion Detection Sensor",
+            cat: "iot",
+            price: 19,
+            originalPrice: null,
+            desc: "PIR motion sensor with adjustable sensitivity. Triggers automations on your LPDN node instantly.",
+            icon: "solar:eye-linear",
+            iconColor: "text-blue-400",
+            bgColor: "bg-blue-500/10",
+            borderColor: "border-blue-500/20",
+            badge: "Coming Soon",
+            badgeColor: "bg-yellow-500/15 text-yellow-400 border-yellow-500/20",
+            inStock: false,
+            comingSoon: true
+        },
+        {
+            id: "smart-relay",
+            name: "Smart Relay Module",
+            cat: "iot",
+            price: 34,
+            originalPrice: null,
+            desc: "4-channel relay board. Control lights, locks, pumps, or any AC/DC device via Logic Packs automations.",
+            icon: "solar:bolt-circle-linear",
+            iconColor: "text-blue-400",
+            bgColor: "bg-blue-500/10",
+            borderColor: "border-blue-500/20",
+            badge: "Coming Soon",
+            badgeColor: "bg-yellow-500/15 text-yellow-400 border-yellow-500/20",
+            inStock: false,
+            comingSoon: true
+        },
+        {
+            id: "air-quality-sensor",
+            name: "Air Quality Monitor",
+            cat: "iot",
+            price: 39,
+            originalPrice: null,
+            desc: "CO2, PM2.5, VOC detection. Real-time air quality data streamed to your LPDN dashboard.",
+            icon: "solar:cloud-waterdrop-linear",
+            iconColor: "text-blue-400",
+            bgColor: "bg-blue-500/10",
+            borderColor: "border-blue-500/20",
+            badge: "Coming Soon",
+            badgeColor: "bg-yellow-500/15 text-yellow-400 border-yellow-500/20",
+            inStock: false,
+            comingSoon: true
+        },
+        {
+            id: "iot-starter-kit",
+            name: "IoT Sensor Bundle",
+            cat: "iot",
+            price: 89,
+            originalPrice: 116,
+            desc: "All 4 sensor modules + wiring kit. Complete environmental monitoring for your LPDN.",
+            icon: "solar:tuning-square-2-linear",
+            iconColor: "text-blue-400",
+            bgColor: "bg-blue-500/10",
+            borderColor: "border-blue-500/20",
+            badge: "Coming Soon",
+            badgeColor: "bg-yellow-500/15 text-yellow-400 border-yellow-500/20",
+            inStock: false,
+            comingSoon: true
+        },
+    ];
+
+    function renderProduct(p) {
+        const priceHtml = p.originalPrice
+            ? `<span class="text-white font-semibold">$${p.price}</span><span class="text-neutral-700 text-xs line-through ml-1.5">$${p.originalPrice}</span>`
+            : `<span class="text-white font-semibold">$${p.price}</span>`;
+
+        const badgeHtml = p.badge
+            ? `<span class="absolute top-3 right-3 px-2 py-0.5 rounded text-[9px] font-medium border ${p.badgeColor || 'bg-white/[0.06] text-neutral-400 border-white/[0.08]'}">${p.badge}</span>`
+            : '';
+
+        const overlay = p.comingSoon
+            ? `<div class="absolute inset-0 z-20 bg-[#0a0a0a]/60 coming-soon-overlay rounded-xl flex items-center justify-center">
+                <div class="text-center">
+                    <iconify-icon icon="solar:clock-circle-linear" class="text-yellow-400 text-2xl mb-2"></iconify-icon>
+                    <p class="text-yellow-400 text-xs font-semibold uppercase tracking-wider">Coming Soon</p>
+                </div>
+               </div>`
+            : '';
+
+        const linkTag = p.comingSoon
+            ? `<div class="product-card block border border-white/[0.06] rounded-xl relative overflow-hidden" data-cat="${p.cat}">`
+            : `<a href="product.html?id=${p.id}" class="product-card block border border-white/[0.06] rounded-xl relative overflow-hidden" data-cat="${p.cat}">`;
+        const closeTag = p.comingSoon ? `</div>` : `</a>`;
+
+        return `${linkTag}
+            ${overlay}
+            ${badgeHtml}
+            <!-- Product Image Area -->
+            <div class="aspect-square bg-white/[0.015] flex items-center justify-center relative overflow-hidden border-b border-white/[0.04]">
+                <div class="product-img">
+                    <div class="w-20 h-20 rounded-2xl ${p.bgColor} ${p.borderColor} border flex items-center justify-center">
+                        <iconify-icon icon="${p.icon}" class="${p.iconColor} text-3xl"></iconify-icon>
+                    </div>
+                </div>
+            </div>
+            <!-- Info -->
+            <div class="p-4">
+                <h3 class="text-white text-sm font-medium truncate mb-1">${p.name}</h3>
+                <p class="text-neutral-600 text-xs leading-relaxed mb-3 line-clamp-2" style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${p.desc}</p>
+                <div class="flex items-center justify-between pt-3 border-t border-white/[0.04]">
+                    <div class="text-sm">${priceHtml}</div>
+                    ${p.inStock ? '<span class="text-[10px] font-mono text-green-500 flex items-center gap-1"><span class="w-1 h-1 bg-green-500 rounded-full"></span>In Stock</span>' : '<span class="text-[10px] font-mono text-yellow-400">Pre-order</span>'}
+                </div>
+            </div>
+        ${closeTag}`;
+    }
+
+    // Render
+    const grid = document.getElementById('product-grid');
+    const empty = document.getElementById('empty-state');
+    let activeCat = 'all';
+
+    function renderAll() {
+        const filtered = PRODUCTS.filter(p => activeCat === 'all' || p.cat === activeCat);
+        grid.innerHTML = filtered.map(renderProduct).join('');
+        empty.classList.toggle('hidden', filtered.length > 0);
+    }
+
+    renderAll();
+
+    document.querySelectorAll('.cat-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active-cat'));
+            btn.classList.add('active-cat');
+            activeCat = btn.dataset.cat;
+            renderAll();
+        });
+    });
+    </script>
+
+    <!-- Scroll Reveal -->
+    <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, i) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => { entry.target.classList.remove("reveal-hidden"); entry.target.classList.add("reveal"); }, i * 60);
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+        document.querySelectorAll(".reveal-hidden").forEach(el => observer.observe(el));
+    });
+    </script>
+</body>
+</html>
+

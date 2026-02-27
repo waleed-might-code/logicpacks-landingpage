@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">Pack Details — Logic Packs</title>
+    <meta name="description" content="View pack details, contracts, dependencies, and installation instructions.">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+    tailwind.config = {
+        theme: { extend: { fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] } } }
+    }
+    </script>
+
+    <style>
+    body { background-color: #0a0a0a; color: #ededed; font-family: 'Inter', system-ui, sans-serif; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #0a0a0a; }
+    ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+    @keyframes fadeInUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+    .reveal { animation: fadeInUp 0.5s cubic-bezier(0.2,0.8,0.2,1) both; }
+    .tab-btn { position: relative; }
+    .tab-btn.active-tab { color: #fff; }
+    .tab-btn.active-tab::after { content:''; position:absolute; bottom:-1px; left:0; right:0; height:1px; background:#22c55e; }
+    .tab-content { display:none; }
+    .tab-content.active-content { display:block; }
+    pre { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 8px; padding: 1.25rem; overflow-x: auto; font-size: 0.8rem; line-height: 1.7; }
+    code { font-family: 'SF Mono', 'Fira Code', 'JetBrains Mono', monospace; }
+    </style>
+</head>
+
+<body class="selection:bg-green-500/30 selection:text-white overflow-x-hidden">
+
+    <!-- ═══ HEADER ═══ -->
+    <header class="fixed top-0 left-0 w-full z-50 bg-[#0a0a0a]/80 backdrop-blur-xl border-b border-white/[0.06] h-14">
+        <div class="flex w-full h-full max-w-[1440px] mx-auto px-6 md:px-8 items-center justify-between">
+            <a href="index.html" class="flex items-center gap-2.5 group">
+                <div class="w-7 h-7 rounded-md border border-white/10 flex items-center justify-center bg-white/[0.03] group-hover:border-green-500/40 transition-colors">
+                    <iconify-icon icon="solar:widget-5-linear" class="text-green-500 text-sm"></iconify-icon>
+                </div>
+                <span class="text-sm font-semibold tracking-tight text-white">Logic Packs</span>
+            </a>
+            <nav class="hidden md:flex items-center gap-8">
+                <a href="index.html#modes" class="text-[11px] hover:text-white transition-colors uppercase font-medium text-neutral-400 tracking-[0.15em]">Platform</a>
+                <a href="store.html" class="text-[11px] uppercase font-medium text-white tracking-[0.15em]">Marketplace</a>
+                <a href="shop.html" class="text-[11px] hover:text-white transition-colors uppercase font-medium text-neutral-400 tracking-[0.15em]">Shop</a>
+                <a href="ventures.html" class="text-[11px] hover:text-white transition-colors uppercase font-medium text-neutral-400 tracking-[0.15em]">Ventures</a>
+                <a href="courses.html" class="text-[11px] hover:text-white transition-colors uppercase font-medium text-neutral-400 tracking-[0.15em]">Learn</a>
+                <a href="ambassadors.html" class="text-[11px] hover:text-white transition-colors uppercase font-medium text-neutral-400 tracking-[0.15em]">Ambassadors</a>
+                <a href="index.html#pricing" class="text-[11px] hover:text-white transition-colors uppercase font-medium text-neutral-400 tracking-[0.15em]">Pricing</a>
+            </nav>
+            <a href="#" class="hidden md:flex bg-white text-black text-xs font-semibold tracking-wide uppercase rounded-md px-5 py-2 hover:bg-neutral-200 transition-colors">Get Started</a>
+            <button class="md:hidden text-white" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
+                <iconify-icon icon="solar:hamburger-menu-linear" width="22"></iconify-icon>
+            </button>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden absolute top-full left-0 w-full bg-[#0a0a0a]/95 backdrop-blur-xl border-b border-white/[0.06] p-4 flex flex-col gap-2">
+            <a href="index.html#modes" class="px-4 py-2 text-sm text-neutral-400 hover:text-white hover:bg-white/5 rounded-md">Platform</a>
+            <a href="store.html" class="px-4 py-2 text-sm text-white bg-white/5 rounded-md">Marketplace</a>
+            <a href="shop.html" class="px-4 py-2 text-sm text-neutral-400 hover:text-white hover:bg-white/5 rounded-md">Shop</a>
+            <a href="ventures.html" class="px-4 py-2 text-sm text-neutral-400 hover:text-white hover:bg-white/5 rounded-md">Ventures</a>
+            <a href="courses.html" class="px-4 py-2 text-sm text-neutral-400 hover:text-white hover:bg-white/5 rounded-md">Learn</a>
+            <a href="ambassadors.html" class="px-4 py-2 text-sm text-neutral-400 hover:text-white hover:bg-white/5 rounded-md">Ambassadors</a>
+            <a href="index.html#pricing" class="px-4 py-2 text-sm text-neutral-400 hover:text-white hover:bg-white/5 rounded-md">Pricing</a>
+        </div>
+    </header>
+
+    <!-- ═══ MAIN CONTENT — filled by JS ═══ -->
+    <main class="pt-14">
+        <!-- Breadcrumb -->
+        <div class="border-b border-white/[0.06]">
+            <div class="max-w-[1440px] mx-auto px-6 md:px-8 py-3">
+                <nav class="flex items-center gap-2 text-xs text-neutral-600">
+                    <a href="store.html" class="hover:text-white transition-colors">Marketplace</a>
+                    <iconify-icon icon="solar:alt-arrow-right-linear" width="12"></iconify-icon>
+                    <span id="breadcrumb-type" class="hover:text-white transition-colors cursor-pointer">Logic</span>
+                    <iconify-icon icon="solar:alt-arrow-right-linear" width="12"></iconify-icon>
+                    <span id="breadcrumb-name" class="text-neutral-400">Auth Pack</span>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Pack Hero -->
+        <section class="border-b border-white/[0.06]">
+            <div class="max-w-[1440px] mx-auto px-6 md:px-8 py-12 md:py-16">
+                <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-8">
+                    <!-- Left -->
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-4 mb-5">
+                            <div id="pack-icon-wrap" class="w-16 h-16 rounded-xl bg-green-500/10 border border-green-500/20 flex items-center justify-center shrink-0">
+                                <iconify-icon id="pack-icon" icon="solar:shield-keyhole-linear" class="text-green-500 text-3xl"></iconify-icon>
+                            </div>
+                            <div>
+                                <div class="flex items-center gap-2 mb-1">
+                                    <h1 id="pack-name" class="text-2xl md:text-3xl font-semibold text-white tracking-tight">Auth Pack</h1>
+                                    <iconify-icon id="verified-badge" icon="solar:verified-check-bold" class="text-green-500 text-lg" title="Verified Pack"></iconify-icon>
+                                </div>
+                                <div class="flex items-center gap-3 flex-wrap">
+                                    <span id="pack-type-badge" class="inline-flex px-2.5 py-0.5 rounded text-[10px] font-medium border bg-green-500/15 text-green-400 border-green-500/20">Logic</span>
+                                    <span class="text-neutral-600 text-xs">by <span id="pack-author" class="text-neutral-400">Logic Packs Team</span></span>
+                                </div>
+                            </div>
+                        </div>
+                        <p id="pack-desc" class="text-neutral-400 text-base leading-relaxed max-w-2xl mb-6">Complete authentication & authorization with JWT, OAuth, RBAC, session management, and self-healing token refresh.</p>
+                        <div class="flex flex-wrap gap-2" id="pack-tags"></div>
+                    </div>
+
+                    <!-- Right — Install Card -->
+                    <div class="w-full md:w-80 shrink-0 bg-white/[0.02] border border-white/[0.06] rounded-xl p-6">
+                        <button id="install-btn" class="w-full bg-green-500 text-black font-semibold rounded-md py-3 text-sm hover:bg-green-400 transition-colors mb-4 flex items-center justify-center gap-2">
+                            <iconify-icon icon="solar:download-minimalistic-linear" width="16"></iconify-icon>
+                            Install Pack
+                        </button>
+                        <div class="text-xs font-mono text-neutral-500 bg-white/[0.02] border border-white/[0.04] rounded-md px-3 py-2.5 mb-5 select-all cursor-pointer hover:border-green-500/20 transition-colors" id="install-cmd">
+                            lp install auth-pack
+                        </div>
+                        <div class="space-y-3 text-sm">
+                            <div class="flex justify-between"><span class="text-neutral-600">Version</span><span id="meta-version" class="text-white font-mono text-xs">v3.2.0</span></div>
+                            <div class="flex justify-between"><span class="text-neutral-600">Installs</span><span id="meta-installs" class="text-white font-mono text-xs">12,400+</span></div>
+                            <div class="flex justify-between"><span class="text-neutral-600">Runtime</span><span id="meta-runtime" class="text-white font-mono text-xs">Python</span></div>
+                            <div class="flex justify-between"><span class="text-neutral-600">License</span><span id="meta-license" class="text-white font-mono text-xs">MIT</span></div>
+                            <div class="flex justify-between"><span class="text-neutral-600">Updated</span><span id="meta-updated" class="text-white font-mono text-xs">2 days ago</span></div>
+                            <div class="flex justify-between"><span class="text-neutral-600">Tests</span><span id="meta-tests" class="text-green-500 font-mono text-xs flex items-center gap-1"><iconify-icon icon="solar:check-circle-linear" width="12"></iconify-icon>Passing</span></div>
+                        </div>
+                        <div class="mt-5 pt-4 border-t border-white/[0.04] flex gap-3">
+                            <a href="#" class="flex-1 text-center border border-white/[0.08] text-neutral-400 text-xs font-medium py-2 rounded-md hover:bg-white/5 hover:text-white transition-all">GitHub</a>
+                            <a href="#" class="flex-1 text-center border border-white/[0.08] text-neutral-400 text-xs font-medium py-2 rounded-md hover:bg-white/5 hover:text-white transition-all">Report</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tabs -->
+        <section class="border-b border-white/[0.06] sticky top-14 z-40 bg-[#0a0a0a]/95 backdrop-blur-xl">
+            <div class="max-w-[1440px] mx-auto px-6 md:px-8">
+                <div class="flex gap-0 -mb-px overflow-x-auto">
+                    <button class="tab-btn active-tab px-5 py-3.5 text-xs font-medium uppercase tracking-[0.12em] text-neutral-500 hover:text-white transition-colors whitespace-nowrap" data-tab="overview">Overview</button>
+                    <button class="tab-btn px-5 py-3.5 text-xs font-medium uppercase tracking-[0.12em] text-neutral-500 hover:text-white transition-colors whitespace-nowrap" data-tab="contracts">Contracts</button>
+                    <button class="tab-btn px-5 py-3.5 text-xs font-medium uppercase tracking-[0.12em] text-neutral-500 hover:text-white transition-colors whitespace-nowrap" data-tab="dependencies">Dependencies</button>
+                    <button class="tab-btn px-5 py-3.5 text-xs font-medium uppercase tracking-[0.12em] text-neutral-500 hover:text-white transition-colors whitespace-nowrap" data-tab="changelog">Changelog</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tab Content -->
+        <section class="max-w-[1440px] mx-auto px-6 md:px-8 py-10 md:py-14">
+
+            <!-- OVERVIEW TAB -->
+            <div id="tab-overview" class="tab-content active-content">
+                <div class="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-12">
+                    <!-- Main -->
+                    <div class="min-w-0">
+                        <div id="overview-content">
+                            <!-- Filled by JS per pack -->
+                        </div>
+                    </div>
+
+                    <!-- Sidebar -->
+                    <aside class="space-y-6">
+                        <div class="bg-white/[0.02] border border-white/[0.06] rounded-xl p-5">
+                            <h4 class="text-white text-xs font-semibold uppercase tracking-widest mb-4">Scopes Required</h4>
+                            <div id="sidebar-scopes" class="flex flex-wrap gap-1.5">
+                                <!-- Filled by JS -->
+                            </div>
+                        </div>
+                        <div class="bg-white/[0.02] border border-white/[0.06] rounded-xl p-5">
+                            <h4 class="text-white text-xs font-semibold uppercase tracking-widest mb-4">Actions</h4>
+                            <div id="sidebar-actions" class="space-y-2">
+                                <!-- Filled by JS -->
+                            </div>
+                        </div>
+                        <div class="bg-white/[0.02] border border-white/[0.06] rounded-xl p-5">
+                            <h4 class="text-white text-xs font-semibold uppercase tracking-widest mb-4">Compatible With</h4>
+                            <div id="sidebar-compat" class="space-y-2">
+                                <!-- Filled by JS -->
+                            </div>
+                        </div>
+                    </aside>
+                </div>
+            </div>
+
+            <!-- CONTRACTS TAB -->
+            <div id="tab-contracts" class="tab-content">
+                <div class="max-w-3xl">
+                    <h2 class="text-xl text-white font-medium tracking-tight mb-2">Pack Manifest</h2>
+                    <p class="text-neutral-500 text-sm mb-6">The contract that defines this pack's inputs, outputs, scopes, tests, and telemetry.</p>
+                    <pre id="contracts-code" class="text-neutral-400"><code></code></pre>
+                </div>
+            </div>
+
+            <!-- DEPENDENCIES TAB -->
+            <div id="tab-dependencies" class="tab-content">
+                <div class="max-w-3xl">
+                    <h2 class="text-xl text-white font-medium tracking-tight mb-2">Dependencies</h2>
+                    <p class="text-neutral-500 text-sm mb-6">Packages and packs this pack depends on.</p>
+                    <div id="deps-list" class="space-y-0 divide-y divide-white/[0.04]">
+                        <!-- Filled by JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- CHANGELOG TAB -->
+            <div id="tab-changelog" class="tab-content">
+                <div class="max-w-3xl">
+                    <h2 class="text-xl text-white font-medium tracking-tight mb-2">Changelog</h2>
+                    <p class="text-neutral-500 text-sm mb-6">Recent updates, patches, and releases.</p>
+                    <div id="changelog-list" class="space-y-0 divide-y divide-white/[0.06]">
+                        <!-- Filled by JS -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Related Packs -->
+        <section class="border-t border-white/[0.06]">
+            <div class="max-w-[1440px] mx-auto px-6 md:px-8 py-14">
+                <div class="flex items-end justify-between mb-8">
+                    <h2 class="text-xl text-white font-medium tracking-tight">Related Packs</h2>
+                    <a href="store.html" class="text-xs text-neutral-500 hover:text-white transition-colors flex items-center gap-1">View all <iconify-icon icon="solar:arrow-right-linear" width="14"></iconify-icon></a>
+                </div>
+                <div id="related-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <!-- Filled by JS -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ═══ FOOTER ═══ -->
+    <footer class="border-t border-white/[0.06]">
+        <div class="grid grid-cols-1 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-white/[0.06]">
+            <div class="p-8 md:col-span-1 flex flex-col justify-between min-h-[240px]">
+                <div>
+                    <div class="flex items-center gap-2 mb-4">
+                        <iconify-icon icon="solar:widget-5-linear" class="text-green-500 text-lg"></iconify-icon>
+                        <span class="text-white font-semibold text-sm tracking-tight">Logic Packs</span>
+                    </div>
+                    <p class="text-neutral-500 text-sm leading-relaxed">The operating system for reusable software.</p>
+                </div>
+                <div class="flex gap-3 mt-6">
+                    <a href="#" class="w-8 h-8 rounded-md border border-white/[0.06] flex items-center justify-center hover:bg-white/5 transition-colors"><iconify-icon icon="simple-icons:github" class="text-neutral-500 text-sm"></iconify-icon></a>
+                    <a href="#" class="w-8 h-8 rounded-md border border-white/[0.06] flex items-center justify-center hover:bg-white/5 transition-colors"><iconify-icon icon="simple-icons:discord" class="text-neutral-500 text-sm"></iconify-icon></a>
+                    <a href="#" class="w-8 h-8 rounded-md border border-white/[0.06] flex items-center justify-center hover:bg-white/5 transition-colors"><iconify-icon icon="simple-icons:x" class="text-neutral-500 text-sm"></iconify-icon></a>
+                </div>
+            </div>
+            <div class="p-8 md:col-span-3 grid grid-cols-2 md:grid-cols-4 gap-8">
+                <div><h4 class="text-white text-xs font-semibold uppercase tracking-widest mb-5">Platform</h4><ul class="space-y-3"><li><a href="index.html#modes" class="text-neutral-500 text-sm hover:text-white transition-colors">UI Mode</a></li><li><a href="index.html#modes" class="text-neutral-500 text-sm hover:text-white transition-colors">Logic Mode</a></li><li><a href="index.html#modes" class="text-neutral-500 text-sm hover:text-white transition-colors">Notebook</a></li><li><a href="index.html#modes" class="text-neutral-500 text-sm hover:text-white transition-colors">Canvas</a></li></ul></div>
+                <div><h4 class="text-white text-xs font-semibold uppercase tracking-widest mb-5">Resources</h4><ul class="space-y-3"><li><a href="#" class="text-neutral-500 text-sm hover:text-white transition-colors">Documentation</a></li><li><a href="store.html" class="text-neutral-500 text-sm hover:text-white transition-colors">Marketplace</a></li><li><a href="#" class="text-neutral-500 text-sm hover:text-white transition-colors">API Reference</a></li><li><a href="#" class="text-neutral-500 text-sm hover:text-white transition-colors">Changelog</a></li></ul></div>
+                <div><h4 class="text-white text-xs font-semibold uppercase tracking-widest mb-5">Company</h4><ul class="space-y-3"><li><a href="#" class="text-neutral-500 text-sm hover:text-white transition-colors">About</a></li><li><a href="#" class="text-neutral-500 text-sm hover:text-white transition-colors">Blog</a></li><li><a href="#" class="text-neutral-500 text-sm hover:text-white transition-colors">Careers</a></li></ul></div>
+                <div><h4 class="text-white text-xs font-semibold uppercase tracking-widest mb-5">Newsletter</h4><form class="flex flex-col gap-3" onsubmit="return false"><input type="email" placeholder="you@email.com" class="w-full bg-transparent border-b border-white/15 py-2 text-white text-sm focus:outline-none focus:border-green-500 transition-colors placeholder:text-neutral-700"><button class="self-start text-xs text-neutral-500 uppercase tracking-widest hover:text-white transition-colors">Subscribe</button></form></div>
+            </div>
+        </div>
+        <div class="border-t border-white/[0.06] px-8 py-5 flex flex-col md:flex-row justify-between items-center gap-3">
+            <span class="text-neutral-700 text-xs">&copy; 2026 Logic Packs. All rights reserved.</span>
+            <div class="flex gap-4"><a href="#" class="text-neutral-700 text-xs hover:text-white transition-colors">Privacy</a><a href="#" class="text-neutral-700 text-xs hover:text-white transition-colors">Terms</a></div>
+        </div>
+    </footer>
+
+    <!-- ═══ PACK DATA + RENDERING ═══ -->
+    <script>
+    // ── Pack database ──
+    const PACK_DB = {
+        "auth-pack": {
+            name: "Auth Pack",
+            type: "logic",
+            typeLabel: "Logic",
+            icon: "solar:shield-keyhole-linear",
+            iconColor: "text-green-500",
+            iconBg: "bg-green-500/10 border-green-500/20",
+            typeBadge: "bg-green-500/15 text-green-400 border-green-500/20",
+            desc: "Complete authentication & authorization with JWT, OAuth, RBAC, session management, and self-healing token refresh.",
+            author: "Logic Packs Team",
+            version: "v3.2.0",
+            installs: "12,400+",
+            runtime: "Python",
+            license: "MIT",
+            updated: "2 days ago",
+            verified: true,
+            tags: ["auth", "jwt", "oauth", "rbac", "security", "session"],
+            scopes: ["db.read", "db.write", "secrets.read", "network.outbound"],
+            actions: ["login", "signup", "verify_token", "refresh_token", "reset_password", "assign_role", "check_permission"],
+            compatible: [
+                { name: "Dashboard UI", slug: "dashboard-ui" },
+                { name: "Payments Pack", slug: "payments-pack" },
+                { name: "Postgres Connector", slug: "postgres-connector" }
+            ],
+            overview: `
+                <h2 class="text-xl text-white font-medium tracking-tight mb-4">About</h2>
+                <p class="text-neutral-400 text-sm leading-relaxed mb-6">Auth Pack provides a complete, production-ready authentication and authorization system for any Logic Packs workspace. It handles user registration, login, JWT token management, OAuth provider integration, role-based access control, and session management — all with self-healing capabilities built in.</p>
+
+                <h3 class="text-lg text-white font-medium tracking-tight mb-3">Key Features</h3>
+                <ul class="space-y-2 text-sm text-neutral-400 mb-8">
+                    <li class="flex items-start gap-2"><iconify-icon icon="solar:check-circle-linear" class="text-green-500 text-base mt-0.5 shrink-0"></iconify-icon>JWT authentication with automatic token rotation and refresh</li>
+                    <li class="flex items-start gap-2"><iconify-icon icon="solar:check-circle-linear" class="text-green-500 text-base mt-0.5 shrink-0"></iconify-icon>OAuth 2.0 integration (Google, GitHub, Apple, Microsoft)</li>
+                    <li class="flex items-start gap-2"><iconify-icon icon="solar:check-circle-linear" class="text-green-500 text-base mt-0.5 shrink-0"></iconify-icon>Role-based access control with granular permissions</li>
+                    <li class="flex items-start gap-2"><iconify-icon icon="solar:check-circle-linear" class="text-green-500 text-base mt-0.5 shrink-0"></iconify-icon>Session management with multi-device support</li>
+                    <li class="flex items-start gap-2"><iconify-icon icon="solar:check-circle-linear" class="text-green-500 text-base mt-0.5 shrink-0"></iconify-icon>Password hashing (bcrypt/argon2) with salt rotation</li>
+                    <li class="flex items-start gap-2"><iconify-icon icon="solar:check-circle-linear" class="text-green-500 text-base mt-0.5 shrink-0"></iconify-icon>Self-healing: monitors token refresh failures and auto-patches</li>
+                </ul>
+
+                <h3 class="text-lg text-white font-medium tracking-tight mb-3">Quick Start</h3>
+                <pre class="mb-8"><code><span class="text-green-500">from</span> <span class="text-white">packs</span> <span class="text-green-500">import</span> <span class="text-white">AuthPack</span>
+<span class="text-green-500">from</span> <span class="text-white">fastapi</span> <span class="text-green-500">import</span> <span class="text-white">FastAPI</span>
+
+app = FastAPI()
+auth = AuthPack.install(app)
+
+<span class="text-neutral-600"># Protected route</span>
+@app.get(<span class="text-green-400">"/profile"</span>)
+<span class="text-green-500">async def</span> <span class="text-white">get_profile</span>(user=Depends(auth.require)):
+    <span class="text-green-500">return</span> {<span class="text-green-400">"id"</span>: user.id, <span class="text-green-400">"role"</span>: user.role}
+
+<span class="text-neutral-600"># Admin-only route</span>
+@app.get(<span class="text-green-400">"/admin"</span>)
+<span class="text-green-500">async def</span> <span class="text-white">admin_panel</span>(user=Depends(auth.require_role(<span class="text-green-400">"admin"</span>))):
+    <span class="text-green-500">return</span> {<span class="text-green-400">"message"</span>: <span class="text-green-400">"Welcome, admin"</span>}</code></pre>
+
+                <h3 class="text-lg text-white font-medium tracking-tight mb-3">Self-Healing</h3>
+                <p class="text-neutral-400 text-sm leading-relaxed mb-4">Auth Pack monitors token refresh failures, expired session patterns, and OAuth callback errors. When issues are detected, the self-healing agent proposes patches, reruns the full test suite, and ships a fix automatically.</p>
+                <div class="bg-white/[0.02] border border-white/[0.06] rounded-lg p-4 text-xs font-mono text-neutral-400 space-y-1.5 mb-8">
+                    <div class="flex items-center gap-2"><span class="text-red-400">✕</span> test_token_refresh_expired → FAILED</div>
+                    <div class="flex items-center gap-2"><span class="text-yellow-400">⟳</span> agent: analyzing refresh_token edge case</div>
+                    <div class="flex items-center gap-2"><span class="text-yellow-400">⟳</span> agent: patch → handle clock skew in expiry check</div>
+                    <div class="flex items-center gap-2"><span class="text-green-500">✓</span> all 47 tests passing → v3.2.0 released</div>
+                </div>
+            `,
+            contracts: `<span class="text-neutral-600"># pack.manifest.yaml</span>
+<span class="text-green-500">name:</span> <span class="text-white">auth-pack</span>
+<span class="text-green-500">version:</span> <span class="text-neutral-300">3.2.0</span>
+<span class="text-green-500">type:</span> <span class="text-neutral-300">logic</span>
+<span class="text-green-500">runtime:</span> <span class="text-neutral-300">python &gt;= 3.10</span>
+<span class="text-green-500">framework:</span> <span class="text-neutral-300">fastapi</span>
+
+<span class="text-green-500">contracts:</span>
+  <span class="text-neutral-400">actions:</span>
+    - <span class="text-white">login</span>
+      <span class="text-neutral-600">input:</span>  { email: string, password: string }
+      <span class="text-neutral-600">output:</span> { token: JWT, refresh: JWT, user: User }
+    - <span class="text-white">signup</span>
+      <span class="text-neutral-600">input:</span>  { email: string, password: string, name?: string }
+      <span class="text-neutral-600">output:</span> { user: User, verification_sent: bool }
+    - <span class="text-white">verify_token</span>
+      <span class="text-neutral-600">input:</span>  { token: JWT }
+      <span class="text-neutral-600">output:</span> { valid: bool, user_id: string, role: string }
+    - <span class="text-white">refresh_token</span>
+      <span class="text-neutral-600">input:</span>  { refresh: JWT }
+      <span class="text-neutral-600">output:</span> { token: JWT, refresh: JWT }
+    - <span class="text-white">reset_password</span>
+      <span class="text-neutral-600">input:</span>  { email: string }
+      <span class="text-neutral-600">output:</span> { sent: bool }
+    - <span class="text-white">assign_role</span>
+      <span class="text-neutral-600">input:</span>  { user_id: string, role: string }
+      <span class="text-neutral-600">output:</span> { updated: bool }
+
+  <span class="text-neutral-400">scopes:</span>
+    - <span class="text-neutral-300">db.read</span>   <span class="text-neutral-600"># Read user records</span>
+    - <span class="text-neutral-300">db.write</span>  <span class="text-neutral-600"># Write user records</span>
+    - <span class="text-neutral-300">secrets.read</span>  <span class="text-neutral-600"># JWT signing keys</span>
+    - <span class="text-neutral-300">network.outbound</span>  <span class="text-neutral-600"># OAuth callbacks</span>
+
+<span class="text-green-500">tests:</span>
+  <span class="text-neutral-400">runner:</span> <span class="text-neutral-300">pytest</span>
+  <span class="text-neutral-400">count:</span> <span class="text-neutral-300">47</span>
+  <span class="text-neutral-400">coverage:</span> <span class="text-neutral-300">94%</span>
+
+<span class="text-green-500">telemetry:</span>
+  <span class="text-neutral-400">metrics:</span>
+    - <span class="text-neutral-300">auth.login.latency_ms</span>
+    - <span class="text-neutral-300">auth.token.refresh_failures</span>
+    - <span class="text-neutral-300">auth.signup.rate</span>
+
+<span class="text-green-500">self_healing:</span>
+  <span class="text-neutral-400">enabled:</span> <span class="text-neutral-300">true</span>
+  <span class="text-neutral-400">triggers:</span>
+    - <span class="text-neutral-300">test_failure</span>
+    - <span class="text-neutral-300">telemetry_anomaly</span>`,
+            deps: [
+                { name: "fastapi", version: ">=0.104", type: "pip", required: true },
+                { name: "python-jose", version: ">=3.3", type: "pip", required: true },
+                { name: "passlib", version: ">=1.7", type: "pip", required: true },
+                { name: "bcrypt", version: ">=4.0", type: "pip", required: true },
+                { name: "httpx", version: ">=0.25", type: "pip", required: true },
+                { name: "postgres-connector", version: ">=2.0", type: "pack", required: true },
+                { name: "email-service", version: ">=1.5", type: "pack", required: false },
+            ],
+            changelog: [
+                { ver: "3.2.0", date: "Feb 16, 2026", title: "Clock skew handling", desc: "Self-healing patch: improved token expiry validation to handle up to 30s of clock skew between services.", type: "patch" },
+                { ver: "3.1.0", date: "Feb 10, 2026", title: "Apple Sign-In support", desc: "Added Apple as an OAuth provider. Includes Sign in with Apple button component for UI Pack binding.", type: "feature" },
+                { ver: "3.0.0", date: "Jan 28, 2026", title: "RBAC overhaul", desc: "Breaking: Roles are now hierarchical. New assign_role and check_permission actions. Migration guide included.", type: "breaking" },
+                { ver: "2.9.1", date: "Jan 15, 2026", title: "Session cleanup", desc: "Automated cleanup of expired sessions. Reduced DB storage by ~40% for high-traffic instances.", type: "improvement" },
+            ],
+            related: ["payments-pack", "dashboard-ui", "postgres-connector", "social-auth"]
+        },
+
+        "dashboard-ui": {
+            name: "Dashboard UI",
+            type: "ui",
+            typeLabel: "UI",
+            icon: "solar:chart-2-linear",
+            iconColor: "text-blue-400",
+            iconBg: "bg-blue-500/10 border-blue-500/20",
+            typeBadge: "bg-blue-500/15 text-blue-400 border-blue-500/20",
+            desc: "Pre-built admin dashboard with data tables, charts, stat cards, and sidebar navigation. Binds to any Logic Pack.",
+            author: "Logic Packs Team",
+            version: "v2.4.1",
+            installs: "8,700+",
+            runtime: "React + TypeScript",
+            license: "MIT",
+            updated: "5 days ago",
+            verified: true,
+            tags: ["dashboard", "admin", "ui", "charts", "react", "tables"],
+            scopes: ["ui.render", "pack.bind"],
+            actions: ["render_dashboard", "bind_data_source", "configure_sidebar", "add_widget"],
+            compatible: [
+                { name: "Auth Pack", slug: "auth-pack" },
+                { name: "Form Builder", slug: "form-builder" },
+                { name: "Postgres Connector", slug: "postgres-connector" }
+            ],
+            overview: `
+                <h2 class="text-xl text-white font-medium tracking-tight mb-4">About</h2>
+                <p class="text-neutral-400 text-sm leading-relaxed mb-6">Dashboard UI gives you a production-ready admin interface in minutes. Includes responsive layouts, data visualization components, real-time stat cards, and full sidebar navigation — all generated as pack-aware React components that bind directly to your Logic Pack actions.</p>
+
+                <h3 class="text-lg text-white font-medium tracking-tight mb-3">Key Features</h3>
+                <ul class="space-y-2 text-sm text-neutral-400 mb-8">
+                    <li class="flex items-start gap-2"><iconify-icon icon="solar:check-circle-linear" class="text-green-500 text-base mt-0.5 shrink-0"></iconify-icon>Responsive sidebar layout with collapsible navigation</li>
+                    <li class="flex items-start gap-2"><iconify-icon icon="solar:check-circle-linear" class="text-green-500 text-base mt-0.5 shrink-0"></iconify-icon>Data tables with sorting, filtering, pagination, and row actions</li>
+                    <li class="flex items-start gap-2"><iconify-icon icon="solar:check-circle-linear" class="text-green-500 text-base mt-0.5 shrink-0"></iconify-icon>Chart components (bar, line, pie, area) powered by Recharts</li>
+                    <li class="flex items-start gap-2"><iconify-icon icon="solar:check-circle-linear" class="text-green-500 text-base mt-0.5 shrink-0"></iconify-icon>Stat cards with trend indicators and sparklines</li>
+                    <li class="flex items-start gap-2"><iconify-icon icon="solar:check-circle-linear" class="text-green-500 text-base mt-0.5 shrink-0"></iconify-icon>Auto-binds to Logic Pack endpoints via Compose</li>
+                    <li class="flex items-start gap-2"><iconify-icon icon="solar:check-circle-linear" class="text-green-500 text-base mt-0.5 shrink-0"></iconify-icon>Dark mode support with Tailwind CSS</li>
+                </ul>
+
+                <h3 class="text-lg text-white font-medium tracking-tight mb-3">Quick Start</h3>
+                <pre class="mb-8"><code><span class="text-green-500">import</span> { Dashboard, Sidebar, DataTable } <span class="text-green-500">from</span> <span class="text-green-400">"@logicpacks/dashboard-ui"</span>
+<span class="text-green-500">import</span> { usePackAction } <span class="text-green-500">from</span> <span class="text-green-400">"@logicpacks/compose"</span>
+
+<span class="text-green-500">export default function</span> <span class="text-white">AdminPanel</span>() {
+  <span class="text-green-500">const</span> users = usePackAction(<span class="text-green-400">"auth-pack"</span>, <span class="text-green-400">"list_users"</span>)
+
+  <span class="text-green-500">return</span> (
+    &lt;<span class="text-blue-400">Dashboard</span>&gt;
+      &lt;<span class="text-blue-400">Sidebar</span> items={[<span class="text-green-400">"Users"</span>, <span class="text-green-400">"Payments"</span>, <span class="text-green-400">"Settings"</span>]} /&gt;
+      &lt;<span class="text-blue-400">DataTable</span> data={users} columns={[<span class="text-green-400">"name"</span>, <span class="text-green-400">"email"</span>, <span class="text-green-400">"role"</span>]} /&gt;
+    &lt;/<span class="text-blue-400">Dashboard</span>&gt;
+  )
+}</code></pre>
+            `,
+            contracts: `<span class="text-neutral-600"># pack.manifest.yaml</span>
+<span class="text-green-500">name:</span> <span class="text-white">dashboard-ui</span>
+<span class="text-green-500">version:</span> <span class="text-neutral-300">2.4.1</span>
+<span class="text-green-500">type:</span> <span class="text-neutral-300">ui</span>
+<span class="text-green-500">runtime:</span> <span class="text-neutral-300">react + typescript</span>
+
+<span class="text-green-500">contracts:</span>
+  <span class="text-neutral-400">components:</span>
+    - <span class="text-white">Dashboard</span>  <span class="text-neutral-600"># Main layout wrapper</span>
+    - <span class="text-white">Sidebar</span>    <span class="text-neutral-600"># Collapsible nav</span>
+    - <span class="text-white">DataTable</span>  <span class="text-neutral-600"># Advanced data grid</span>
+    - <span class="text-white">StatCard</span>   <span class="text-neutral-600"># Metric display</span>
+    - <span class="text-white">Chart</span>      <span class="text-neutral-600"># Bar, Line, Pie, Area</span>
+  <span class="text-neutral-400">bindings:</span>
+    - <span class="text-neutral-300">pack.action → table.dataSource</span>
+    - <span class="text-neutral-300">pack.action → chart.data</span>
+  <span class="text-neutral-400">scopes:</span>
+    - <span class="text-neutral-300">ui.render</span>
+    - <span class="text-neutral-300">pack.bind</span>
+
+<span class="text-green-500">tests:</span>
+  <span class="text-neutral-400">runner:</span> <span class="text-neutral-300">vitest</span>
+  <span class="text-neutral-400">count:</span> <span class="text-neutral-300">38</span>
+  <span class="text-neutral-400">coverage:</span> <span class="text-neutral-300">89%</span>`,
+            deps: [
+                { name: "react", version: ">=18", type: "npm", required: true },
+                { name: "recharts", version: ">=2.8", type: "npm", required: true },
+                { name: "tailwindcss", version: ">=3.4", type: "npm", required: true },
+                { name: "@logicpacks/compose", version: ">=1.0", type: "npm", required: true },
+            ],
+            changelog: [
+                { ver: "2.4.1", date: "Feb 13, 2026", title: "Table export fix", desc: "Fixed CSV export breaking on special characters. Added UTF-8 BOM support.", type: "patch" },
+                { ver: "2.4.0", date: "Feb 5, 2026", title: "Sparkline stat cards", desc: "StatCard now supports inline sparkline charts for trend visualization.", type: "feature" },
+                { ver: "2.3.0", date: "Jan 20, 2026", title: "Dark mode", desc: "Full dark mode support using Tailwind CSS dark: variants. Auto-detects system preference.", type: "feature" },
+            ],
+            related: ["auth-pack", "form-builder", "data-table", "landing-kit"]
+        },
+
+        "payments-pack": {
+            name: "Payments Pack",
+            type: "logic",
+            typeLabel: "Logic",
+            icon: "solar:card-linear",
+            iconColor: "text-purple-400",
+            iconBg: "bg-purple-500/10 border-purple-500/20",
+            typeBadge: "bg-green-500/15 text-green-400 border-green-500/20",
+            desc: "Full Stripe integration with checkout, subscriptions, webhooks, invoice generation, and automatic retry handling.",
+            author: "Logic Packs Team",
+            version: "v2.0.3",
+            installs: "6,100+",
+            runtime: "Python",
+            license: "MIT",
+            updated: "1 week ago",
+            verified: true,
+            tags: ["payments", "stripe", "checkout", "subscriptions", "invoices", "webhooks"],
+            scopes: ["db.read", "db.write", "secrets.read", "network.outbound"],
+            actions: ["create_checkout", "manage_subscription", "handle_webhook", "generate_invoice", "refund"],
+            compatible: [
+                { name: "Auth Pack", slug: "auth-pack" },
+                { name: "Dashboard UI", slug: "dashboard-ui" },
+                { name: "Email Service", slug: "email-service" }
+            ],
+            overview: `
+                <h2 class="text-xl text-white font-medium tracking-tight mb-4">About</h2>
+                <p class="text-neutral-400 text-sm leading-relaxed mb-6">Payments Pack wraps Stripe's full API into a clean, composable pack. Handle one-time charges, recurring subscriptions, webhooks, invoice generation, and refunds — all with built-in retry logic and self-healing for failed webhook deliveries.</p>
+
+                <h3 class="text-lg text-white font-medium tracking-tight mb-3">Key Features</h3>
+                <ul class="space-y-2 text-sm text-neutral-400 mb-8">
+                    <li class="flex items-start gap-2"><iconify-icon icon="solar:check-circle-linear" class="text-green-500 text-base mt-0.5 shrink-0"></iconify-icon>Stripe Checkout integration with hosted and embedded modes</li>
+                    <li class="flex items-start gap-2"><iconify-icon icon="solar:check-circle-linear" class="text-green-500 text-base mt-0.5 shrink-0"></iconify-icon>Subscription lifecycle management (create, upgrade, cancel, pause)</li>
+                    <li class="flex items-start gap-2"><iconify-icon icon="solar:check-circle-linear" class="text-green-500 text-base mt-0.5 shrink-0"></iconify-icon>Webhook handler with signature verification and retry queue</li>
+                    <li class="flex items-start gap-2"><iconify-icon icon="solar:check-circle-linear" class="text-green-500 text-base mt-0.5 shrink-0"></iconify-icon>Invoice generation and PDF export</li>
+                    <li class="flex items-start gap-2"><iconify-icon icon="solar:check-circle-linear" class="text-green-500 text-base mt-0.5 shrink-0"></iconify-icon>Self-healing: auto-retries failed webhooks, alerts on payment anomalies</li>
+                </ul>
+
+                <h3 class="text-lg text-white font-medium tracking-tight mb-3">Quick Start</h3>
+                <pre class="mb-8"><code><span class="text-green-500">from</span> <span class="text-white">packs</span> <span class="text-green-500">import</span> <span class="text-white">PaymentsPack</span>
+
+payments = PaymentsPack.install(app)
+
+<span class="text-neutral-600"># Create a checkout session</span>
+@app.post(<span class="text-green-400">"/checkout"</span>)
+<span class="text-green-500">async def</span> <span class="text-white">checkout</span>(plan: str):
+    session = <span class="text-green-500">await</span> payments.create_checkout(
+        plan=plan,
+        success_url=<span class="text-green-400">"/success"</span>,
+        cancel_url=<span class="text-green-400">"/cancel"</span>
+    )
+    <span class="text-green-500">return</span> {<span class="text-green-400">"url"</span>: session.url}</code></pre>
+            `,
+            contracts: `<span class="text-neutral-600"># pack.manifest.yaml</span>
+<span class="text-green-500">name:</span> <span class="text-white">payments-pack</span>
+<span class="text-green-500">version:</span> <span class="text-neutral-300">2.0.3</span>
+<span class="text-green-500">type:</span> <span class="text-neutral-300">logic</span>
+<span class="text-green-500">runtime:</span> <span class="text-neutral-300">python &gt;= 3.10</span>
+
+<span class="text-green-500">contracts:</span>
+  <span class="text-neutral-400">actions:</span>
+    - <span class="text-white">create_checkout</span>
+    - <span class="text-white">manage_subscription</span>
+    - <span class="text-white">handle_webhook</span>
+    - <span class="text-white">generate_invoice</span>
+    - <span class="text-white">refund</span>
+  <span class="text-neutral-400">scopes:</span>
+    - <span class="text-neutral-300">db.read</span>
+    - <span class="text-neutral-300">db.write</span>
+    - <span class="text-neutral-300">secrets.read</span>
+    - <span class="text-neutral-300">network.outbound</span>
+
+<span class="text-green-500">tests:</span>
+  <span class="text-neutral-400">runner:</span> <span class="text-neutral-300">pytest</span>
+  <span class="text-neutral-400">count:</span> <span class="text-neutral-300">52</span>
+  <span class="text-neutral-400">coverage:</span> <span class="text-neutral-300">91%</span>`,
+            deps: [
+                { name: "stripe", version: ">=7.0", type: "pip", required: true },
+                { name: "fastapi", version: ">=0.104", type: "pip", required: true },
+                { name: "postgres-connector", version: ">=2.0", type: "pack", required: true },
+            ],
+            changelog: [
+                { ver: "2.0.3", date: "Feb 11, 2026", title: "Webhook retry fix", desc: "Self-healing patch: improved dead-letter queue handling for timed-out webhook deliveries.", type: "patch" },
+                { ver: "2.0.0", date: "Jan 30, 2026", title: "Subscription lifecycle", desc: "Breaking: New subscription management actions. Supports pause, resume, and plan upgrades.", type: "breaking" },
+            ],
+            related: ["auth-pack", "dashboard-ui", "email-service", "postgres-connector"]
+        },
+
+        "web-scraper": {
+            name: "Web Scraper",
+            type: "automation",
+            typeLabel: "Automation",
+            icon: "solar:spider-linear",
+            iconColor: "text-orange-400",
+            iconBg: "bg-orange-500/10 border-orange-500/20",
+            typeBadge: "bg-orange-500/15 text-orange-400 border-orange-500/20",
+            desc: "Puppeteer-based web scraping with retries, proxy rotation, rate limiting, and structured data extraction.",
+            author: "Logic Packs Team",
+            version: "v1.5.0",
+            installs: "4,200+",
+            runtime: "Node.js",
+            license: "MIT",
+            updated: "4 days ago",
+            verified: true,
+            tags: ["scraping", "puppeteer", "automation", "data-extraction", "headless"],
+            scopes: ["network.outbound", "filesystem.write", "runtime.browser"],
+            actions: ["scrape_page", "scrape_list", "extract_structured", "screenshot", "pdf_export"],
+            compatible: [
+                { name: "Postgres Connector", slug: "postgres-connector" },
+                { name: "S3 Storage", slug: "s3-connector" },
+                { name: "Task Scheduler", slug: "scheduler" }
+            ],
+            overview: `
+                <h2 class="text-xl text-white font-medium tracking-tight mb-4">About</h2>
+                <p class="text-neutral-400 text-sm leading-relaxed mb-6">Web Scraper provides production-grade web scraping on managed infrastructure. Uses Puppeteer for headless Chrome automation with built-in retry logic, proxy rotation, rate limiting, and structured data extraction via CSS selectors or AI-powered parsing.</p>
+
+                <h3 class="text-lg text-white font-medium tracking-tight mb-3">Key Features</h3>
+                <ul class="space-y-2 text-sm text-neutral-400 mb-8">
+                    <li class="flex items-start gap-2"><iconify-icon icon="solar:check-circle-linear" class="text-green-500 text-base mt-0.5 shrink-0"></iconify-icon>Headless Chrome via Puppeteer on managed infra</li>
+                    <li class="flex items-start gap-2"><iconify-icon icon="solar:check-circle-linear" class="text-green-500 text-base mt-0.5 shrink-0"></iconify-icon>Proxy rotation pool with geo-targeting</li>
+                    <li class="flex items-start gap-2"><iconify-icon icon="solar:check-circle-linear" class="text-green-500 text-base mt-0.5 shrink-0"></iconify-icon>Smart retry with exponential backoff</li>
+                    <li class="flex items-start gap-2"><iconify-icon icon="solar:check-circle-linear" class="text-green-500 text-base mt-0.5 shrink-0"></iconify-icon>Structured data extraction from HTML tables and lists</li>
+                    <li class="flex items-start gap-2"><iconify-icon icon="solar:check-circle-linear" class="text-green-500 text-base mt-0.5 shrink-0"></iconify-icon>Screenshot and PDF capture modes</li>
+                </ul>
+
+                <h3 class="text-lg text-white font-medium tracking-tight mb-3">Quick Start</h3>
+                <pre class="mb-8"><code><span class="text-green-500">const</span> { WebScraper } = require(<span class="text-green-400">"@logicpacks/web-scraper"</span>)
+
+<span class="text-green-500">const</span> scraper = <span class="text-green-500">new</span> WebScraper({ retries: 3, proxy: <span class="text-green-400">"auto"</span> })
+
+<span class="text-green-500">const</span> data = <span class="text-green-500">await</span> scraper.extract({
+  url: <span class="text-green-400">"https://example.com/products"</span>,
+  selector: <span class="text-green-400">".product-card"</span>,
+  fields: { title: <span class="text-green-400">"h3"</span>, price: <span class="text-green-400">".price"</span>, link: <span class="text-green-400">"a@href"</span> }
+})</code></pre>
+            `,
+            contracts: `<span class="text-neutral-600"># pack.manifest.yaml</span>
+<span class="text-green-500">name:</span> <span class="text-white">web-scraper</span>
+<span class="text-green-500">version:</span> <span class="text-neutral-300">1.5.0</span>
+<span class="text-green-500">type:</span> <span class="text-neutral-300">automation</span>
+<span class="text-green-500">runtime:</span> <span class="text-neutral-300">node &gt;= 18</span>
+
+<span class="text-green-500">contracts:</span>
+  <span class="text-neutral-400">actions:</span>
+    - <span class="text-white">scrape_page</span>
+    - <span class="text-white">scrape_list</span>
+    - <span class="text-white">extract_structured</span>
+    - <span class="text-white">screenshot</span>
+    - <span class="text-white">pdf_export</span>
+  <span class="text-neutral-400">scopes:</span>
+    - <span class="text-neutral-300">network.outbound</span>
+    - <span class="text-neutral-300">filesystem.write</span>
+    - <span class="text-neutral-300">runtime.browser</span>
+
+<span class="text-green-500">tests:</span>
+  <span class="text-neutral-400">runner:</span> <span class="text-neutral-300">jest</span>
+  <span class="text-neutral-400">count:</span> <span class="text-neutral-300">31</span>`,
+            deps: [
+                { name: "puppeteer", version: ">=21", type: "npm", required: true },
+                { name: "cheerio", version: ">=1.0", type: "npm", required: true },
+            ],
+            changelog: [
+                { ver: "1.5.0", date: "Feb 14, 2026", title: "AI-powered parsing", desc: "New: Use LLM-powered extraction for unstructured pages. Falls back to CSS selectors.", type: "feature" },
+                { ver: "1.4.2", date: "Feb 1, 2026", title: "Proxy pool expansion", desc: "Added 12 new proxy regions. Improved rotation algorithm for better success rates.", type: "improvement" },
+            ],
+            related: ["pdf-generator", "postgres-connector", "scheduler", "s3-connector"]
+        },
+
+        "image-gen": {
+            name: "Image Generator",
+            type: "creative",
+            typeLabel: "Creative",
+            icon: "solar:gallery-wide-linear",
+            iconColor: "text-fuchsia-400",
+            iconBg: "bg-fuchsia-500/10 border-fuchsia-500/20",
+            typeBadge: "bg-fuchsia-500/15 text-fuchsia-400 border-fuchsia-500/20",
+            desc: "Multi-model image generation — DALL·E, Stable Diffusion, Midjourney API. Batch processing and style presets.",
+            author: "Logic Packs Team",
+            version: "v1.2.0",
+            installs: "3,600+",
+            runtime: "Python",
+            license: "MIT",
+            updated: "3 days ago",
+            verified: true,
+            tags: ["image", "ai", "generation", "dalle", "stable-diffusion", "creative"],
+            scopes: ["network.outbound", "secrets.read", "filesystem.write"],
+            actions: ["generate", "batch_generate", "upscale", "style_transfer", "remove_background"],
+            compatible: [
+                { name: "S3 Storage", slug: "s3-connector" },
+                { name: "OpenAI Connector", slug: "openai-connector" }
+            ],
+            overview: `
+                <h2 class="text-xl text-white font-medium tracking-tight mb-4">About</h2>
+                <p class="text-neutral-400 text-sm leading-relaxed mb-6">Image Generator unifies multiple AI image models behind one clean interface. Switch between DALL·E 3, Stable Diffusion XL, and Midjourney API without changing your code. Includes batch processing, style presets, upscaling, and background removal.</p>
+
+                <h3 class="text-lg text-white font-medium tracking-tight mb-3">Key Features</h3>
+                <ul class="space-y-2 text-sm text-neutral-400 mb-8">
+                    <li class="flex items-start gap-2"><iconify-icon icon="solar:check-circle-linear" class="text-green-500 text-base mt-0.5 shrink-0"></iconify-icon>Multi-model: DALL·E 3, SDXL, Midjourney API</li>
+                    <li class="flex items-start gap-2"><iconify-icon icon="solar:check-circle-linear" class="text-green-500 text-base mt-0.5 shrink-0"></iconify-icon>Batch generation with progress tracking</li>
+                    <li class="flex items-start gap-2"><iconify-icon icon="solar:check-circle-linear" class="text-green-500 text-base mt-0.5 shrink-0"></iconify-icon>Style presets (photorealistic, illustration, abstract, etc.)</li>
+                    <li class="flex items-start gap-2"><iconify-icon icon="solar:check-circle-linear" class="text-green-500 text-base mt-0.5 shrink-0"></iconify-icon>AI upscaling (2x, 4x) and background removal</li>
+                </ul>
+
+                <h3 class="text-lg text-white font-medium tracking-tight mb-3">Quick Start</h3>
+                <pre class="mb-8"><code><span class="text-green-500">from</span> <span class="text-white">packs</span> <span class="text-green-500">import</span> <span class="text-white">ImageGen</span>
+
+gen = ImageGen.install(app, model=<span class="text-green-400">"dalle-3"</span>)
+
+result = <span class="text-green-500">await</span> gen.generate(
+    prompt=<span class="text-green-400">"A minimalist logo for a tech startup"</span>,
+    style=<span class="text-green-400">"flat-vector"</span>,
+    size=<span class="text-green-400">"1024x1024"</span>
+)</code></pre>
+            `,
+            contracts: `<span class="text-neutral-600"># pack.manifest.yaml</span>
+<span class="text-green-500">name:</span> <span class="text-white">image-gen</span>
+<span class="text-green-500">version:</span> <span class="text-neutral-300">1.2.0</span>
+<span class="text-green-500">type:</span> <span class="text-neutral-300">creative</span>
+<span class="text-green-500">runtime:</span> <span class="text-neutral-300">python &gt;= 3.10</span>
+
+<span class="text-green-500">contracts:</span>
+  <span class="text-neutral-400">actions:</span>
+    - <span class="text-white">generate</span>
+    - <span class="text-white">batch_generate</span>
+    - <span class="text-white">upscale</span>
+    - <span class="text-white">style_transfer</span>
+    - <span class="text-white">remove_background</span>
+  <span class="text-neutral-400">scopes:</span>
+    - <span class="text-neutral-300">network.outbound</span>
+    - <span class="text-neutral-300">secrets.read</span>
+    - <span class="text-neutral-300">filesystem.write</span>`,
+            deps: [
+                { name: "openai", version: ">=1.0", type: "pip", required: true },
+                { name: "diffusers", version: ">=0.25", type: "pip", required: false },
+                { name: "Pillow", version: ">=10.0", type: "pip", required: true },
+            ],
+            changelog: [
+                { ver: "1.2.0", date: "Feb 15, 2026", title: "Background removal", desc: "New remove_background action using segment-anything model.", type: "feature" },
+                { ver: "1.1.0", date: "Feb 1, 2026", title: "Batch mode", desc: "Generate multiple images in parallel with progress callbacks.", type: "feature" },
+            ],
+            related: ["html-prototyper", "s3-connector", "openai-connector", "landing-kit"]
+        },
+
+        "postgres-connector": {
+            name: "Postgres Connector",
+            type: "provider",
+            typeLabel: "Provider",
+            icon: "solar:database-linear",
+            iconColor: "text-blue-400",
+            iconBg: "bg-blue-500/10 border-blue-500/20",
+            typeBadge: "bg-sky-500/15 text-sky-400 border-sky-500/20",
+            desc: "PostgreSQL integration with connection pooling, migrations, query builder, and automatic schema sync.",
+            author: "Logic Packs Team",
+            version: "v2.3.0",
+            installs: "7,200+",
+            runtime: "Python",
+            license: "MIT",
+            updated: "6 days ago",
+            verified: true,
+            tags: ["database", "postgres", "sql", "migrations", "provider"],
+            scopes: ["db.read", "db.write", "db.migrate"],
+            actions: ["query", "migrate", "sync_schema", "pool_status", "backup"],
+            compatible: [
+                { name: "Auth Pack", slug: "auth-pack" },
+                { name: "Payments Pack", slug: "payments-pack" },
+                { name: "REST API Scaffold", slug: "crud-generator" }
+            ],
+            overview: `
+                <h2 class="text-xl text-white font-medium tracking-tight mb-4">About</h2>
+                <p class="text-neutral-400 text-sm leading-relaxed mb-6">Postgres Connector provides a clean, reliable interface to PostgreSQL. Connection pooling, automatic migrations, a type-safe query builder, and schema synchronization — all wrapped in the pack standard with full test coverage.</p>
+
+                <h3 class="text-lg text-white font-medium tracking-tight mb-3">Key Features</h3>
+                <ul class="space-y-2 text-sm text-neutral-400 mb-8">
+                    <li class="flex items-start gap-2"><iconify-icon icon="solar:check-circle-linear" class="text-green-500 text-base mt-0.5 shrink-0"></iconify-icon>Connection pooling with automatic scaling</li>
+                    <li class="flex items-start gap-2"><iconify-icon icon="solar:check-circle-linear" class="text-green-500 text-base mt-0.5 shrink-0"></iconify-icon>Zero-downtime schema migrations</li>
+                    <li class="flex items-start gap-2"><iconify-icon icon="solar:check-circle-linear" class="text-green-500 text-base mt-0.5 shrink-0"></iconify-icon>Type-safe query builder with ORM-like syntax</li>
+                    <li class="flex items-start gap-2"><iconify-icon icon="solar:check-circle-linear" class="text-green-500 text-base mt-0.5 shrink-0"></iconify-icon>Automatic backup scheduling</li>
+                </ul>
+
+                <h3 class="text-lg text-white font-medium tracking-tight mb-3">Quick Start</h3>
+                <pre class="mb-8"><code><span class="text-green-500">from</span> <span class="text-white">packs</span> <span class="text-green-500">import</span> <span class="text-white">PostgresConnector</span>
+
+db = PostgresConnector.install(app, url=<span class="text-green-400">"postgres://..."</span>)
+
+users = <span class="text-green-500">await</span> db.query(<span class="text-green-400">"users"</span>).where(role=<span class="text-green-400">"admin"</span>).limit(10).all()</code></pre>
+            `,
+            contracts: `<span class="text-neutral-600"># pack.manifest.yaml</span>
+<span class="text-green-500">name:</span> <span class="text-white">postgres-connector</span>
+<span class="text-green-500">version:</span> <span class="text-neutral-300">2.3.0</span>
+<span class="text-green-500">type:</span> <span class="text-neutral-300">provider</span>
+<span class="text-green-500">runtime:</span> <span class="text-neutral-300">python &gt;= 3.10</span>
+
+<span class="text-green-500">contracts:</span>
+  <span class="text-neutral-400">actions:</span>
+    - <span class="text-white">query</span>
+    - <span class="text-white">migrate</span>
+    - <span class="text-white">sync_schema</span>
+    - <span class="text-white">pool_status</span>
+    - <span class="text-white">backup</span>
+  <span class="text-neutral-400">scopes:</span>
+    - <span class="text-neutral-300">db.read</span>
+    - <span class="text-neutral-300">db.write</span>
+    - <span class="text-neutral-300">db.migrate</span>
+
+<span class="text-green-500">tests:</span>
+  <span class="text-neutral-400">runner:</span> <span class="text-neutral-300">pytest</span>
+  <span class="text-neutral-400">count:</span> <span class="text-neutral-300">56</span>
+  <span class="text-neutral-400">coverage:</span> <span class="text-neutral-300">96%</span>`,
+            deps: [
+                { name: "asyncpg", version: ">=0.29", type: "pip", required: true },
+                { name: "alembic", version: ">=1.13", type: "pip", required: true },
+                { name: "sqlalchemy", version: ">=2.0", type: "pip", required: true },
+            ],
+            changelog: [
+                { ver: "2.3.0", date: "Feb 12, 2026", title: "Auto-backup", desc: "New backup action with scheduling. Supports S3 and local storage targets.", type: "feature" },
+                { ver: "2.2.1", date: "Jan 25, 2026", title: "Pool tuning", desc: "Self-healing: auto-adjusts pool size based on connection wait time metrics.", type: "improvement" },
+            ],
+            related: ["auth-pack", "payments-pack", "crud-generator", "redis-connector"]
+        }
+    };
+
+    // ── Fallback data for packs not in DB ──
+    const FALLBACK = PACK_DB["auth-pack"];
+
+    // ── Read URL param ──
+    const params = new URLSearchParams(window.location.search);
+    const packSlug = params.get("pack") || "auth-pack";
+    const pack = PACK_DB[packSlug] || FALLBACK;
+
+    // ── Populate page ──
+    document.getElementById("page-title").textContent = `${pack.name} — Logic Packs Marketplace`;
+    document.getElementById("breadcrumb-type").textContent = pack.typeLabel;
+    document.getElementById("breadcrumb-name").textContent = pack.name;
+    document.getElementById("pack-icon").setAttribute("icon", pack.icon);
+    document.getElementById("pack-icon").className = `${pack.iconColor} text-3xl`;
+    document.getElementById("pack-icon-wrap").className = `w-16 h-16 rounded-xl ${pack.iconBg} border flex items-center justify-center shrink-0`;
+    document.getElementById("pack-name").textContent = pack.name;
+    document.getElementById("pack-desc").textContent = pack.desc;
+    document.getElementById("pack-author").textContent = pack.author;
+    document.getElementById("pack-type-badge").textContent = pack.typeLabel;
+    document.getElementById("pack-type-badge").className = `inline-flex px-2.5 py-0.5 rounded text-[10px] font-medium border ${pack.typeBadge}`;
+    document.getElementById("install-cmd").textContent = `lp install ${packSlug}`;
+    document.getElementById("meta-version").textContent = pack.version;
+    document.getElementById("meta-installs").textContent = pack.installs;
+    document.getElementById("meta-runtime").textContent = pack.runtime;
+    document.getElementById("meta-license").textContent = pack.license;
+    document.getElementById("meta-updated").textContent = pack.updated;
+    if (!pack.verified) document.getElementById("verified-badge").style.display = "none";
+
+    // Tags
+    document.getElementById("pack-tags").innerHTML = pack.tags.map(t => `<span class="px-2.5 py-1 rounded-md bg-white/[0.03] border border-white/[0.06] text-[10px] text-neutral-500 font-mono">${t}</span>`).join("");
+
+    // Sidebar
+    document.getElementById("sidebar-scopes").innerHTML = pack.scopes.map(s => `<span class="px-2 py-0.5 rounded text-[10px] font-mono text-neutral-400 bg-white/[0.03] border border-white/[0.04]">${s}</span>`).join("");
+    document.getElementById("sidebar-actions").innerHTML = pack.actions.map(a => `<div class="flex items-center gap-2 text-xs"><iconify-icon icon="solar:play-linear" class="text-green-500/60 text-xs"></iconify-icon><span class="text-neutral-300 font-mono">${a}</span></div>`).join("");
+    document.getElementById("sidebar-compat").innerHTML = pack.compatible.map(c => `<a href="pack.html?pack=${c.slug}" class="flex items-center gap-2 text-xs text-neutral-400 hover:text-white transition-colors"><iconify-icon icon="solar:widget-linear" class="text-neutral-600"></iconify-icon>${c.name}</a>`).join("");
+
+    // Overview
+    document.getElementById("overview-content").innerHTML = pack.overview;
+
+    // Contracts
+    document.querySelector("#tab-contracts pre code").innerHTML = pack.contracts;
+
+    // Dependencies
+    document.getElementById("deps-list").innerHTML = pack.deps.map(d => `
+        <div class="flex items-center justify-between py-3">
+            <div class="flex items-center gap-3">
+                <span class="px-2 py-0.5 rounded text-[9px] font-mono uppercase ${d.type === 'pack' ? 'bg-green-500/10 text-green-400 border border-green-500/20' : 'bg-white/[0.03] text-neutral-500 border border-white/[0.04]'}">${d.type}</span>
+                <span class="text-sm text-white font-mono">${d.name}</span>
+            </div>
+            <div class="flex items-center gap-3">
+                <span class="text-xs font-mono text-neutral-600">${d.version}</span>
+                <span class="text-[10px] font-mono ${d.required ? 'text-neutral-400' : 'text-neutral-700'}">${d.required ? 'required' : 'optional'}</span>
+            </div>
+        </div>
+    `).join("");
+
+    // Changelog
+    const typeColors = { patch: "bg-yellow-500/15 text-yellow-400 border-yellow-500/20", feature: "bg-green-500/15 text-green-400 border-green-500/20", breaking: "bg-red-500/15 text-red-400 border-red-500/20", improvement: "bg-blue-500/15 text-blue-400 border-blue-500/20" };
+    document.getElementById("changelog-list").innerHTML = pack.changelog.map(c => `
+        <div class="py-6">
+            <div class="flex items-center gap-3 mb-2">
+                <span class="font-mono text-white text-sm font-medium">${c.ver}</span>
+                <span class="px-2 py-0.5 rounded text-[9px] font-medium border ${typeColors[c.type] || typeColors.patch}">${c.type}</span>
+                <span class="text-neutral-700 text-xs ml-auto font-mono">${c.date}</span>
+            </div>
+            <h4 class="text-white text-sm font-medium mb-1">${c.title}</h4>
+            <p class="text-neutral-500 text-sm leading-relaxed">${c.desc}</p>
+        </div>
+    `).join("");
+
+    // Related packs
+    const MINI_DB = {
+        "auth-pack": { name:"Auth Pack", icon:"solar:shield-keyhole-linear", color:"text-green-500", bg:"bg-green-500/10 border-green-500/20", type:"Logic" },
+        "payments-pack": { name:"Payments Pack", icon:"solar:card-linear", color:"text-purple-400", bg:"bg-purple-500/10 border-purple-500/20", type:"Logic" },
+        "dashboard-ui": { name:"Dashboard UI", icon:"solar:chart-2-linear", color:"text-blue-400", bg:"bg-blue-500/10 border-blue-500/20", type:"UI" },
+        "form-builder": { name:"Form Builder", icon:"solar:clipboard-list-linear", color:"text-indigo-400", bg:"bg-indigo-500/10 border-indigo-500/20", type:"UI" },
+        "web-scraper": { name:"Web Scraper", icon:"solar:spider-linear", color:"text-orange-400", bg:"bg-orange-500/10 border-orange-500/20", type:"Automation" },
+        "postgres-connector": { name:"Postgres Connector", icon:"solar:database-linear", color:"text-blue-400", bg:"bg-blue-500/10 border-blue-500/20", type:"Provider" },
+        "email-service": { name:"Email Service", icon:"solar:letter-linear", color:"text-yellow-400", bg:"bg-yellow-500/10 border-yellow-500/20", type:"Logic" },
+        "social-auth": { name:"Social Auth", icon:"solar:users-group-rounded-linear", color:"text-sky-400", bg:"bg-sky-500/10 border-sky-500/20", type:"Logic" },
+        "data-table": { name:"Data Table Pro", icon:"solar:list-bold-linear", color:"text-cyan-400", bg:"bg-cyan-500/10 border-cyan-500/20", type:"UI" },
+        "landing-kit": { name:"Landing Page Kit", icon:"solar:window-frame-linear", color:"text-pink-400", bg:"bg-pink-500/10 border-pink-500/20", type:"UI" },
+        "pdf-generator": { name:"PDF Generator", icon:"solar:document-text-linear", color:"text-red-400", bg:"bg-red-500/10 border-red-500/20", type:"Automation" },
+        "scheduler": { name:"Task Scheduler", icon:"solar:clock-circle-linear", color:"text-amber-400", bg:"bg-amber-500/10 border-amber-500/20", type:"Automation" },
+        "image-gen": { name:"Image Generator", icon:"solar:gallery-wide-linear", color:"text-fuchsia-400", bg:"bg-fuchsia-500/10 border-fuchsia-500/20", type:"Creative" },
+        "html-prototyper": { name:"HTML Prototyper", icon:"solar:code-linear", color:"text-lime-400", bg:"bg-lime-500/10 border-lime-500/20", type:"Creative" },
+        "redis-connector": { name:"Redis Connector", icon:"solar:bolt-circle-linear", color:"text-red-400", bg:"bg-red-500/10 border-red-500/20", type:"Provider" },
+        "s3-connector": { name:"S3 Storage", icon:"solar:cloud-storage-linear", color:"text-orange-400", bg:"bg-orange-500/10 border-orange-500/20", type:"Provider" },
+        "openai-connector": { name:"OpenAI Connector", icon:"solar:star-linear", color:"text-emerald-400", bg:"bg-emerald-500/10 border-emerald-500/20", type:"Provider" },
+        "crud-generator": { name:"REST API Scaffold", icon:"solar:server-linear", color:"text-emerald-400", bg:"bg-emerald-500/10 border-emerald-500/20", type:"Logic" },
+    };
+
+    document.getElementById("related-grid").innerHTML = (pack.related || []).map(slug => {
+        const r = MINI_DB[slug];
+        if (!r) return "";
+        return `<a href="pack.html?pack=${slug}" class="group block border border-white/[0.06] rounded-xl p-5 hover:bg-white/[0.02] hover:border-white/[0.1] transition-all">
+            <div class="flex items-center gap-3 mb-3">
+                <div class="w-9 h-9 rounded-lg ${r.bg} border flex items-center justify-center shrink-0"><iconify-icon icon="${r.icon}" class="${r.color} text-base"></iconify-icon></div>
+                <div><div class="text-white text-sm font-medium">${r.name}</div><div class="text-neutral-600 text-[10px]">${r.type}</div></div>
+            </div>
+            <span class="text-xs text-neutral-600 group-hover:text-neutral-400 transition-colors flex items-center gap-1">View Pack <iconify-icon icon="solar:arrow-right-linear" width="12" class="group-hover:translate-x-0.5 transition-transform"></iconify-icon></span>
+        </a>`;
+    }).join("");
+
+    // ── Tab switching ──
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active-tab'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active-content'));
+            btn.classList.add('active-tab');
+            document.getElementById(`tab-${btn.dataset.tab}`).classList.add('active-content');
+        });
+    });
+
+    // ── Install button animation ──
+    document.getElementById('install-btn').addEventListener('click', function() {
+        const btn = this;
+        btn.innerHTML = '<iconify-icon icon="solar:check-circle-linear" width="16"></iconify-icon> Installed!';
+        btn.classList.remove('bg-green-500', 'hover:bg-green-400');
+        btn.classList.add('bg-white/10', 'text-green-400');
+        setTimeout(() => {
+            btn.innerHTML = '<iconify-icon icon="solar:download-minimalistic-linear" width="16"></iconify-icon> Install Pack';
+            btn.classList.add('bg-green-500', 'hover:bg-green-400');
+            btn.classList.remove('bg-white/10', 'text-green-400');
+        }, 2000);
+    });
+    </script>
+</body>
+</html>
+

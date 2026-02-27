@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LPC — Logic Packs CLI</title>
+    <meta name="description" content="The command-line interface for Logic Packs. Install, create, publish, and deploy packs from your terminal.">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <script>
+    tailwind.config = {
+        theme: { extend: { fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'] } } }
+    }
+    </script>
+
+    <style>
+    body { background-color: #0a0a0a; color: #ededed; font-family: 'Inter', system-ui, sans-serif; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #0a0a0a; }
+    ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+    @keyframes fadeInUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+    .reveal { animation: fadeInUp 0.5s cubic-bezier(0.2,0.8,0.2,1) both; }
+    .reveal-hidden { opacity: 0; }
+
+    /* Terminal styling */
+    .terminal {
+        background: #111;
+        border: 1px solid rgba(255,255,255,0.06);
+        border-radius: 12px;
+        overflow: hidden;
+        font-family: 'JetBrains Mono', monospace;
+    }
+    .terminal-bar {
+        background: #1a1a1a;
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+        padding: 10px 16px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .terminal-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .terminal-body { padding: 20px 24px; overflow-x: auto; }
+    .terminal-body code { font-size: 13px; line-height: 1.8; }
+    .t-prompt { color: #22c55e; }
+    .t-cmd { color: #e5e5e5; }
+    .t-flag { color: #60a5fa; }
+    .t-arg { color: #fbbf24; }
+    .t-comment { color: #525252; }
+    .t-output { color: #737373; }
+    .t-success { color: #22c55e; }
+    .t-dim { color: #404040; }
+
+    /* Typing animation */
+    @keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0; } }
+    .cursor-blink { animation: blink 1s step-end infinite; }
+
+    /* Copy button */
+    .copy-btn { transition: all 0.2s; }
+    .copy-btn:hover { background: rgba(255,255,255,0.08); }
+    .copy-btn.copied { color: #22c55e; }
+    </style>
+</head>
+
+<body class="selection:bg-green-500/30 selection:text-white overflow-x-hidden">
+
+    <!-- ═══ HEADER ═══ -->
+    <header class="fixed top-0 left-0 w-full z-50 bg-[#0a0a0a]/80 backdrop-blur-xl border-b border-white/[0.06] h-14">
+        <div class="flex w-full h-full max-w-[1440px] mx-auto px-6 md:px-8 items-center justify-between">
+            <a href="index.html" class="flex items-center gap-2.5 group">
+                <div class="w-7 h-7 rounded-md border border-white/10 flex items-center justify-center bg-white/[0.03] group-hover:border-green-500/40 transition-colors">
+                    <iconify-icon icon="solar:widget-5-linear" class="text-green-500 text-sm"></iconify-icon>
+                </div>
+                <span class="text-sm font-semibold tracking-tight text-white">Logic Packs</span>
+            </a>
+            <nav class="hidden md:flex items-center gap-8">
+                <a href="index.html#modes" class="text-[11px] hover:text-white transition-colors uppercase font-medium text-neutral-400 tracking-[0.15em]">Platform</a>
+                <a href="store.html" class="text-[11px] hover:text-white transition-colors uppercase font-medium text-neutral-400 tracking-[0.15em]">Marketplace</a>
+                <a href="shop.html" class="text-[11px] hover:text-white transition-colors uppercase font-medium text-neutral-400 tracking-[0.15em]">Shop</a>
+                <a href="ventures.html" class="text-[11px] hover:text-white transition-colors uppercase font-medium text-neutral-400 tracking-[0.15em]">Ventures</a>
+                <a href="courses.html" class="text-[11px] hover:text-white transition-colors uppercase font-medium text-neutral-400 tracking-[0.15em]">Learn</a>
+                <a href="ambassadors.html" class="text-[11px] hover:text-white transition-colors uppercase font-medium text-neutral-400 tracking-[0.15em]">Ambassadors</a>
+                <a href="cli.html" class="text-[11px] uppercase font-medium text-white tracking-[0.15em]">CLI</a>
+                <a href="index.html#pricing" class="text-[11px] hover:text-white transition-colors uppercase font-medium text-neutral-400 tracking-[0.15em]">Pricing</a>
+            </nav>
+            <a href="#" class="hidden md:flex bg-white text-black text-xs font-semibold tracking-wide uppercase rounded-md px-5 py-2 hover:bg-neutral-200 transition-colors">Get Started</a>
+            <button class="md:hidden text-white" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
+                <iconify-icon icon="solar:hamburger-menu-linear" width="22"></iconify-icon>
+            </button>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden absolute top-full left-0 w-full bg-[#0a0a0a]/95 backdrop-blur-xl border-b border-white/[0.06] p-4 flex flex-col gap-2">
+            <a href="index.html#modes" class="px-4 py-2 text-sm text-neutral-400 hover:text-white hover:bg-white/5 rounded-md">Platform</a>
+            <a href="store.html" class="px-4 py-2 text-sm text-neutral-400 hover:text-white hover:bg-white/5 rounded-md">Marketplace</a>
+            <a href="shop.html" class="px-4 py-2 text-sm text-neutral-400 hover:text-white hover:bg-white/5 rounded-md">Shop</a>
+            <a href="ventures.html" class="px-4 py-2 text-sm text-neutral-400 hover:text-white hover:bg-white/5 rounded-md">Ventures</a>
+            <a href="courses.html" class="px-4 py-2 text-sm text-neutral-400 hover:text-white hover:bg-white/5 rounded-md">Learn</a>
+            <a href="ambassadors.html" class="px-4 py-2 text-sm text-neutral-400 hover:text-white hover:bg-white/5 rounded-md">Ambassadors</a>
+            <a href="cli.html" class="px-4 py-2 text-sm text-white bg-white/5 rounded-md">CLI</a>
+            <a href="index.html#pricing" class="px-4 py-2 text-sm text-neutral-400 hover:text-white hover:bg-white/5 rounded-md">Pricing</a>
+        </div>
+    </header>
+
+    <!-- ═══ HERO ═══ -->
+    <section class="pt-14 relative overflow-hidden">
+        <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <div class="w-[50vw] h-[50vw] bg-green-500/[0.03] blur-[150px] rounded-full translate-y-[-10%]"></div>
+        </div>
+        <div class="relative z-10 border-b border-white/[0.06]">
+            <div class="max-w-[1440px] mx-auto px-6 md:px-8 py-20 md:py-28">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                    <!-- Left: Text -->
+                    <div>
+                        <div class="flex items-center gap-2 mb-5">
+                            <div class="w-8 h-8 rounded-lg bg-green-500/10 border border-green-500/20 flex items-center justify-center">
+                                <iconify-icon icon="solar:command-linear" class="text-green-500 text-lg"></iconify-icon>
+                            </div>
+                            <span class="text-xs uppercase tracking-[0.2em] text-green-500/80 font-mono font-medium">v2.4.0 — Latest</span>
+                        </div>
+                        <h1 class="text-5xl md:text-6xl lg:text-7xl font-semibold text-white tracking-tight leading-[0.95] mb-5 reveal-hidden">
+                            <span class="font-mono text-green-500">lpc</span><br>
+                            <span class="text-neutral-500 italic font-light">Logic Packs CLI</span>
+                        </h1>
+                        <p class="text-neutral-500 text-base md:text-lg leading-relaxed max-w-lg mb-8 reveal-hidden">
+                            Install, create, publish, and deploy packs from your terminal. One tool to manage your entire Logic Packs workflow.
+                        </p>
+
+                        <!-- Install command -->
+                        <div class="terminal max-w-md mb-6 reveal-hidden">
+                            <div class="terminal-bar">
+                                <div class="terminal-dot bg-[#ff5f57]"></div>
+                                <div class="terminal-dot bg-[#febc2e]"></div>
+                                <div class="terminal-dot bg-[#28c840]"></div>
+                                <span class="text-neutral-600 text-[10px] font-mono ml-2">Install</span>
+                                <button class="copy-btn ml-auto text-neutral-600 hover:text-white text-xs" onclick="navigator.clipboard.writeText('npm install -g @logicpacks/cli');this.textContent='Copied!';this.classList.add('copied');setTimeout(()=>{this.textContent='Copy';this.classList.remove('copied')},2000)">Copy</button>
+                            </div>
+                            <div class="terminal-body py-3">
+                                <code><span class="t-prompt">$</span> <span class="t-cmd">npm install</span> <span class="t-flag">-g</span> <span class="t-arg">@logicpacks/cli</span></code>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap gap-3 reveal-hidden">
+                            <a href="#commands" class="inline-flex items-center gap-2 bg-white text-black font-semibold rounded-md px-7 py-3 text-sm hover:bg-neutral-200 transition-colors">
+                                View Commands
+                                <iconify-icon icon="solar:arrow-right-linear" width="16"></iconify-icon>
+                            </a>
+                            <a href="#quickstart" class="inline-flex items-center gap-2 border border-white/10 text-neutral-300 font-medium rounded-md px-7 py-3 text-sm hover:bg-white/5 transition-colors">
+                                Quickstart Guide
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Right: Terminal demo -->
+                    <div class="terminal reveal-hidden">
+                        <div class="terminal-bar">
+                            <div class="terminal-dot bg-[#ff5f57]"></div>
+                            <div class="terminal-dot bg-[#febc2e]"></div>
+                            <div class="terminal-dot bg-[#28c840]"></div>
+                            <span class="text-neutral-600 text-[10px] font-mono ml-2">~/my-app — lpc</span>
+                        </div>
+                        <div class="terminal-body">
+<code><span class="t-prompt">$</span> <span class="t-cmd">lpc init</span> <span class="t-arg">my-saas-app</span>
+<span class="t-output">
+  ◆ Creating project...</span>
+<span class="t-success">  ✓ Project scaffolded</span>
+<span class="t-success">  ✓ Config written → lpc.config.json</span>
+<span class="t-success">  ✓ Git initialized</span>
+
+<span class="t-prompt">$</span> <span class="t-cmd">lpc install</span> <span class="t-arg">@lp/auth @lp/payments @lp/dashboard</span>
+<span class="t-output">
+  ◆ Resolving 3 packs...</span>
+<span class="t-success">  ✓ @lp/auth@2.1.0 installed</span>
+<span class="t-success">  ✓ @lp/payments@1.8.3 installed</span>
+<span class="t-success">  ✓ @lp/dashboard@3.0.1 installed</span>
+<span class="t-output">  3 packs installed in 1.2s</span>
+
+<span class="t-prompt">$</span> <span class="t-cmd">lpc dev</span>
+<span class="t-output">
+  ◆ Starting dev server...</span>
+<span class="t-success">  ✓ Backend  → http://localhost:8000</span>
+<span class="t-success">  ✓ Frontend → http://localhost:3000</span>
+<span class="t-success">  ✓ Hot reload enabled</span>
+<span class="t-dim">  watching for changes...</span><span class="cursor-blink text-green-500">█</span>
+</code>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ INSTALL METHODS ═══ -->
+    <section class="border-b border-white/[0.06]">
+        <div class="max-w-[1440px] mx-auto grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-white/[0.06]">
+            <div class="p-8 hover:bg-white/[0.015] transition-colors reveal-hidden">
+                <div class="flex items-center gap-3 mb-4">
+                    <iconify-icon icon="simple-icons:npm" class="text-red-400 text-xl"></iconify-icon>
+                    <h3 class="text-white text-sm font-medium">npm</h3>
+                </div>
+                <div class="bg-[#111] rounded-lg px-4 py-3 font-mono text-xs text-neutral-400 flex items-center justify-between">
+                    <code>npm install -g @logicpacks/cli</code>
+                    <button class="text-neutral-600 hover:text-white text-[10px] ml-2 shrink-0" onclick="navigator.clipboard.writeText('npm install -g @logicpacks/cli');this.textContent='✓'">Copy</button>
+                </div>
+            </div>
+            <div class="p-8 hover:bg-white/[0.015] transition-colors reveal-hidden">
+                <div class="flex items-center gap-3 mb-4">
+                    <iconify-icon icon="simple-icons:homebrew" class="text-yellow-400 text-xl"></iconify-icon>
+                    <h3 class="text-white text-sm font-medium">Homebrew</h3>
+                </div>
+                <div class="bg-[#111] rounded-lg px-4 py-3 font-mono text-xs text-neutral-400 flex items-center justify-between">
+                    <code>brew install logicpacks/tap/lpc</code>
+                    <button class="text-neutral-600 hover:text-white text-[10px] ml-2 shrink-0" onclick="navigator.clipboard.writeText('brew install logicpacks/tap/lpc');this.textContent='✓'">Copy</button>
+                </div>
+            </div>
+            <div class="p-8 hover:bg-white/[0.015] transition-colors reveal-hidden">
+                <div class="flex items-center gap-3 mb-4">
+                    <iconify-icon icon="solar:download-minimalistic-linear" class="text-green-500 text-xl"></iconify-icon>
+                    <h3 class="text-white text-sm font-medium">Shell Script</h3>
+                </div>
+                <div class="bg-[#111] rounded-lg px-4 py-3 font-mono text-xs text-neutral-400 flex items-center justify-between">
+                    <code>curl -fsSL lp.dev/install | sh</code>
+                    <button class="text-neutral-600 hover:text-white text-[10px] ml-2 shrink-0" onclick="navigator.clipboard.writeText('curl -fsSL lp.dev/install | sh');this.textContent='✓'">Copy</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ QUICKSTART ═══ -->
+    <section id="quickstart" class="border-b border-white/[0.06]">
+        <div class="max-w-[1440px] mx-auto px-6 md:px-8 py-16 md:py-20">
+            <span class="font-mono text-neutral-600 text-[11px] block mb-3">/// Quickstart</span>
+            <h2 class="text-3xl md:text-4xl font-semibold text-white tracking-tight mb-3 reveal-hidden">From Zero to Deployed in 5 Commands</h2>
+            <p class="text-neutral-500 text-sm max-w-xl mb-12 reveal-hidden">Everything you need to go from idea to production.</p>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Steps -->
+                <div class="space-y-6">
+                    <div class="flex gap-4 items-start reveal-hidden">
+                        <div class="w-8 h-8 rounded-full bg-green-500/10 border border-green-500/20 flex items-center justify-center shrink-0 mt-0.5">
+                            <span class="text-green-500 font-mono text-xs font-semibold">1</span>
+                        </div>
+                        <div>
+                            <h4 class="text-white text-sm font-medium mb-1">Initialize your project</h4>
+                            <code class="text-xs font-mono text-green-500/80 bg-green-500/5 px-2 py-1 rounded">lpc init my-app</code>
+                            <p class="text-neutral-500 text-xs mt-2 leading-relaxed">Scaffolds a new project with config, git, and folder structure. Supports templates: <code class="text-neutral-400">--template saas</code>, <code class="text-neutral-400">--template api</code>, <code class="text-neutral-400">--template automation</code>.</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4 items-start reveal-hidden">
+                        <div class="w-8 h-8 rounded-full bg-green-500/10 border border-green-500/20 flex items-center justify-center shrink-0 mt-0.5">
+                            <span class="text-green-500 font-mono text-xs font-semibold">2</span>
+                        </div>
+                        <div>
+                            <h4 class="text-white text-sm font-medium mb-1">Install packs</h4>
+                            <code class="text-xs font-mono text-green-500/80 bg-green-500/5 px-2 py-1 rounded">lpc install @lp/auth @lp/payments</code>
+                            <p class="text-neutral-500 text-xs mt-2 leading-relaxed">Pulls verified packs from the marketplace. Auto-resolves dependencies, checks contracts, and wires into your project.</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4 items-start reveal-hidden">
+                        <div class="w-8 h-8 rounded-full bg-green-500/10 border border-green-500/20 flex items-center justify-center shrink-0 mt-0.5">
+                            <span class="text-green-500 font-mono text-xs font-semibold">3</span>
+                        </div>
+                        <div>
+                            <h4 class="text-white text-sm font-medium mb-1">Start the dev server</h4>
+                            <code class="text-xs font-mono text-green-500/80 bg-green-500/5 px-2 py-1 rounded">lpc dev</code>
+                            <p class="text-neutral-500 text-xs mt-2 leading-relaxed">Launches backend + frontend with hot reload, self-healing loops, and telemetry dashboard at <code class="text-neutral-400">localhost:9000</code>.</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4 items-start reveal-hidden">
+                        <div class="w-8 h-8 rounded-full bg-green-500/10 border border-green-500/20 flex items-center justify-center shrink-0 mt-0.5">
+                            <span class="text-green-500 font-mono text-xs font-semibold">4</span>
+                        </div>
+                        <div>
+                            <h4 class="text-white text-sm font-medium mb-1">Test everything</h4>
+                            <code class="text-xs font-mono text-green-500/80 bg-green-500/5 px-2 py-1 rounded">lpc test</code>
+                            <p class="text-neutral-500 text-xs mt-2 leading-relaxed">Runs contract tests across all installed packs, checks for breaking changes, and verifies integration health.</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4 items-start reveal-hidden">
+                        <div class="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center shrink-0 mt-0.5">
+                            <span class="text-white font-mono text-xs font-semibold">5</span>
+                        </div>
+                        <div>
+                            <h4 class="text-white text-sm font-medium mb-1">Deploy to production</h4>
+                            <code class="text-xs font-mono text-green-500/80 bg-green-500/5 px-2 py-1 rounded">lpc deploy --prod</code>
+                            <p class="text-neutral-500 text-xs mt-2 leading-relaxed">Ships to LP Cloud or your own infra. Zero-downtime deploys with rollback, monitoring, and self-healing enabled.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Terminal demo -->
+                <div class="terminal self-start sticky top-20 reveal-hidden">
+                    <div class="terminal-bar">
+                        <div class="terminal-dot bg-[#ff5f57]"></div>
+                        <div class="terminal-dot bg-[#febc2e]"></div>
+                        <div class="terminal-dot bg-[#28c840]"></div>
+                        <span class="text-neutral-600 text-[10px] font-mono ml-2">~/my-app — deploy</span>
+                    </div>
+                    <div class="terminal-body">
+<code><span class="t-prompt">$</span> <span class="t-cmd">lpc deploy</span> <span class="t-flag">--prod</span>
+<span class="t-output">
+  ◆ Building production bundle...</span>
+<span class="t-success">  ✓ Backend compiled (FastAPI)</span>
+<span class="t-success">  ✓ Frontend compiled (React)</span>
+<span class="t-success">  ✓ Assets optimized — 2.4 MB</span>
+<span class="t-output">
+  ◆ Running contract tests...</span>
+<span class="t-success">  ✓ @lp/auth — 14/14 passed</span>
+<span class="t-success">  ✓ @lp/payments — 9/9 passed</span>
+<span class="t-success">  ✓ @lp/dashboard — 22/22 passed</span>
+<span class="t-output">
+  ◆ Deploying to LP Cloud...</span>
+<span class="t-success">  ✓ Containers pushed</span>
+<span class="t-success">  ✓ DNS configured</span>
+<span class="t-success">  ✓ SSL provisioned</span>
+<span class="t-success">  ✓ Self-healing enabled</span>
+<span class="t-output">
+  ◆ Deployment complete!</span>
+<span class="t-success">  → https://my-app.lp.app</span>
+<span class="t-dim">  deployed in 34s</span>
+</code>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ COMMANDS REFERENCE ═══ -->
+    <section id="commands" class="border-b border-white/[0.06]">
+        <div class="grid grid-cols-1 md:grid-cols-4 md:divide-x divide-white/[0.06]">
+            <div class="md:col-span-1 p-8 md:p-10 flex flex-col justify-between min-h-[280px]">
+                <div>
+                    <span class="font-mono text-neutral-600 text-[11px] block mb-3">/// Commands</span>
+                    <h2 class="text-3xl font-semibold text-white tracking-tight mb-4 reveal-hidden">Full<br>Reference</h2>
+                    <p class="text-neutral-500 text-sm leading-relaxed reveal-hidden">Every command you need. Run <code class="text-green-500/80 text-xs">lpc --help</code> for the complete list.</p>
+                </div>
+            </div>
+
+            <div class="md:col-span-3">
+                <!-- Project -->
+                <div class="border-b border-white/[0.06]">
+                    <div class="p-6 md:p-8">
+                        <h3 class="text-white text-xs font-semibold uppercase tracking-widest mb-5 flex items-center gap-2">
+                            <iconify-icon icon="solar:folder-with-files-linear" class="text-green-500" width="14"></iconify-icon>
+                            Project
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div class="flex items-start gap-3 p-3 rounded-lg hover:bg-white/[0.015] transition-colors reveal-hidden">
+                                <code class="text-green-500 font-mono text-xs shrink-0 w-32">lpc init</code>
+                                <p class="text-neutral-500 text-xs">Scaffold a new project with config and templates</p>
+                            </div>
+                            <div class="flex items-start gap-3 p-3 rounded-lg hover:bg-white/[0.015] transition-colors reveal-hidden">
+                                <code class="text-green-500 font-mono text-xs shrink-0 w-32">lpc dev</code>
+                                <p class="text-neutral-500 text-xs">Start dev server with hot reload</p>
+                            </div>
+                            <div class="flex items-start gap-3 p-3 rounded-lg hover:bg-white/[0.015] transition-colors reveal-hidden">
+                                <code class="text-green-500 font-mono text-xs shrink-0 w-32">lpc build</code>
+                                <p class="text-neutral-500 text-xs">Build production bundle</p>
+                            </div>
+                            <div class="flex items-start gap-3 p-3 rounded-lg hover:bg-white/[0.015] transition-colors reveal-hidden">
+                                <code class="text-green-500 font-mono text-xs shrink-0 w-32">lpc config</code>
+                                <p class="text-neutral-500 text-xs">View/edit project configuration</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Packs -->
+                <div class="border-b border-white/[0.06]">
+                    <div class="p-6 md:p-8">
+                        <h3 class="text-white text-xs font-semibold uppercase tracking-widest mb-5 flex items-center gap-2">
+                            <iconify-icon icon="solar:box-linear" class="text-green-500" width="14"></iconify-icon>
+                            Pack Management
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div class="flex items-start gap-3 p-3 rounded-lg hover:bg-white/[0.015] transition-colors reveal-hidden">
+                                <code class="text-green-500 font-mono text-xs shrink-0 w-32">lpc install</code>
+                                <p class="text-neutral-500 text-xs">Install packs from the marketplace</p>
+                            </div>
+                            <div class="flex items-start gap-3 p-3 rounded-lg hover:bg-white/[0.015] transition-colors reveal-hidden">
+                                <code class="text-green-500 font-mono text-xs shrink-0 w-32">lpc uninstall</code>
+                                <p class="text-neutral-500 text-xs">Remove an installed pack</p>
+                            </div>
+                            <div class="flex items-start gap-3 p-3 rounded-lg hover:bg-white/[0.015] transition-colors reveal-hidden">
+                                <code class="text-green-500 font-mono text-xs shrink-0 w-32">lpc update</code>
+                                <p class="text-neutral-500 text-xs">Update packs to latest compatible versions</p>
+                            </div>
+                            <div class="flex items-start gap-3 p-3 rounded-lg hover:bg-white/[0.015] transition-colors reveal-hidden">
+                                <code class="text-green-500 font-mono text-xs shrink-0 w-32">lpc list</code>
+                                <p class="text-neutral-500 text-xs">List all installed packs and versions</p>
+                            </div>
+                            <div class="flex items-start gap-3 p-3 rounded-lg hover:bg-white/[0.015] transition-colors reveal-hidden">
+                                <code class="text-green-500 font-mono text-xs shrink-0 w-32">lpc search</code>
+                                <p class="text-neutral-500 text-xs">Search the marketplace from your terminal</p>
+                            </div>
+                            <div class="flex items-start gap-3 p-3 rounded-lg hover:bg-white/[0.015] transition-colors reveal-hidden">
+                                <code class="text-green-500 font-mono text-xs shrink-0 w-32">lpc info</code>
+                                <p class="text-neutral-500 text-xs">View details about a specific pack</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Create & Publish -->
+                <div class="border-b border-white/[0.06]">
+                    <div class="p-6 md:p-8">
+                        <h3 class="text-white text-xs font-semibold uppercase tracking-widest mb-5 flex items-center gap-2">
+                            <iconify-icon icon="solar:upload-linear" class="text-green-500" width="14"></iconify-icon>
+                            Create & Publish
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div class="flex items-start gap-3 p-3 rounded-lg hover:bg-white/[0.015] transition-colors reveal-hidden">
+                                <code class="text-green-500 font-mono text-xs shrink-0 w-32">lpc create</code>
+                                <p class="text-neutral-500 text-xs">Create a new pack (logic, ui, automation, creative)</p>
+                            </div>
+                            <div class="flex items-start gap-3 p-3 rounded-lg hover:bg-white/[0.015] transition-colors reveal-hidden">
+                                <code class="text-green-500 font-mono text-xs shrink-0 w-32">lpc publish</code>
+                                <p class="text-neutral-500 text-xs">Publish your pack to the marketplace</p>
+                            </div>
+                            <div class="flex items-start gap-3 p-3 rounded-lg hover:bg-white/[0.015] transition-colors reveal-hidden">
+                                <code class="text-green-500 font-mono text-xs shrink-0 w-32">lpc version</code>
+                                <p class="text-neutral-500 text-xs">Bump pack version (major, minor, patch)</p>
+                            </div>
+                            <div class="flex items-start gap-3 p-3 rounded-lg hover:bg-white/[0.015] transition-colors reveal-hidden">
+                                <code class="text-green-500 font-mono text-xs shrink-0 w-32">lpc verify</code>
+                                <p class="text-neutral-500 text-xs">Run verification checks before publishing</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Testing & Quality -->
+                <div class="border-b border-white/[0.06]">
+                    <div class="p-6 md:p-8">
+                        <h3 class="text-white text-xs font-semibold uppercase tracking-widest mb-5 flex items-center gap-2">
+                            <iconify-icon icon="solar:shield-check-linear" class="text-green-500" width="14"></iconify-icon>
+                            Testing & Quality
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div class="flex items-start gap-3 p-3 rounded-lg hover:bg-white/[0.015] transition-colors reveal-hidden">
+                                <code class="text-green-500 font-mono text-xs shrink-0 w-32">lpc test</code>
+                                <p class="text-neutral-500 text-xs">Run contract tests across all packs</p>
+                            </div>
+                            <div class="flex items-start gap-3 p-3 rounded-lg hover:bg-white/[0.015] transition-colors reveal-hidden">
+                                <code class="text-green-500 font-mono text-xs shrink-0 w-32">lpc heal</code>
+                                <p class="text-neutral-500 text-xs">Trigger self-healing loop for failing tests</p>
+                            </div>
+                            <div class="flex items-start gap-3 p-3 rounded-lg hover:bg-white/[0.015] transition-colors reveal-hidden">
+                                <code class="text-green-500 font-mono text-xs shrink-0 w-32">lpc audit</code>
+                                <p class="text-neutral-500 text-xs">Security & dependency audit</p>
+                            </div>
+                            <div class="flex items-start gap-3 p-3 rounded-lg hover:bg-white/[0.015] transition-colors reveal-hidden">
+                                <code class="text-green-500 font-mono text-xs shrink-0 w-32">lpc doctor</code>
+                                <p class="text-neutral-500 text-xs">Diagnose environment and project issues</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Deploy & Infra -->
+                <div>
+                    <div class="p-6 md:p-8">
+                        <h3 class="text-white text-xs font-semibold uppercase tracking-widest mb-5 flex items-center gap-2">
+                            <iconify-icon icon="solar:server-linear" class="text-green-500" width="14"></iconify-icon>
+                            Deploy & Infrastructure
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div class="flex items-start gap-3 p-3 rounded-lg hover:bg-white/[0.015] transition-colors reveal-hidden">
+                                <code class="text-green-500 font-mono text-xs shrink-0 w-32">lpc deploy</code>
+                                <p class="text-neutral-500 text-xs">Deploy to LP Cloud or custom infra</p>
+                            </div>
+                            <div class="flex items-start gap-3 p-3 rounded-lg hover:bg-white/[0.015] transition-colors reveal-hidden">
+                                <code class="text-green-500 font-mono text-xs shrink-0 w-32">lpc rollback</code>
+                                <p class="text-neutral-500 text-xs">Rollback to a previous deployment</p>
+                            </div>
+                            <div class="flex items-start gap-3 p-3 rounded-lg hover:bg-white/[0.015] transition-colors reveal-hidden">
+                                <code class="text-green-500 font-mono text-xs shrink-0 w-32">lpc logs</code>
+                                <p class="text-neutral-500 text-xs">Stream production logs in real-time</p>
+                            </div>
+                            <div class="flex items-start gap-3 p-3 rounded-lg hover:bg-white/[0.015] transition-colors reveal-hidden">
+                                <code class="text-green-500 font-mono text-xs shrink-0 w-32">lpc status</code>
+                                <p class="text-neutral-500 text-xs">View deployment status and health</p>
+                            </div>
+                            <div class="flex items-start gap-3 p-3 rounded-lg hover:bg-white/[0.015] transition-colors reveal-hidden">
+                                <code class="text-green-500 font-mono text-xs shrink-0 w-32">lpc lpdn</code>
+                                <p class="text-neutral-500 text-xs">Manage LPDN nodes for offline distribution</p>
+                            </div>
+                            <div class="flex items-start gap-3 p-3 rounded-lg hover:bg-white/[0.015] transition-colors reveal-hidden">
+                                <code class="text-green-500 font-mono text-xs shrink-0 w-32">lpc env</code>
+                                <p class="text-neutral-500 text-xs">Manage environment variables and secrets</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ FEATURES ═══ -->
+    <section class="border-b border-white/[0.06]">
+        <div class="max-w-[1440px] mx-auto px-6 md:px-8 py-16 md:py-20">
+            <span class="font-mono text-neutral-600 text-[11px] block mb-3">/// Why LPC</span>
+            <h2 class="text-3xl md:text-4xl font-semibold text-white tracking-tight mb-12 reveal-hidden">Built for Speed</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                <div class="border border-white/[0.06] rounded-xl p-8 hover:bg-white/[0.015] transition-all reveal-hidden">
+                    <div class="w-10 h-10 rounded-lg bg-green-500/10 border border-green-500/20 flex items-center justify-center mb-5">
+                        <iconify-icon icon="solar:bolt-linear" class="text-green-500 text-lg"></iconify-icon>
+                    </div>
+                    <h3 class="text-white text-sm font-medium tracking-tight mb-2">Instant Installs</h3>
+                    <p class="text-neutral-500 text-xs leading-relaxed">Parallel resolution, local cache, and deduplication. Install 10 packs in under 2 seconds.</p>
+                </div>
+                <div class="border border-white/[0.06] rounded-xl p-8 hover:bg-white/[0.015] transition-all reveal-hidden">
+                    <div class="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center mb-5">
+                        <iconify-icon icon="solar:shield-check-linear" class="text-neutral-400 text-lg"></iconify-icon>
+                    </div>
+                    <h3 class="text-white text-sm font-medium tracking-tight mb-2">Contract Verification</h3>
+                    <p class="text-neutral-500 text-xs leading-relaxed">Every pack has typed contracts. LPC verifies compatibility before install — no runtime surprises.</p>
+                </div>
+                <div class="border border-white/[0.06] rounded-xl p-8 hover:bg-white/[0.015] transition-all reveal-hidden">
+                    <div class="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center mb-5">
+                        <iconify-icon icon="solar:refresh-circle-linear" class="text-neutral-400 text-lg"></iconify-icon>
+                    </div>
+                    <h3 class="text-white text-sm font-medium tracking-tight mb-2">Self-Healing</h3>
+                    <p class="text-neutral-500 text-xs leading-relaxed"><code class="text-green-500/60 text-[10px]">lpc heal</code> detects failing tests, analyzes the root cause, and auto-patches your code.</p>
+                </div>
+                <div class="border border-white/[0.06] rounded-xl p-8 hover:bg-white/[0.015] transition-all reveal-hidden">
+                    <div class="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center mb-5">
+                        <iconify-icon icon="solar:monitor-smartphone-linear" class="text-neutral-400 text-lg"></iconify-icon>
+                    </div>
+                    <h3 class="text-white text-sm font-medium tracking-tight mb-2">Dev Server</h3>
+                    <p class="text-neutral-500 text-xs leading-relaxed">One command starts backend + frontend + telemetry dashboard. Hot reload across the full stack.</p>
+                </div>
+                <div class="border border-white/[0.06] rounded-xl p-8 hover:bg-white/[0.015] transition-all reveal-hidden">
+                    <div class="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center mb-5">
+                        <iconify-icon icon="solar:cloud-upload-linear" class="text-neutral-400 text-lg"></iconify-icon>
+                    </div>
+                    <h3 class="text-white text-sm font-medium tracking-tight mb-2">One-Command Deploy</h3>
+                    <p class="text-neutral-500 text-xs leading-relaxed">Deploy to LP Cloud or self-host. Zero-downtime, auto-rollback, SSL, and monitoring — all built in.</p>
+                </div>
+                <div class="border border-white/[0.06] rounded-xl p-8 hover:bg-white/[0.015] transition-all reveal-hidden">
+                    <div class="w-10 h-10 rounded-lg bg-green-500/10 border border-green-500/20 flex items-center justify-center mb-5">
+                        <iconify-icon icon="solar:wi-fi-router-linear" class="text-green-500 text-lg"></iconify-icon>
+                    </div>
+                    <h3 class="text-white text-sm font-medium tracking-tight mb-2">LPDN Support</h3>
+                    <p class="text-neutral-500 text-xs leading-relaxed">Push apps to LPDN nodes for offline distribution. <code class="text-green-500/60 text-[10px]">lpc lpdn push</code> handles everything.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ ADVANCED TERMINAL DEMO ═══ -->
+    <section class="border-b border-white/[0.06]">
+        <div class="grid grid-cols-1 md:grid-cols-2 md:divide-x divide-white/[0.06]">
+            <!-- Create & Publish a Pack -->
+            <div class="p-8 md:p-10 reveal-hidden">
+                <span class="font-mono text-neutral-600 text-[11px] block mb-4">/// Create a Pack</span>
+                <div class="terminal">
+                    <div class="terminal-bar">
+                        <div class="terminal-dot bg-[#ff5f57]"></div>
+                        <div class="terminal-dot bg-[#febc2e]"></div>
+                        <div class="terminal-dot bg-[#28c840]"></div>
+                        <span class="text-neutral-600 text-[10px] font-mono ml-2">creating a pack</span>
+                    </div>
+                    <div class="terminal-body text-[12px]">
+<code><span class="t-prompt">$</span> <span class="t-cmd">lpc create</span> <span class="t-arg">my-auth-pack</span> <span class="t-flag">--type logic</span>
+<span class="t-output">
+  ◆ Pack type: Logic (Python/FastAPI)</span>
+<span class="t-success">  ✓ Created pack scaffold</span>
+<span class="t-output">
+  my-auth-pack/
+    ├── contracts/
+    │   └── auth.contract.ts
+    ├── src/
+    │   ├── main.py
+    │   ├── routes.py
+    │   └── models.py
+    ├── tests/
+    │   └── test_auth.py
+    ├── lpc.pack.json
+    └── README.md</span>
+
+<span class="t-prompt">$</span> <span class="t-cmd">lpc verify</span>
+<span class="t-success">  ✓ Contracts valid</span>
+<span class="t-success">  ✓ Tests passing (8/8)</span>
+<span class="t-success">  ✓ Ready to publish</span>
+
+<span class="t-prompt">$</span> <span class="t-cmd">lpc publish</span>
+<span class="t-success">  ✓ Published @you/my-auth-pack@1.0.0</span>
+</code>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Self-Healing Demo -->
+            <div class="p-8 md:p-10 reveal-hidden">
+                <span class="font-mono text-neutral-600 text-[11px] block mb-4">/// Self-Healing</span>
+                <div class="terminal">
+                    <div class="terminal-bar">
+                        <div class="terminal-dot bg-[#ff5f57]"></div>
+                        <div class="terminal-dot bg-[#febc2e]"></div>
+                        <div class="terminal-dot bg-[#28c840]"></div>
+                        <span class="text-neutral-600 text-[10px] font-mono ml-2">auto-patching</span>
+                    </div>
+                    <div class="terminal-body text-[12px]">
+<code><span class="t-prompt">$</span> <span class="t-cmd">lpc test</span>
+<span class="t-output">
+  ◆ Running contract tests...</span>
+<span class="t-success">  ✓ @lp/auth — 14/14 passed</span>
+<span class="t-comment">  ✗ @lp/payments — 7/9 passed</span>
+<span class="t-output">    ↳ stripe_webhook: assertion failed
+    ↳ refund_flow: timeout after 5s</span>
+
+<span class="t-prompt">$</span> <span class="t-cmd">lpc heal</span>
+<span class="t-output">
+  ◆ Analyzing 2 failures...</span>
+<span class="t-output">  ◆ Root cause: Stripe API v2024 change</span>
+<span class="t-output">  ◆ Generating patch...</span>
+<span class="t-success">  ✓ Patched stripe_webhook handler</span>
+<span class="t-success">  ✓ Fixed refund_flow timeout</span>
+<span class="t-output">
+  ◆ Re-running tests...</span>
+<span class="t-success">  ✓ @lp/payments — 9/9 passed</span>
+<span class="t-success">
+  All tests passing.</span>
+</code>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ CTA ═══ -->
+    <section class="border-b border-white/[0.06]">
+        <div class="max-w-[1440px] mx-auto px-6 md:px-8 py-20 md:py-28 text-center relative overflow-hidden">
+            <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <div class="w-[40vw] h-[40vw] bg-green-500/[0.04] blur-[150px] rounded-full"></div>
+            </div>
+            <div class="relative z-10">
+                <h2 class="text-4xl md:text-5xl font-semibold text-white tracking-tight mb-4 reveal-hidden">Install LPC Now</h2>
+                <p class="text-neutral-500 text-base mb-8 max-w-lg mx-auto reveal-hidden">One command to start building with Logic Packs.</p>
+
+                <div class="terminal max-w-md mx-auto mb-8 reveal-hidden">
+                    <div class="terminal-bar">
+                        <div class="terminal-dot bg-[#ff5f57]"></div>
+                        <div class="terminal-dot bg-[#febc2e]"></div>
+                        <div class="terminal-dot bg-[#28c840]"></div>
+                        <button class="copy-btn ml-auto text-neutral-600 hover:text-white text-xs" onclick="navigator.clipboard.writeText('npm install -g @logicpacks/cli');this.textContent='Copied!';this.classList.add('copied');setTimeout(()=>{this.textContent='Copy';this.classList.remove('copied')},2000)">Copy</button>
+                    </div>
+                    <div class="terminal-body py-3 text-center">
+                        <code><span class="t-prompt">$</span> <span class="t-cmd">npm install</span> <span class="t-flag">-g</span> <span class="t-arg">@logicpacks/cli</span></code>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap gap-3 justify-center reveal-hidden">
+                    <a href="#" class="inline-flex items-center gap-2 bg-white text-black font-semibold rounded-md px-8 py-3 text-sm hover:bg-neutral-200 transition-colors">
+                        Documentation <iconify-icon icon="solar:arrow-right-linear" width="16"></iconify-icon>
+                    </a>
+                    <a href="https://github.com/logicpacks/cli" class="inline-flex items-center gap-2 border border-white/10 text-neutral-300 font-medium rounded-md px-8 py-3 text-sm hover:bg-white/5 transition-colors">
+                        <iconify-icon icon="simple-icons:github" width="14"></iconify-icon> GitHub
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ FOOTER ═══ -->
+    <footer class="border-t border-white/[0.06]">
+        <div class="grid grid-cols-1 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-white/[0.06]">
+            <!-- Brand -->
+            <div class="p-8 md:col-span-1 flex flex-col justify-between min-h-[280px]">
+                <div>
+                    <div class="flex items-center gap-2 mb-4">
+                        <iconify-icon icon="solar:widget-5-linear" class="text-green-500 text-lg"></iconify-icon>
+                        <span class="text-white font-semibold text-sm tracking-tight">Logic Packs</span>
+                    </div>
+                    <p class="text-neutral-500 text-sm leading-relaxed mb-6">The operating system for reusable software.</p>
+                </div>
+                <div class="flex gap-3">
+                    <a href="#" class="w-8 h-8 rounded-md border border-white/[0.06] flex items-center justify-center hover:bg-white/5 transition-colors"><iconify-icon icon="simple-icons:github" class="text-neutral-500 text-sm"></iconify-icon></a>
+                    <a href="#" class="w-8 h-8 rounded-md border border-white/[0.06] flex items-center justify-center hover:bg-white/5 transition-colors"><iconify-icon icon="simple-icons:discord" class="text-neutral-500 text-sm"></iconify-icon></a>
+                    <a href="#" class="w-8 h-8 rounded-md border border-white/[0.06] flex items-center justify-center hover:bg-white/5 transition-colors"><iconify-icon icon="simple-icons:x" class="text-neutral-500 text-sm"></iconify-icon></a>
+                </div>
+            </div>
+
+            <!-- Links -->
+            <div class="p-8 md:col-span-3 grid grid-cols-2 md:grid-cols-4 gap-8">
+                <div>
+                    <h4 class="text-white text-xs font-semibold uppercase tracking-widest mb-5">Platform</h4>
+                    <ul class="space-y-3">
+                        <li><a href="index.html#modes" class="text-neutral-500 text-sm hover:text-white transition-colors">UI Mode</a></li>
+                        <li><a href="index.html#modes" class="text-neutral-500 text-sm hover:text-white transition-colors">Logic Mode</a></li>
+                        <li><a href="index.html#modes" class="text-neutral-500 text-sm hover:text-white transition-colors">Notebook</a></li>
+                        <li><a href="index.html#modes" class="text-neutral-500 text-sm hover:text-white transition-colors">Canvas</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-white text-xs font-semibold uppercase tracking-widest mb-5">Ventures</h4>
+                    <ul class="space-y-3">
+                        <li><a href="ventures.html" class="text-neutral-500 text-sm hover:text-white transition-colors">Overview</a></li>
+                        <li><a href="founders.html" class="text-neutral-500 text-sm hover:text-white transition-colors">For Founders</a></li>
+                        <li><a href="investors.html" class="text-neutral-500 text-sm hover:text-white transition-colors">For Investors</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-white text-xs font-semibold uppercase tracking-widest mb-5">Resources</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-neutral-500 text-sm hover:text-white transition-colors">Documentation</a></li>
+                        <li><a href="cli.html" class="text-neutral-500 text-sm hover:text-white transition-colors">LPC CLI</a></li>
+                        <li><a href="store.html" class="text-neutral-500 text-sm hover:text-white transition-colors">Pack Marketplace</a></li>
+                        <li><a href="shop.html" class="text-neutral-500 text-sm hover:text-white transition-colors">Hardware Shop</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-white text-xs font-semibold uppercase tracking-widest mb-5">Newsletter</h4>
+                    <form class="flex flex-col gap-3" onsubmit="return false">
+                        <input type="email" placeholder="you@email.com" class="w-full bg-transparent border-b border-white/15 py-2 text-white text-sm focus:outline-none focus:border-green-500 transition-colors placeholder:text-neutral-700">
+                        <button class="self-start text-xs text-neutral-500 uppercase tracking-widest hover:text-white transition-colors">Subscribe</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="border-t border-white/[0.06]">
+            <div class="px-8 py-5 flex flex-col md:flex-row justify-between items-center gap-3">
+                <span class="text-neutral-700 text-xs">&copy; 2026 Logic Packs. All rights reserved.</span>
+                <div class="flex gap-4">
+                    <a href="#" class="text-neutral-700 text-xs hover:text-white transition-colors">Privacy</a>
+                    <a href="#" class="text-neutral-700 text-xs hover:text-white transition-colors">Terms</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, i) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => { entry.target.classList.remove("reveal-hidden"); entry.target.classList.add("reveal"); }, i * 60);
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+        document.querySelectorAll(".reveal-hidden").forEach(el => observer.observe(el));
+    });
+    </script>
+</body>
+</html>

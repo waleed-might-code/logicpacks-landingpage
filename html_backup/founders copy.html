@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For Founders — Logic Packs Ventures</title>
+    <meta name="description" content="Apply to Logic Packs Ventures. Receive instant credits, infrastructure, mentorship, and investor visibility — without giving up equity upfront.">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+    tailwind.config = {
+        theme: { extend: { fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] } } }
+    }
+    </script>
+
+    <style>
+    body { background-color: #0a0a0a; color: #ededed; font-family: 'Inter', system-ui, sans-serif; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #0a0a0a; }
+    ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+    @keyframes fadeInUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+    .reveal { animation: fadeInUp 0.5s cubic-bezier(0.2,0.8,0.2,1) both; }
+    .reveal-hidden { opacity: 0; }
+    .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.35s cubic-bezier(0.4,0,0.2,1), padding 0.35s; padding-top: 0; padding-bottom: 0; }
+    .faq-item.open .faq-answer { max-height: 300px; padding-top: 0.75rem; padding-bottom: 0.75rem; }
+    .faq-item.open .faq-chevron { transform: rotate(180deg); }
+    .faq-chevron { transition: transform 0.25s; }
+    .progress-track { position: relative; height: 6px; background: rgba(255,255,255,0.04); border-radius: 3px; overflow: hidden; }
+    .progress-fill { height: 100%; background: #22c55e; border-radius: 3px; transition: width 0.6s cubic-bezier(0.2,0.8,0.2,1); }
+    </style>
+</head>
+
+<body class="selection:bg-green-500/30 selection:text-white overflow-x-hidden">
+
+    <!-- ═══ HEADER ═══ -->
+    <header class="fixed top-0 left-0 w-full z-50 bg-[#0a0a0a]/80 backdrop-blur-xl border-b border-white/[0.06] h-14">
+        <div class="flex w-full h-full max-w-[1440px] mx-auto px-6 md:px-8 items-center justify-between">
+            <a href="index.html" class="flex items-center gap-2.5 group">
+                <div class="w-7 h-7 rounded-md border border-white/10 flex items-center justify-center bg-white/[0.03] group-hover:border-green-500/40 transition-colors">
+                    <iconify-icon icon="solar:widget-5-linear" class="text-green-500 text-sm"></iconify-icon>
+                </div>
+                <span class="text-sm font-semibold tracking-tight text-white">Logic Packs</span>
+            </a>
+            <nav class="hidden md:flex items-center gap-8">
+                <a href="index.html#modes" class="text-[11px] hover:text-white transition-colors uppercase font-medium text-neutral-400 tracking-[0.15em]">Platform</a>
+                <a href="store.html" class="text-[11px] hover:text-white transition-colors uppercase font-medium text-neutral-400 tracking-[0.15em]">Marketplace</a>
+                <a href="shop.html" class="text-[11px] hover:text-white transition-colors uppercase font-medium text-neutral-400 tracking-[0.15em]">Shop</a>
+                <a href="ventures.html" class="text-[11px] uppercase font-medium text-white tracking-[0.15em]">Ventures</a>
+                <a href="courses.html" class="text-[11px] hover:text-white transition-colors uppercase font-medium text-neutral-400 tracking-[0.15em]">Learn</a>
+                <a href="ambassadors.html" class="text-[11px] hover:text-white transition-colors uppercase font-medium text-neutral-400 tracking-[0.15em]">Ambassadors</a>
+                <a href="index.html#pricing" class="text-[11px] hover:text-white transition-colors uppercase font-medium text-neutral-400 tracking-[0.15em]">Pricing</a>
+            </nav>
+            <a href="#" class="hidden md:flex bg-white text-black text-xs font-semibold tracking-wide uppercase rounded-md px-5 py-2 hover:bg-neutral-200 transition-colors">Get Started</a>
+            <button class="md:hidden text-white" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
+                <iconify-icon icon="solar:hamburger-menu-linear" width="22"></iconify-icon>
+            </button>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden absolute top-full left-0 w-full bg-[#0a0a0a]/95 backdrop-blur-xl border-b border-white/[0.06] p-4 flex flex-col gap-2">
+            <a href="index.html#modes" class="px-4 py-2 text-sm text-neutral-400 hover:text-white hover:bg-white/5 rounded-md">Platform</a>
+            <a href="store.html" class="px-4 py-2 text-sm text-neutral-400 hover:text-white hover:bg-white/5 rounded-md">Marketplace</a>
+            <a href="shop.html" class="px-4 py-2 text-sm text-neutral-400 hover:text-white hover:bg-white/5 rounded-md">Shop</a>
+            <a href="ventures.html" class="px-4 py-2 text-sm text-white bg-white/5 rounded-md">Ventures</a>
+            <a href="courses.html" class="px-4 py-2 text-sm text-neutral-400 hover:text-white hover:bg-white/5 rounded-md">Learn</a>
+            <a href="ambassadors.html" class="px-4 py-2 text-sm text-neutral-400 hover:text-white hover:bg-white/5 rounded-md">Ambassadors</a>
+            <a href="index.html#pricing" class="px-4 py-2 text-sm text-neutral-400 hover:text-white hover:bg-white/5 rounded-md">Pricing</a>
+        </div>
+    </header>
+
+    <!-- Breadcrumb -->
+    <div class="pt-14 border-b border-white/[0.06]">
+        <div class="max-w-[1440px] mx-auto px-6 md:px-8 py-3 flex items-center gap-2 text-xs text-neutral-600">
+            <a href="ventures.html" class="hover:text-white transition-colors">Ventures</a>
+            <iconify-icon icon="solar:alt-arrow-right-linear" width="12"></iconify-icon>
+            <span class="text-neutral-400">For Founders</span>
+        </div>
+    </div>
+
+    <!-- ═══ ① HERO ═══ -->
+    <section class="relative overflow-hidden">
+        <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <div class="w-[50vw] h-[50vw] bg-green-500/[0.04] blur-[150px] rounded-full translate-y-[-10%]"></div>
+        </div>
+        <div class="relative z-10 border-b border-white/[0.06]">
+            <div class="max-w-[1440px] mx-auto px-6 md:px-8 py-24 md:py-36 text-center">
+                <div class="flex items-center justify-center gap-2 mb-6">
+                    <span class="h-2 w-2 bg-green-500 rounded-full shadow-[0_0_12px_rgba(34,197,94,0.5)]"></span>
+                    <span class="text-xs font-mono text-green-500/80 tracking-wider">23 spots remaining this cohort</span>
+                </div>
+                <h1 class="text-5xl md:text-7xl lg:text-8xl font-semibold text-white tracking-tight leading-[0.95] mb-6 reveal-hidden">
+                    Get Funded.<br><span class="text-neutral-500 italic">Ship Faster.</span>
+                </h1>
+                <p class="text-neutral-500 text-base md:text-lg leading-relaxed max-w-2xl mx-auto mb-10 reveal-hidden">
+                    Apply to Logic Packs Ventures and receive instant credits, infrastructure, mentorship, and investor visibility — without giving up equity upfront.
+                </p>
+                <div class="flex flex-wrap gap-3 justify-center reveal-hidden">
+                    <a href="#apply" class="inline-flex items-center gap-2 bg-white text-black font-semibold rounded-md px-8 py-3 text-sm hover:bg-neutral-200 transition-colors">
+                        Apply Now
+                        <iconify-icon icon="solar:arrow-right-linear" width="16"></iconify-icon>
+                    </a>
+                    <a href="#requirements" class="inline-flex items-center gap-2 border border-white/10 text-neutral-300 font-medium rounded-md px-8 py-3 text-sm hover:bg-white/5 transition-colors">
+                        View Requirements
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ ② WHAT YOU GET — Icon Grid ═══ -->
+    <section class="border-b border-white/[0.06]">
+        <div class="grid grid-cols-1 md:grid-cols-4 md:divide-x divide-white/[0.06]">
+            <div class="md:col-span-1 p-8 md:p-10 flex flex-col justify-between min-h-[280px]">
+                <div>
+                    <span class="font-mono text-neutral-600 text-[11px] block mb-3">/// Benefits</span>
+                    <h2 class="text-3xl font-semibold text-white tracking-tight mb-4 reveal-hidden">What You Get</h2>
+                    <p class="text-neutral-500 text-sm leading-relaxed reveal-hidden">Everything you need to go from prototype to funded product.</p>
+                </div>
+            </div>
+            <div class="md:col-span-3 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 divide-y sm:divide-x divide-white/[0.06]">
+                <div class="p-8 hover:bg-white/[0.015] transition-colors reveal-hidden">
+                    <div class="w-10 h-10 rounded-lg bg-green-500/10 border border-green-500/20 flex items-center justify-center mb-5">
+                        <iconify-icon icon="solar:wallet-money-linear" class="text-green-500 text-lg"></iconify-icon>
+                    </div>
+                    <h3 class="text-white text-sm font-medium tracking-tight mb-2">Platform Credits</h3>
+                    <p class="text-neutral-500 text-xs leading-relaxed">$500–$10,000 in compute credits for API, packs, and automation runs.</p>
+                </div>
+                <div class="p-8 hover:bg-white/[0.015] transition-colors reveal-hidden">
+                    <div class="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center mb-5">
+                        <iconify-icon icon="solar:star-bold" class="text-neutral-400 text-lg"></iconify-icon>
+                    </div>
+                    <h3 class="text-white text-sm font-medium tracking-tight mb-2">Marketplace Featuring</h3>
+                    <p class="text-neutral-500 text-xs leading-relaxed">Your app prominently listed in the Pack Store with a "Ventures" badge.</p>
+                </div>
+                <div class="p-8 hover:bg-white/[0.015] transition-colors reveal-hidden">
+                    <div class="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center mb-5">
+                        <iconify-icon icon="solar:eye-linear" class="text-neutral-400 text-lg"></iconify-icon>
+                    </div>
+                    <h3 class="text-white text-sm font-medium tracking-tight mb-2">Investor Visibility</h3>
+                    <p class="text-neutral-500 text-xs leading-relaxed">Your app goes live on the investor deal board with real-time metrics.</p>
+                </div>
+                <div class="p-8 hover:bg-white/[0.015] transition-colors reveal-hidden">
+                    <div class="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center mb-5">
+                        <iconify-icon icon="solar:user-speak-rounded-linear" class="text-neutral-400 text-lg"></iconify-icon>
+                    </div>
+                    <h3 class="text-white text-sm font-medium tracking-tight mb-2">Mentorship</h3>
+                    <p class="text-neutral-500 text-xs leading-relaxed">Weekly office hours with Logic Packs engineers and past founders.</p>
+                </div>
+                <div class="p-8 hover:bg-white/[0.015] transition-colors reveal-hidden">
+                    <div class="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center mb-5">
+                        <iconify-icon icon="solar:server-square-linear" class="text-neutral-400 text-lg"></iconify-icon>
+                    </div>
+                    <h3 class="text-white text-sm font-medium tracking-tight mb-2">Infrastructure</h3>
+                    <p class="text-neutral-500 text-xs leading-relaxed">Priority access to new packs, dedicated runtime, faster self-healing.</p>
+                </div>
+                <div class="p-8 hover:bg-white/[0.015] transition-colors reveal-hidden">
+                    <div class="w-10 h-10 rounded-lg bg-green-500/10 border border-green-500/20 flex items-center justify-center mb-5">
+                        <iconify-icon icon="solar:presentation-graph-linear" class="text-green-500 text-lg"></iconify-icon>
+                    </div>
+                    <h3 class="text-white text-sm font-medium tracking-tight mb-2">Demo Day</h3>
+                    <p class="text-neutral-500 text-xs leading-relaxed">Scale-tier founders present to the full investor network quarterly.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ ③ INCUBATION TIERS — Detailed ═══ -->
+    <section class="border-b border-white/[0.06]">
+        <div class="max-w-[1440px] mx-auto px-6 md:px-8 py-16 md:py-20">
+            <div class="mb-12">
+                <span class="font-mono text-neutral-600 text-[11px] block mb-3">/// Tiers</span>
+                <h2 class="text-3xl font-semibold text-white tracking-tight reveal-hidden">Choose Your Tier</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                <!-- Spark -->
+                <div class="border border-white/[0.06] rounded-xl p-8 hover:bg-white/[0.015] transition-all reveal-hidden flex flex-col">
+                    <span class="px-2.5 py-0.5 rounded text-[10px] font-semibold bg-yellow-500/15 text-yellow-400 border border-yellow-500/20 uppercase tracking-wider self-start mb-6">Spark</span>
+                    <div class="text-4xl font-semibold text-white tracking-tight mb-1">$500</div>
+                    <span class="text-neutral-600 text-xs font-mono block mb-1">in platform credits</span>
+                    <span class="text-neutral-700 text-xs block mb-6">4-week program</span>
+
+                    <h4 class="text-xs text-neutral-400 uppercase tracking-widest font-semibold mb-4">Requirements</h4>
+                    <ul class="space-y-2 text-xs text-neutral-500 mb-6">
+                        <li class="flex items-start gap-2"><iconify-icon icon="solar:check-circle-linear" class="text-neutral-600 mt-0.5 shrink-0" width="13"></iconify-icon>Working prototype on Logic Packs</li>
+                        <li class="flex items-start gap-2"><iconify-icon icon="solar:check-circle-linear" class="text-neutral-600 mt-0.5 shrink-0" width="13"></iconify-icon>≥1 pack installed</li>
+                        <li class="flex items-start gap-2"><iconify-icon icon="solar:check-circle-linear" class="text-neutral-600 mt-0.5 shrink-0" width="13"></iconify-icon>Basic tests passing</li>
+                    </ul>
+
+                    <h4 class="text-xs text-neutral-400 uppercase tracking-widest font-semibold mb-4">Includes</h4>
+                    <ul class="space-y-2 text-xs text-neutral-500 mb-8 flex-grow">
+                        <li class="flex items-start gap-2"><iconify-icon icon="solar:check-circle-linear" class="text-green-500/60 mt-0.5 shrink-0" width="13"></iconify-icon>$500 platform credits</li>
+                        <li class="flex items-start gap-2"><iconify-icon icon="solar:check-circle-linear" class="text-green-500/60 mt-0.5 shrink-0" width="13"></iconify-icon>Marketplace listing</li>
+                        <li class="flex items-start gap-2"><iconify-icon icon="solar:check-circle-linear" class="text-green-500/60 mt-0.5 shrink-0" width="13"></iconify-icon>Community Slack access</li>
+                        <li class="flex items-start gap-2"><iconify-icon icon="solar:check-circle-linear" class="text-green-500/60 mt-0.5 shrink-0" width="13"></iconify-icon>Basic analytics dashboard</li>
+                    </ul>
+
+                    <a href="#apply" class="block text-center border border-white/10 text-neutral-300 font-medium rounded-md px-6 py-3 text-sm hover:bg-white/5 transition-colors">Apply for Spark</a>
+                </div>
+
+                <!-- Launch (highlighted) -->
+                <div class="border border-green-500/20 bg-green-500/[0.02] rounded-xl p-8 hover:bg-green-500/[0.04] transition-all reveal-hidden flex flex-col relative">
+                    <div class="absolute -top-3 left-8 px-3 py-0.5 bg-green-500 text-black text-[10px] font-semibold rounded uppercase tracking-wider">Most Popular</div>
+                    <span class="px-2.5 py-0.5 rounded text-[10px] font-semibold bg-green-500/15 text-green-400 border border-green-500/20 uppercase tracking-wider self-start mb-6">Launch</span>
+                    <div class="text-4xl font-semibold text-white tracking-tight mb-1">$2,500</div>
+                    <span class="text-neutral-600 text-xs font-mono block mb-1">in platform credits</span>
+                    <span class="text-neutral-700 text-xs block mb-6">8-week program</span>
+
+                    <h4 class="text-xs text-neutral-400 uppercase tracking-widest font-semibold mb-4">Requirements</h4>
+                    <ul class="space-y-2 text-xs text-neutral-500 mb-6">
+                        <li class="flex items-start gap-2"><iconify-icon icon="solar:check-circle-linear" class="text-neutral-600 mt-0.5 shrink-0" width="13"></iconify-icon>MVP with users</li>
+                        <li class="flex items-start gap-2"><iconify-icon icon="solar:check-circle-linear" class="text-neutral-600 mt-0.5 shrink-0" width="13"></iconify-icon>≥3 packs installed</li>
+                        <li class="flex items-start gap-2"><iconify-icon icon="solar:check-circle-linear" class="text-neutral-600 mt-0.5 shrink-0" width="13"></iconify-icon>80%+ test coverage</li>
+                        <li class="flex items-start gap-2"><iconify-icon icon="solar:check-circle-linear" class="text-neutral-600 mt-0.5 shrink-0" width="13"></iconify-icon>Active self-healing</li>
+                    </ul>
+
+                    <h4 class="text-xs text-neutral-400 uppercase tracking-widest font-semibold mb-4">Includes</h4>
+                    <ul class="space-y-2 text-xs text-neutral-500 mb-8 flex-grow">
+                        <li class="flex items-start gap-2"><iconify-icon icon="solar:check-circle-linear" class="text-green-500 mt-0.5 shrink-0" width="13"></iconify-icon>Everything in Spark</li>
+                        <li class="flex items-start gap-2"><iconify-icon icon="solar:check-circle-linear" class="text-green-500 mt-0.5 shrink-0" width="13"></iconify-icon>$2,500 platform credits</li>
+                        <li class="flex items-start gap-2"><iconify-icon icon="solar:check-circle-linear" class="text-green-500 mt-0.5 shrink-0" width="13"></iconify-icon>Dedicated mentor</li>
+                        <li class="flex items-start gap-2"><iconify-icon icon="solar:check-circle-linear" class="text-green-500 mt-0.5 shrink-0" width="13"></iconify-icon>Featured marketplace placement</li>
+                        <li class="flex items-start gap-2"><iconify-icon icon="solar:check-circle-linear" class="text-green-500 mt-0.5 shrink-0" width="13"></iconify-icon>Investor board listing</li>
+                        <li class="flex items-start gap-2"><iconify-icon icon="solar:check-circle-linear" class="text-green-500 mt-0.5 shrink-0" width="13"></iconify-icon>Weekly check-ins</li>
+                        <li class="flex items-start gap-2"><iconify-icon icon="solar:check-circle-linear" class="text-green-500 mt-0.5 shrink-0" width="13"></iconify-icon>Full analytics dashboard</li>
+                    </ul>
+
+                    <a href="#apply" class="block text-center bg-green-500 text-black font-semibold rounded-md px-6 py-3 text-sm hover:bg-green-400 transition-colors">Apply for Launch</a>
+                </div>
+
+                <!-- Scale -->
+                <div class="border border-purple-500/20 rounded-xl p-8 hover:bg-white/[0.015] transition-all reveal-hidden flex flex-col">
+                    <span class="px-2.5 py-0.5 rounded text-[10px] font-semibold bg-purple-500/15 text-purple-400 border border-purple-500/20 uppercase tracking-wider self-start mb-6">Scale</span>
+                    <div class="text-4xl font-semibold text-white tracking-tight mb-1">$10,000+</div>
+                    <span class="text-neutral-600 text-xs font-mono block mb-1">in platform credits</span>
+                    <span class="text-neutral-700 text-xs block mb-6">12-week program</span>
+
+                    <h4 class="text-xs text-neutral-400 uppercase tracking-widest font-semibold mb-4">Requirements</h4>
+                    <ul class="space-y-2 text-xs text-neutral-500 mb-6">
+                        <li class="flex items-start gap-2"><iconify-icon icon="solar:check-circle-linear" class="text-neutral-600 mt-0.5 shrink-0" width="13"></iconify-icon>100+ users or $1k+ MRR</li>
+                        <li class="flex items-start gap-2"><iconify-icon icon="solar:check-circle-linear" class="text-neutral-600 mt-0.5 shrink-0" width="13"></iconify-icon>Full pack stack</li>
+                        <li class="flex items-start gap-2"><iconify-icon icon="solar:check-circle-linear" class="text-neutral-600 mt-0.5 shrink-0" width="13"></iconify-icon>Verified status</li>
+                    </ul>
+
+                    <h4 class="text-xs text-neutral-400 uppercase tracking-widest font-semibold mb-4">Includes</h4>
+                    <ul class="space-y-2 text-xs text-neutral-500 mb-8 flex-grow">
+                        <li class="flex items-start gap-2"><iconify-icon icon="solar:check-circle-linear" class="text-purple-400 mt-0.5 shrink-0" width="13"></iconify-icon>Everything in Launch</li>
+                        <li class="flex items-start gap-2"><iconify-icon icon="solar:check-circle-linear" class="text-purple-400 mt-0.5 shrink-0" width="13"></iconify-icon>$10,000+ platform credits</li>
+                        <li class="flex items-start gap-2"><iconify-icon icon="solar:check-circle-linear" class="text-purple-400 mt-0.5 shrink-0" width="13"></iconify-icon>Investor matching</li>
+                        <li class="flex items-start gap-2"><iconify-icon icon="solar:check-circle-linear" class="text-purple-400 mt-0.5 shrink-0" width="13"></iconify-icon>Demo day presentation slot</li>
+                        <li class="flex items-start gap-2"><iconify-icon icon="solar:check-circle-linear" class="text-purple-400 mt-0.5 shrink-0" width="13"></iconify-icon>Custom infrastructure</li>
+                        <li class="flex items-start gap-2"><iconify-icon icon="solar:check-circle-linear" class="text-purple-400 mt-0.5 shrink-0" width="13"></iconify-icon>Priority self-healing</li>
+                        <li class="flex items-start gap-2"><iconify-icon icon="solar:check-circle-linear" class="text-purple-400 mt-0.5 shrink-0" width="13"></iconify-icon>Direct investor introductions</li>
+                    </ul>
+
+                    <a href="#apply" class="block text-center border border-purple-500/20 text-purple-300 font-medium rounded-md px-6 py-3 text-sm hover:bg-purple-500/5 transition-colors">Apply for Scale</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ ④ APPLICATION REQUIREMENTS ═══ -->
+    <section id="requirements" class="border-b border-white/[0.06]">
+        <div class="grid grid-cols-1 md:grid-cols-2 md:divide-x divide-white/[0.06]">
+            <div class="p-8 md:p-14">
+                <span class="font-mono text-neutral-600 text-[11px] block mb-3">/// Requirements</span>
+                <h2 class="text-3xl font-semibold text-white tracking-tight mb-4 reveal-hidden">What We Look For</h2>
+                <p class="text-neutral-500 text-sm leading-relaxed mb-8 reveal-hidden">We keep the bar simple. If your app runs on Logic Packs and has real users (or a clear path to them), you're eligible.</p>
+
+                <div class="space-y-4 reveal-hidden">
+                    <div class="flex items-start gap-3 p-4 border border-white/[0.06] rounded-lg hover:bg-white/[0.015] transition-colors">
+                        <iconify-icon icon="solar:check-square-linear" class="text-green-500 mt-0.5 shrink-0" width="18"></iconify-icon>
+                        <div>
+                            <h4 class="text-white text-sm font-medium">Built on Logic Packs</h4>
+                            <p class="text-neutral-500 text-xs mt-1">Any mode — UI, Logic, Notebook, Canvas.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3 p-4 border border-white/[0.06] rounded-lg hover:bg-white/[0.015] transition-colors">
+                        <iconify-icon icon="solar:check-square-linear" class="text-green-500 mt-0.5 shrink-0" width="18"></iconify-icon>
+                        <div>
+                            <h4 class="text-white text-sm font-medium">At least one pack installed</h4>
+                            <p class="text-neutral-500 text-xs mt-1">With tests passing. Telemetry enabled.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3 p-4 border border-white/[0.06] rounded-lg hover:bg-white/[0.015] transition-colors">
+                        <iconify-icon icon="solar:check-square-linear" class="text-green-500 mt-0.5 shrink-0" width="18"></iconify-icon>
+                        <div>
+                            <h4 class="text-white text-sm font-medium">Telemetry enabled</h4>
+                            <p class="text-neutral-500 text-xs mt-1">So investors can see real data. Transparency is the trust layer.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3 p-4 border border-white/[0.06] rounded-lg hover:bg-white/[0.015] transition-colors">
+                        <iconify-icon icon="solar:check-square-linear" class="text-green-500 mt-0.5 shrink-0" width="18"></iconify-icon>
+                        <div>
+                            <h4 class="text-white text-sm font-medium">Brief pitch</h4>
+                            <p class="text-neutral-500 text-xs mt-1">What it does, who it's for, why now. Keep it under 200 words.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3 p-4 border border-white/[0.06] rounded-lg hover:bg-white/[0.015] transition-colors">
+                        <iconify-icon icon="solar:check-square-linear" class="text-green-500 mt-0.5 shrink-0" width="18"></iconify-icon>
+                        <div>
+                            <h4 class="text-white text-sm font-medium">Your pack stack</h4>
+                            <p class="text-neutral-500 text-xs mt-1">Which packs you use and how they're wired together.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Currently Incubating -->
+            <div class="p-8 md:p-14 border-t md:border-t-0 border-white/[0.06]">
+                <span class="font-mono text-neutral-600 text-[11px] block mb-3">/// Active Cohort</span>
+                <h2 class="text-3xl font-semibold text-white tracking-tight mb-8 reveal-hidden">Currently Incubating</h2>
+
+                <div class="space-y-4">
+                    <!-- App 1 -->
+                    <div class="border border-white/[0.06] rounded-lg p-5 hover:bg-white/[0.015] transition-colors reveal-hidden">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-9 h-9 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center">
+                                <iconify-icon icon="solar:cart-large-minimalistic-linear" class="text-blue-400 text-base"></iconify-icon>
+                            </div>
+                            <div class="min-w-0 flex-1">
+                                <div class="flex items-center gap-2">
+                                    <h3 class="text-white text-sm font-medium truncate">ShopStack</h3>
+                                    <span class="px-1.5 py-0.5 rounded text-[8px] font-semibold bg-green-500/15 text-green-400 border border-green-500/20 uppercase">Launch</span>
+                                </div>
+                                <span class="text-neutral-600 text-[10px] font-mono">Auth + Payments + Dashboard</span>
+                            </div>
+                            <span class="text-neutral-500 text-xs font-mono">2.4k users</span>
+                        </div>
+                        <div class="progress-track">
+                            <div class="progress-fill" style="width: 65%"></div>
+                        </div>
+                        <div class="flex justify-between mt-2 text-[10px] text-neutral-600 font-mono"><span>Week 5 of 8</span><span>65%</span></div>
+                    </div>
+
+                    <!-- App 2 -->
+                    <div class="border border-white/[0.06] rounded-lg p-5 hover:bg-white/[0.015] transition-colors reveal-hidden">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-9 h-9 rounded-lg bg-orange-500/10 border border-orange-500/20 flex items-center justify-center">
+                                <iconify-icon icon="solar:document-text-linear" class="text-orange-400 text-base"></iconify-icon>
+                            </div>
+                            <div class="min-w-0 flex-1">
+                                <div class="flex items-center gap-2">
+                                    <h3 class="text-white text-sm font-medium truncate">InvoiceBot</h3>
+                                    <span class="px-1.5 py-0.5 rounded text-[8px] font-semibold bg-yellow-500/15 text-yellow-400 border border-yellow-500/20 uppercase">Spark</span>
+                                </div>
+                                <span class="text-neutral-600 text-[10px] font-mono">Payments + PDF + Scheduler</span>
+                            </div>
+                            <span class="text-neutral-500 text-xs font-mono">340 users</span>
+                        </div>
+                        <div class="progress-track">
+                            <div class="progress-fill" style="width: 75%"></div>
+                        </div>
+                        <div class="flex justify-between mt-2 text-[10px] text-neutral-600 font-mono"><span>Week 3 of 4</span><span>75%</span></div>
+                    </div>
+
+                    <!-- App 3 -->
+                    <div class="border border-white/[0.06] rounded-lg p-5 hover:bg-white/[0.015] transition-colors reveal-hidden">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-9 h-9 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
+                                <iconify-icon icon="solar:heart-pulse-linear" class="text-emerald-400 text-base"></iconify-icon>
+                            </div>
+                            <div class="min-w-0 flex-1">
+                                <div class="flex items-center gap-2">
+                                    <h3 class="text-white text-sm font-medium truncate">ClinicOS</h3>
+                                    <span class="px-1.5 py-0.5 rounded text-[8px] font-semibold bg-green-500/15 text-green-400 border border-green-500/20 uppercase">Launch</span>
+                                </div>
+                                <span class="text-neutral-600 text-[10px] font-mono">Auth + CRUD + LPDN</span>
+                            </div>
+                            <span class="text-neutral-500 text-xs font-mono">890 users</span>
+                        </div>
+                        <div class="progress-track">
+                            <div class="progress-fill" style="width: 40%"></div>
+                        </div>
+                        <div class="flex justify-between mt-2 text-[10px] text-neutral-600 font-mono"><span>Week 3 of 8</span><span>40%</span></div>
+                    </div>
+
+                    <!-- Graduated -->
+                    <div class="border border-white/[0.06] rounded-lg p-5 bg-white/[0.01] reveal-hidden">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-9 h-9 rounded-lg bg-purple-500/10 border border-purple-500/20 flex items-center justify-center">
+                                <iconify-icon icon="solar:chat-round-dots-linear" class="text-purple-400 text-base"></iconify-icon>
+                            </div>
+                            <div class="min-w-0 flex-1">
+                                <div class="flex items-center gap-2">
+                                    <h3 class="text-white text-sm font-medium truncate">FeedbackLoop</h3>
+                                    <span class="px-1.5 py-0.5 rounded text-[8px] font-semibold bg-white/10 text-neutral-400 border border-white/10 uppercase">Graduated</span>
+                                </div>
+                                <span class="text-neutral-600 text-[10px] font-mono">Auth + Email + Form Builder</span>
+                            </div>
+                            <span class="text-green-500 text-xs font-mono">$12k MRR</span>
+                        </div>
+                        <div class="progress-track">
+                            <div class="progress-fill" style="width: 100%"></div>
+                        </div>
+                        <div class="flex justify-between mt-2 text-[10px] text-neutral-600 font-mono"><span>Completed</span><span>✓ Alumni</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ ⑤ SUCCESS STORIES ═══ -->
+    <section class="border-b border-white/[0.06]">
+        <div class="max-w-[1440px] mx-auto px-6 md:px-8 py-16 md:py-20">
+            <span class="font-mono text-neutral-600 text-[11px] block mb-3">/// Stories</span>
+            <h2 class="text-2xl font-semibold text-white tracking-tight mb-10 reveal-hidden">From the Founders</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                <div class="border border-white/[0.06] rounded-xl p-8 hover:bg-white/[0.015] transition-colors reveal-hidden">
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="w-10 h-10 rounded-full bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400 text-sm font-semibold">AK</div>
+                        <div><span class="text-white text-sm font-medium block">Amir Khalil</span><span class="text-neutral-600 text-xs">ShopStack · Launch → Scale</span></div>
+                    </div>
+                    <p class="text-neutral-400 text-sm leading-relaxed italic">"We went from 0 to 2,400 users in 6 weeks. The credits let us ship without worrying about compute costs, and the investor board brought us 14 backers within a week."</p>
+                    <span class="text-green-500 text-xs font-mono block mt-4">2,400 users · $8.2k MRR</span>
+                </div>
+
+                <div class="border border-white/[0.06] rounded-xl p-8 hover:bg-white/[0.015] transition-colors reveal-hidden">
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="w-10 h-10 rounded-full bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400 text-sm font-semibold">RM</div>
+                        <div><span class="text-white text-sm font-medium block">Riya Mehta</span><span class="text-neutral-600 text-xs">FeedbackLoop · Scale (Graduated)</span></div>
+                    </div>
+                    <p class="text-neutral-400 text-sm leading-relaxed italic">"The mentorship was the real unlock. Our mentor helped us restructure our pack stack, which cut API costs by 40% and pushed us to $12k MRR."</p>
+                    <span class="text-green-500 text-xs font-mono block mt-4">5,100 users · $12k MRR · Graduated</span>
+                </div>
+
+                <div class="border border-white/[0.06] rounded-xl p-8 hover:bg-white/[0.015] transition-colors reveal-hidden">
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="w-10 h-10 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 text-sm font-semibold">JL</div>
+                        <div><span class="text-white text-sm font-medium block">Jordan Lee</span><span class="text-neutral-600 text-xs">ClinicOS · Launch</span></div>
+                    </div>
+                    <p class="text-neutral-400 text-sm leading-relaxed italic">"We're running offline with LPDN for clinics that have spotty internet. The Spark credits gave us room to experiment, and now we're in Launch with 890 users."</p>
+                    <span class="text-green-500 text-xs font-mono block mt-4">890 users · $3.4k MRR</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ ⑥ APPLICATION FORM ═══ -->
+    <section id="apply" class="border-b border-white/[0.06]">
+        <div class="max-w-[1440px] mx-auto px-6 md:px-8 py-16 md:py-20">
+            <div class="max-w-2xl mx-auto">
+                <span class="font-mono text-neutral-600 text-[11px] block mb-3">/// Apply</span>
+                <h2 class="text-3xl font-semibold text-white tracking-tight mb-3 reveal-hidden">Submit Your Application</h2>
+                <p class="text-neutral-500 text-sm leading-relaxed mb-10 reveal-hidden">We review within 48 hours. Accepted founders receive credits instantly.</p>
+
+                <form class="space-y-6 reveal-hidden" onsubmit="return false;" id="founder-form">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="text-xs text-neutral-400 uppercase tracking-widest font-medium block mb-2">Your Name</label>
+                            <input type="text" placeholder="Jane Doe" class="w-full bg-transparent border border-white/[0.06] rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-green-500/40 transition-colors placeholder:text-neutral-700">
+                        </div>
+                        <div>
+                            <label class="text-xs text-neutral-400 uppercase tracking-widest font-medium block mb-2">Email</label>
+                            <input type="email" placeholder="you@email.com" class="w-full bg-transparent border border-white/[0.06] rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-green-500/40 transition-colors placeholder:text-neutral-700">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="text-xs text-neutral-400 uppercase tracking-widest font-medium block mb-2">App Name</label>
+                        <input type="text" placeholder="My Awesome App" class="w-full bg-transparent border border-white/[0.06] rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-green-500/40 transition-colors placeholder:text-neutral-700">
+                    </div>
+
+                    <div>
+                        <label class="text-xs text-neutral-400 uppercase tracking-widest font-medium block mb-2">App Description</label>
+                        <textarea rows="3" placeholder="What does your app do? Who is it for?" class="w-full bg-transparent border border-white/[0.06] rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-green-500/40 transition-colors placeholder:text-neutral-700 resize-none"></textarea>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="text-xs text-neutral-400 uppercase tracking-widest font-medium block mb-2">App URL <span class="text-neutral-700">(if deployed)</span></label>
+                            <input type="url" placeholder="https://myapp.logicpacks.dev" class="w-full bg-transparent border border-white/[0.06] rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-green-500/40 transition-colors placeholder:text-neutral-700">
+                        </div>
+                        <div>
+                            <label class="text-xs text-neutral-400 uppercase tracking-widest font-medium block mb-2">Tier Applying For</label>
+                            <select class="w-full bg-[#0a0a0a] border border-white/[0.06] rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-green-500/40 transition-colors">
+                                <option value="" class="bg-[#0a0a0a]">Select tier…</option>
+                                <option value="spark" class="bg-[#0a0a0a]">Spark ($500 credits · 4 weeks)</option>
+                                <option value="launch" class="bg-[#0a0a0a]">Launch ($2,500 credits · 8 weeks)</option>
+                                <option value="scale" class="bg-[#0a0a0a]">Scale ($10,000+ credits · 12 weeks)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="text-xs text-neutral-400 uppercase tracking-widest font-medium block mb-2">Pack Stack Used</label>
+                        <input type="text" placeholder="Auth, Payments, Dashboard, LPDN…" class="w-full bg-transparent border border-white/[0.06] rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-green-500/40 transition-colors placeholder:text-neutral-700">
+                    </div>
+
+                    <div>
+                        <label class="text-xs text-neutral-400 uppercase tracking-widest font-medium block mb-2">Why should we fund this?</label>
+                        <textarea rows="4" placeholder="Your pitch — what makes this special, what traction you have, where you're going." class="w-full bg-transparent border border-white/[0.06] rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-green-500/40 transition-colors placeholder:text-neutral-700 resize-none"></textarea>
+                    </div>
+
+                    <button type="submit" class="w-full bg-white text-black font-semibold rounded-lg px-6 py-4 text-sm hover:bg-neutral-200 transition-colors flex items-center justify-center gap-2" onclick="this.textContent='Application Submitted ✓'; this.classList.add('bg-green-500','text-black','hover:bg-green-500'); setTimeout(()=>{this.textContent='Submit Application'; this.classList.remove('bg-green-500','hover:bg-green-500');},3000);">
+                        Submit Application
+                    </button>
+                    <p class="text-neutral-700 text-xs text-center">We review within 48 hours. You'll receive an email with next steps.</p>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ ⑦ FAQ ═══ -->
+    <section class="border-b border-white/[0.06]">
+        <div class="max-w-[1440px] mx-auto px-6 md:px-8 py-16 md:py-20">
+            <div class="max-w-3xl mx-auto">
+                <span class="font-mono text-neutral-600 text-[11px] block mb-3">/// FAQ</span>
+                <h2 class="text-2xl font-semibold text-white tracking-tight mb-8 reveal-hidden">Founder FAQ</h2>
+
+                <div class="divide-y divide-white/[0.06]">
+                    <div class="faq-item">
+                        <button class="w-full flex items-center justify-between py-5 text-left" onclick="this.parentElement.classList.toggle('open')">
+                            <span class="text-white text-sm font-medium pr-4">Do I give up equity?</span>
+                            <iconify-icon icon="solar:alt-arrow-down-linear" class="faq-chevron text-neutral-600 shrink-0" width="16"></iconify-icon>
+                        </button>
+                        <div class="faq-answer text-neutral-500 text-sm leading-relaxed">
+                            No. LP Ventures uses a credit/revenue-share model, not equity. Investors fund your app with credits and earn a proportional share of revenue. You keep full ownership.
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="w-full flex items-center justify-between py-5 text-left" onclick="this.parentElement.classList.toggle('open')">
+                            <span class="text-white text-sm font-medium pr-4">How fast do I get credits?</span>
+                            <iconify-icon icon="solar:alt-arrow-down-linear" class="faq-chevron text-neutral-600 shrink-0" width="16"></iconify-icon>
+                        </button>
+                        <div class="faq-answer text-neutral-500 text-sm leading-relaxed">
+                            Instantly upon acceptance. Credits are deposited directly into your Logic Packs workspace within minutes of approval.
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="w-full flex items-center justify-between py-5 text-left" onclick="this.parentElement.classList.toggle('open')">
+                            <span class="text-white text-sm font-medium pr-4">What if I don't use all my credits?</span>
+                            <iconify-icon icon="solar:alt-arrow-down-linear" class="faq-chevron text-neutral-600 shrink-0" width="16"></iconify-icon>
+                        </button>
+                        <div class="faq-answer text-neutral-500 text-sm leading-relaxed">
+                            Unused credits remain in your workspace for 90 days after your program ends. After that, they expire. We encourage you to use them for growth — that's what investors expect.
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="w-full flex items-center justify-between py-5 text-left" onclick="this.parentElement.classList.toggle('open')">
+                            <span class="text-white text-sm font-medium pr-4">Can I upgrade tiers mid-program?</span>
+                            <iconify-icon icon="solar:alt-arrow-down-linear" class="faq-chevron text-neutral-600 shrink-0" width="16"></iconify-icon>
+                        </button>
+                        <div class="faq-answer text-neutral-500 text-sm leading-relaxed">
+                            Yes! If you hit the requirements for the next tier during your program, you can apply to upgrade. Your mentor will help you through the transition.
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="w-full flex items-center justify-between py-5 text-left" onclick="this.parentElement.classList.toggle('open')">
+                            <span class="text-white text-sm font-medium pr-4">What happens after graduation?</span>
+                            <iconify-icon icon="solar:alt-arrow-down-linear" class="faq-chevron text-neutral-600 shrink-0" width="16"></iconify-icon>
+                        </button>
+                        <div class="faq-answer text-neutral-500 text-sm leading-relaxed">
+                            You remain on the investor board as an alumni app. You keep your Ventures badge, marketplace featuring, and can continue to receive investor credits. Many graduates also become mentors for new cohorts.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ CTA ═══ -->
+    <section class="border-b border-white/[0.06]">
+        <div class="max-w-[1440px] mx-auto px-6 md:px-8 py-20 text-center">
+            <h2 class="text-3xl md:text-4xl font-semibold text-white tracking-tight mb-4 reveal-hidden">Ready to join the next cohort?</h2>
+            <p class="text-neutral-500 text-base mb-8 reveal-hidden">23 spots remaining. Applications reviewed within 48 hours.</p>
+            <div class="flex flex-wrap gap-3 justify-center reveal-hidden">
+                <a href="#apply" class="inline-flex items-center gap-2 bg-white text-black font-semibold rounded-md px-8 py-3 text-sm hover:bg-neutral-200 transition-colors">
+                    Apply Now <iconify-icon icon="solar:arrow-right-linear" width="16"></iconify-icon>
+                </a>
+                <a href="investors.html" class="inline-flex items-center gap-2 border border-white/10 text-neutral-300 font-medium rounded-md px-8 py-3 text-sm hover:bg-white/5 transition-colors">
+                    View Investor Board
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ FOOTER ═══ -->
+    <footer class="border-t border-white/[0.06]">
+        <div class="grid grid-cols-1 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-white/[0.06]">
+            <div class="p-8 md:col-span-1 flex flex-col justify-between min-h-[240px]">
+                <div>
+                    <div class="flex items-center gap-2 mb-4">
+                        <iconify-icon icon="solar:widget-5-linear" class="text-green-500 text-lg"></iconify-icon>
+                        <span class="text-white font-semibold text-sm tracking-tight">Logic Packs</span>
+                    </div>
+                    <p class="text-neutral-500 text-sm leading-relaxed">The operating system for reusable software.</p>
+                </div>
+                <div class="flex gap-3 mt-6">
+                    <a href="#" class="w-8 h-8 rounded-md border border-white/[0.06] flex items-center justify-center hover:bg-white/5 transition-colors"><iconify-icon icon="simple-icons:github" class="text-neutral-500 text-sm"></iconify-icon></a>
+                    <a href="#" class="w-8 h-8 rounded-md border border-white/[0.06] flex items-center justify-center hover:bg-white/5 transition-colors"><iconify-icon icon="simple-icons:discord" class="text-neutral-500 text-sm"></iconify-icon></a>
+                    <a href="#" class="w-8 h-8 rounded-md border border-white/[0.06] flex items-center justify-center hover:bg-white/5 transition-colors"><iconify-icon icon="simple-icons:x" class="text-neutral-500 text-sm"></iconify-icon></a>
+                </div>
+            </div>
+            <div class="p-8 md:col-span-3 grid grid-cols-2 md:grid-cols-4 gap-8">
+                <div>
+                    <h4 class="text-white text-xs font-semibold uppercase tracking-widest mb-5">Platform</h4>
+                    <ul class="space-y-3"><li><a href="index.html#modes" class="text-neutral-500 text-sm hover:text-white transition-colors">UI Mode</a></li><li><a href="index.html#modes" class="text-neutral-500 text-sm hover:text-white transition-colors">Logic Mode</a></li><li><a href="index.html#modes" class="text-neutral-500 text-sm hover:text-white transition-colors">Notebook</a></li><li><a href="index.html#modes" class="text-neutral-500 text-sm hover:text-white transition-colors">Canvas</a></li></ul>
+                </div>
+                <div>
+                    <h4 class="text-white text-xs font-semibold uppercase tracking-widest mb-5">Ventures</h4>
+                    <ul class="space-y-3"><li><a href="ventures.html" class="text-neutral-500 text-sm hover:text-white transition-colors">Overview</a></li><li><a href="founders.html" class="text-neutral-500 text-sm hover:text-white transition-colors">For Founders</a></li><li><a href="investors.html" class="text-neutral-500 text-sm hover:text-white transition-colors">For Investors</a></li></ul>
+                </div>
+                <div>
+                    <h4 class="text-white text-xs font-semibold uppercase tracking-widest mb-5">Resources</h4>
+                    <ul class="space-y-3"><li><a href="#" class="text-neutral-500 text-sm hover:text-white transition-colors">Documentation</a></li><li><a href="store.html" class="text-neutral-500 text-sm hover:text-white transition-colors">Marketplace</a></li><li><a href="shop.html" class="text-neutral-500 text-sm hover:text-white transition-colors">Hardware Shop</a></li></ul>
+                </div>
+                <div>
+                    <h4 class="text-white text-xs font-semibold uppercase tracking-widest mb-5">Newsletter</h4>
+                    <form class="flex flex-col gap-3" onsubmit="return false">
+                        <input type="email" placeholder="you@email.com" class="w-full bg-transparent border-b border-white/15 py-2 text-white text-sm focus:outline-none focus:border-green-500 transition-colors placeholder:text-neutral-700">
+                        <button class="self-start text-xs text-neutral-500 uppercase tracking-widest hover:text-white transition-colors">Subscribe</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="border-t border-white/[0.06] px-8 py-5 flex flex-col md:flex-row justify-between items-center gap-3">
+            <span class="text-neutral-700 text-xs">&copy; 2026 Logic Packs. All rights reserved.</span>
+            <div class="flex gap-4"><a href="#" class="text-neutral-700 text-xs hover:text-white transition-colors">Privacy</a><a href="#" class="text-neutral-700 text-xs hover:text-white transition-colors">Terms</a></div>
+        </div>
+    </footer>
+
+    <!-- Scroll Reveal -->
+    <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, i) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => { entry.target.classList.remove("reveal-hidden"); entry.target.classList.add("reveal"); }, i * 60);
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+        document.querySelectorAll(".reveal-hidden").forEach(el => observer.observe(el));
+    });
+    </script>
+</body>
+</html>
+

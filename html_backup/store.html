@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marketplace — Logic Packs</title>
+    <meta name="description" content="Browse and install verified packs for backend, UI, automation, creative, and integrations.">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+    tailwind.config = {
+        theme: { extend: { fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] } } }
+    }
+    </script>
+
+    <style>
+    body { background-color: #0a0a0a; color: #ededed; font-family: 'Inter', system-ui, sans-serif; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #0a0a0a; }
+    ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+    @keyframes fadeInUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+    .reveal { animation: fadeInUp 0.5s cubic-bezier(0.2,0.8,0.2,1) both; }
+    .reveal-hidden { opacity: 0; }
+    .pack-card { transition: all 0.25s cubic-bezier(0.2,0.8,0.2,1); }
+    .pack-card:hover { background: rgba(255,255,255,0.025); transform: translateY(-2px); }
+    </style>
+</head>
+
+<body class="selection:bg-green-500/30 selection:text-white overflow-x-hidden">
+
+    <!-- ═══ HEADER ═══ -->
+    <header class="fixed top-0 left-0 w-full z-50 bg-[#0a0a0a]/80 backdrop-blur-xl border-b border-white/[0.06] h-14">
+        <div class="flex w-full h-full max-w-[1440px] mx-auto px-6 md:px-8 items-center justify-between">
+            <a href="index.html" class="flex items-center gap-2.5 group">
+                <div class="w-7 h-7 rounded-md border border-white/10 flex items-center justify-center bg-white/[0.03] group-hover:border-green-500/40 transition-colors">
+                    <iconify-icon icon="solar:widget-5-linear" class="text-green-500 text-sm"></iconify-icon>
+                </div>
+                <span class="text-sm font-semibold tracking-tight text-white">Logic Packs</span>
+            </a>
+            <nav class="hidden md:flex items-center gap-8">
+                <a href="index.html#modes" class="text-[11px] hover:text-white transition-colors uppercase font-medium text-neutral-400 tracking-[0.15em]">Platform</a>
+                <a href="store.html" class="text-[11px] uppercase font-medium text-white tracking-[0.15em]">Marketplace</a>
+                <a href="shop.html" class="text-[11px] hover:text-white transition-colors uppercase font-medium text-neutral-400 tracking-[0.15em]">Shop</a>
+                <a href="ventures.html" class="text-[11px] hover:text-white transition-colors uppercase font-medium text-neutral-400 tracking-[0.15em]">Ventures</a>
+                <a href="courses.html" class="text-[11px] hover:text-white transition-colors uppercase font-medium text-neutral-400 tracking-[0.15em]">Learn</a>
+                <a href="ambassadors.html" class="text-[11px] hover:text-white transition-colors uppercase font-medium text-neutral-400 tracking-[0.15em]">Ambassadors</a>
+                <a href="index.html#pricing" class="text-[11px] hover:text-white transition-colors uppercase font-medium text-neutral-400 tracking-[0.15em]">Pricing</a>
+            </nav>
+            <a href="#" class="hidden md:flex bg-white text-black text-xs font-semibold tracking-wide uppercase rounded-md px-5 py-2 hover:bg-neutral-200 transition-colors">Get Started</a>
+            <button class="md:hidden text-white" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
+                <iconify-icon icon="solar:hamburger-menu-linear" width="22"></iconify-icon>
+            </button>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden absolute top-full left-0 w-full bg-[#0a0a0a]/95 backdrop-blur-xl border-b border-white/[0.06] p-4 flex flex-col gap-2">
+            <a href="index.html#modes" class="px-4 py-2 text-sm text-neutral-400 hover:text-white hover:bg-white/5 rounded-md">Platform</a>
+            <a href="store.html" class="px-4 py-2 text-sm text-white bg-white/5 rounded-md">Marketplace</a>
+            <a href="shop.html" class="px-4 py-2 text-sm text-neutral-400 hover:text-white hover:bg-white/5 rounded-md">Shop</a>
+            <a href="ventures.html" class="px-4 py-2 text-sm text-neutral-400 hover:text-white hover:bg-white/5 rounded-md">Ventures</a>
+            <a href="courses.html" class="px-4 py-2 text-sm text-neutral-400 hover:text-white hover:bg-white/5 rounded-md">Learn</a>
+            <a href="ambassadors.html" class="px-4 py-2 text-sm text-neutral-400 hover:text-white hover:bg-white/5 rounded-md">Ambassadors</a>
+            <a href="index.html#pricing" class="px-4 py-2 text-sm text-neutral-400 hover:text-white hover:bg-white/5 rounded-md">Pricing</a>
+        </div>
+    </header>
+
+    <!-- ═══ STORE HERO ═══ -->
+    <section class="pt-14">
+        <div class="border-b border-white/[0.06]">
+            <div class="max-w-[1440px] mx-auto px-6 md:px-8 pt-16 md:pt-24 pb-10">
+                <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-10">
+                    <div>
+                        <span class="font-mono text-neutral-600 text-[11px] block mb-3">/// Marketplace</span>
+                        <h1 class="text-4xl md:text-6xl font-semibold text-white tracking-tight mb-3">Pack Store</h1>
+                        <p class="text-neutral-500 text-base leading-relaxed max-w-lg">Browse, preview, and install verified packs. Every pack ships with contracts, tests, scopes, and telemetry.</p>
+                    </div>
+                    <div class="flex items-center gap-3 shrink-0">
+                        <div class="flex items-center gap-2 px-3 py-1.5 rounded-md bg-green-500/10 border border-green-500/20">
+                            <span class="h-1.5 w-1.5 bg-green-500 rounded-full"></span>
+                            <span class="text-green-500 text-xs font-mono">142 packs available</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Search -->
+                <div class="relative max-w-2xl">
+                    <iconify-icon icon="solar:magnifer-linear" class="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-600 text-lg pointer-events-none"></iconify-icon>
+                    <input id="search-input" type="text" placeholder="Search packs by name, type, or keyword..." class="w-full bg-white/[0.03] border border-white/[0.08] rounded-lg pl-11 pr-4 py-3 text-sm text-white placeholder:text-neutral-600 focus:outline-none focus:border-green-500/40 focus:bg-white/[0.04] transition-all">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ FILTERS + GRID ═══ -->
+    <section class="max-w-[1440px] mx-auto px-6 md:px-8 py-8">
+        <!-- Category Filters -->
+        <div class="flex flex-wrap items-center gap-2 mb-8">
+            <button data-filter="all" class="filter-btn active-filter text-xs font-medium px-4 py-2 rounded-md border transition-all">All</button>
+            <button data-filter="logic" class="filter-btn text-xs font-medium px-4 py-2 rounded-md border transition-all">Logic</button>
+            <button data-filter="ui" class="filter-btn text-xs font-medium px-4 py-2 rounded-md border transition-all">UI</button>
+            <button data-filter="automation" class="filter-btn text-xs font-medium px-4 py-2 rounded-md border transition-all">Automation</button>
+            <button data-filter="creative" class="filter-btn text-xs font-medium px-4 py-2 rounded-md border transition-all">Creative</button>
+            <button data-filter="provider" class="filter-btn text-xs font-medium px-4 py-2 rounded-md border transition-all">Provider</button>
+
+            <div class="ml-auto flex items-center gap-3">
+                <select id="sort-select" class="bg-white/[0.03] border border-white/[0.08] rounded-md text-xs text-neutral-400 px-3 py-2 focus:outline-none focus:border-green-500/40 cursor-pointer">
+                    <option value="popular">Popular</option>
+                    <option value="recent">Recently Added</option>
+                    <option value="name">Name A–Z</option>
+                </select>
+            </div>
+        </div>
+
+        <style>
+        .filter-btn { border-color: rgba(255,255,255,0.08); color: #a3a3a3; background: transparent; }
+        .filter-btn:hover { border-color: rgba(255,255,255,0.15); color: #fff; background: rgba(255,255,255,0.03); }
+        .filter-btn.active-filter { border-color: rgba(34,197,94,0.4); color: #22c55e; background: rgba(34,197,94,0.08); }
+        </style>
+
+        <!-- Pack Grid -->
+        <div id="pack-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            <!-- Cards injected by JS -->
+        </div>
+
+        <!-- Empty state -->
+        <div id="empty-state" class="hidden py-20 text-center">
+            <iconify-icon icon="solar:box-minimalistic-linear" class="text-neutral-700 text-4xl mb-4"></iconify-icon>
+            <p class="text-neutral-500 text-sm">No packs match your search.</p>
+        </div>
+    </section>
+
+    <!-- ═══ FEATURED SECTION ═══ -->
+    <section class="border-t border-white/[0.06] mt-8">
+        <div class="max-w-[1440px] mx-auto px-6 md:px-8 py-16">
+            <div class="flex items-end justify-between mb-10">
+                <div>
+                    <span class="font-mono text-neutral-600 text-[11px] block mb-2">/// Featured</span>
+                    <h2 class="text-2xl font-semibold text-white tracking-tight">Staff Picks</h2>
+                </div>
+                <a href="#" class="text-xs text-neutral-500 hover:text-white transition-colors flex items-center gap-1">View all <iconify-icon icon="solar:arrow-right-linear" width="14"></iconify-icon></a>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- Featured 1 -->
+                <a href="pack.html?pack=auth-pack" class="group block bg-white/[0.02] border border-white/[0.06] rounded-xl p-6 hover:border-green-500/30 hover:bg-white/[0.03] transition-all">
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="w-12 h-12 rounded-lg bg-green-500/10 border border-green-500/20 flex items-center justify-center">
+                            <iconify-icon icon="solar:shield-keyhole-linear" class="text-green-500 text-xl"></iconify-icon>
+                        </div>
+                        <div>
+                            <h3 class="text-white text-sm font-medium">Auth Pack</h3>
+                            <span class="text-neutral-600 text-xs">by Logic Packs Team</span>
+                        </div>
+                    </div>
+                    <p class="text-neutral-500 text-sm leading-relaxed mb-5">Complete authentication & authorization with JWT, OAuth, RBAC, session management, and self-healing token refresh.</p>
+                    <div class="flex items-center justify-between pt-4 border-t border-white/[0.04]">
+                        <div class="flex items-center gap-3 text-[10px] font-mono text-neutral-600">
+                            <span class="flex items-center gap-1"><iconify-icon icon="solar:download-minimalistic-linear" width="12"></iconify-icon>12.4k</span>
+                            <span>v3.2.0</span>
+                        </div>
+                        <span class="text-xs text-green-500/80 font-medium group-hover:text-green-400 flex items-center gap-1">View Pack <iconify-icon icon="solar:arrow-right-up-linear" width="14" class="group-hover:translate-x-0.5 transition-transform"></iconify-icon></span>
+                    </div>
+                </a>
+
+                <!-- Featured 2 -->
+                <a href="pack.html?pack=dashboard-ui" class="group block bg-white/[0.02] border border-white/[0.06] rounded-xl p-6 hover:border-green-500/30 hover:bg-white/[0.03] transition-all">
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="w-12 h-12 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center">
+                            <iconify-icon icon="solar:chart-2-linear" class="text-blue-400 text-xl"></iconify-icon>
+                        </div>
+                        <div>
+                            <h3 class="text-white text-sm font-medium">Dashboard UI</h3>
+                            <span class="text-neutral-600 text-xs">by Logic Packs Team</span>
+                        </div>
+                    </div>
+                    <p class="text-neutral-500 text-sm leading-relaxed mb-5">Pre-built admin dashboard with data tables, charts, stat cards, and sidebar navigation. Binds to any Logic Pack.</p>
+                    <div class="flex items-center justify-between pt-4 border-t border-white/[0.04]">
+                        <div class="flex items-center gap-3 text-[10px] font-mono text-neutral-600">
+                            <span class="flex items-center gap-1"><iconify-icon icon="solar:download-minimalistic-linear" width="12"></iconify-icon>8.7k</span>
+                            <span>v2.4.1</span>
+                        </div>
+                        <span class="text-xs text-green-500/80 font-medium group-hover:text-green-400 flex items-center gap-1">View Pack <iconify-icon icon="solar:arrow-right-up-linear" width="14" class="group-hover:translate-x-0.5 transition-transform"></iconify-icon></span>
+                    </div>
+                </a>
+
+                <!-- Featured 3 -->
+                <a href="pack.html?pack=payments-pack" class="group block bg-white/[0.02] border border-white/[0.06] rounded-xl p-6 hover:border-green-500/30 hover:bg-white/[0.03] transition-all">
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="w-12 h-12 rounded-lg bg-purple-500/10 border border-purple-500/20 flex items-center justify-center">
+                            <iconify-icon icon="solar:card-linear" class="text-purple-400 text-xl"></iconify-icon>
+                        </div>
+                        <div>
+                            <h3 class="text-white text-sm font-medium">Payments Pack</h3>
+                            <span class="text-neutral-600 text-xs">by Logic Packs Team</span>
+                        </div>
+                    </div>
+                    <p class="text-neutral-500 text-sm leading-relaxed mb-5">Full Stripe integration with checkout, subscriptions, webhooks, invoice generation, and automatic retry handling.</p>
+                    <div class="flex items-center justify-between pt-4 border-t border-white/[0.04]">
+                        <div class="flex items-center gap-3 text-[10px] font-mono text-neutral-600">
+                            <span class="flex items-center gap-1"><iconify-icon icon="solar:download-minimalistic-linear" width="12"></iconify-icon>6.1k</span>
+                            <span>v2.0.3</span>
+                        </div>
+                        <span class="text-xs text-green-500/80 font-medium group-hover:text-green-400 flex items-center gap-1">View Pack <iconify-icon icon="solar:arrow-right-up-linear" width="14" class="group-hover:translate-x-0.5 transition-transform"></iconify-icon></span>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ CTA BANNER ═══ -->
+    <section class="border-t border-white/[0.06]">
+        <div class="max-w-[1440px] mx-auto px-6 md:px-8 py-16 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div>
+                <h3 class="text-xl text-white font-medium tracking-tight mb-2">Build your own pack?</h3>
+                <p class="text-neutral-500 text-sm max-w-md">Create a pack, add tests and contracts, publish it to the marketplace. Earn credits every time someone installs it.</p>
+            </div>
+            <a href="#" class="inline-flex items-center gap-2 bg-white text-black font-semibold rounded-md px-6 py-3 text-sm hover:bg-neutral-200 transition-colors shrink-0">
+                Publish a Pack
+                <iconify-icon icon="solar:arrow-right-linear" width="16"></iconify-icon>
+            </a>
+        </div>
+    </section>
+
+    <!-- ═══ FOOTER ═══ -->
+    <footer class="border-t border-white/[0.06]">
+        <div class="grid grid-cols-1 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-white/[0.06]">
+            <div class="p-8 md:col-span-1 flex flex-col justify-between min-h-[240px]">
+                <div>
+                    <div class="flex items-center gap-2 mb-4">
+                        <iconify-icon icon="solar:widget-5-linear" class="text-green-500 text-lg"></iconify-icon>
+                        <span class="text-white font-semibold text-sm tracking-tight">Logic Packs</span>
+                    </div>
+                    <p class="text-neutral-500 text-sm leading-relaxed">The operating system for reusable software.</p>
+                </div>
+                <div class="flex gap-3 mt-6">
+                    <a href="#" class="w-8 h-8 rounded-md border border-white/[0.06] flex items-center justify-center hover:bg-white/5 transition-colors"><iconify-icon icon="simple-icons:github" class="text-neutral-500 text-sm"></iconify-icon></a>
+                    <a href="#" class="w-8 h-8 rounded-md border border-white/[0.06] flex items-center justify-center hover:bg-white/5 transition-colors"><iconify-icon icon="simple-icons:discord" class="text-neutral-500 text-sm"></iconify-icon></a>
+                    <a href="#" class="w-8 h-8 rounded-md border border-white/[0.06] flex items-center justify-center hover:bg-white/5 transition-colors"><iconify-icon icon="simple-icons:x" class="text-neutral-500 text-sm"></iconify-icon></a>
+                </div>
+            </div>
+            <div class="p-8 md:col-span-3 grid grid-cols-2 md:grid-cols-4 gap-8">
+                <div>
+                    <h4 class="text-white text-xs font-semibold uppercase tracking-widest mb-5">Platform</h4>
+                    <ul class="space-y-3"><li><a href="index.html#modes" class="text-neutral-500 text-sm hover:text-white transition-colors">UI Mode</a></li><li><a href="index.html#modes" class="text-neutral-500 text-sm hover:text-white transition-colors">Logic Mode</a></li><li><a href="index.html#modes" class="text-neutral-500 text-sm hover:text-white transition-colors">Notebook</a></li><li><a href="index.html#modes" class="text-neutral-500 text-sm hover:text-white transition-colors">Canvas</a></li></ul>
+                </div>
+                <div>
+                    <h4 class="text-white text-xs font-semibold uppercase tracking-widest mb-5">Resources</h4>
+                    <ul class="space-y-3"><li><a href="#" class="text-neutral-500 text-sm hover:text-white transition-colors">Documentation</a></li><li><a href="store.html" class="text-neutral-500 text-sm hover:text-white transition-colors">Marketplace</a></li><li><a href="#" class="text-neutral-500 text-sm hover:text-white transition-colors">API Reference</a></li><li><a href="#" class="text-neutral-500 text-sm hover:text-white transition-colors">Changelog</a></li></ul>
+                </div>
+                <div>
+                    <h4 class="text-white text-xs font-semibold uppercase tracking-widest mb-5">Company</h4>
+                    <ul class="space-y-3"><li><a href="#" class="text-neutral-500 text-sm hover:text-white transition-colors">About</a></li><li><a href="#" class="text-neutral-500 text-sm hover:text-white transition-colors">Blog</a></li><li><a href="#" class="text-neutral-500 text-sm hover:text-white transition-colors">Careers</a></li></ul>
+                </div>
+                <div>
+                    <h4 class="text-white text-xs font-semibold uppercase tracking-widest mb-5">Newsletter</h4>
+                    <form class="flex flex-col gap-3" onsubmit="return false">
+                        <input type="email" placeholder="you@email.com" class="w-full bg-transparent border-b border-white/15 py-2 text-white text-sm focus:outline-none focus:border-green-500 transition-colors placeholder:text-neutral-700">
+                        <button class="self-start text-xs text-neutral-500 uppercase tracking-widest hover:text-white transition-colors">Subscribe</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="border-t border-white/[0.06] px-8 py-5 flex flex-col md:flex-row justify-between items-center gap-3">
+            <span class="text-neutral-700 text-xs">&copy; 2026 Logic Packs. All rights reserved.</span>
+            <div class="flex gap-4"><a href="#" class="text-neutral-700 text-xs hover:text-white transition-colors">Privacy</a><a href="#" class="text-neutral-700 text-xs hover:text-white transition-colors">Terms</a></div>
+        </div>
+    </footer>
+
+    <!-- ═══ PACK DATA + RENDERING ═══ -->
+    <script>
+    const PACKS = [
+        { slug:"auth-pack", name:"Auth Pack", type:"logic", desc:"Complete authentication & authorization — JWT, OAuth, RBAC, session management, and self-healing token refresh.", author:"Logic Packs Team", installs:"12.4k", version:"v3.2.0", icon:"solar:shield-keyhole-linear", iconColor:"text-green-500", bgColor:"bg-green-500/10", borderColor:"border-green-500/20", verified:true, featured:true },
+        { slug:"payments-pack", name:"Payments Pack", type:"logic", desc:"Full Stripe integration — checkout, subscriptions, webhooks, invoicing, and automatic retry handling.", author:"Logic Packs Team", installs:"6.1k", version:"v2.0.3", icon:"solar:card-linear", iconColor:"text-purple-400", bgColor:"bg-purple-500/10", borderColor:"border-purple-500/20", verified:true, featured:true },
+        { slug:"email-service", name:"Email Service", type:"logic", desc:"Transactional email with templates, SMTP & API providers, delivery tracking, and bounce handling.", author:"Logic Packs Team", installs:"5.3k", version:"v1.8.0", icon:"solar:letter-linear", iconColor:"text-yellow-400", bgColor:"bg-yellow-500/10", borderColor:"border-yellow-500/20", verified:true },
+        { slug:"crud-generator", name:"REST API Scaffold", type:"logic", desc:"Auto-generate CRUD endpoints from models. Includes pagination, filtering, validation, and OpenAPI docs.", author:"Community", installs:"4.8k", version:"v2.1.0", icon:"solar:server-linear", iconColor:"text-emerald-400", bgColor:"bg-emerald-500/10", borderColor:"border-emerald-500/20", verified:true },
+        { slug:"social-auth", name:"Social Auth", type:"logic", desc:"OAuth connectors for Google, GitHub, Twitter, Apple, and Microsoft. Plug into any Auth Pack instance.", author:"Community", installs:"3.9k", version:"v1.4.2", icon:"solar:users-group-rounded-linear", iconColor:"text-sky-400", bgColor:"bg-sky-500/10", borderColor:"border-sky-500/20", verified:false },
+        { slug:"dashboard-ui", name:"Dashboard UI", type:"ui", desc:"Pre-built admin dashboard — data tables, charts, stat cards, sidebar navigation. Binds to any Logic Pack.", author:"Logic Packs Team", installs:"8.7k", version:"v2.4.1", icon:"solar:chart-2-linear", iconColor:"text-blue-400", bgColor:"bg-blue-500/10", borderColor:"border-blue-500/20", verified:true, featured:true },
+        { slug:"form-builder", name:"Form Builder", type:"ui", desc:"Dynamic form generation from JSON schema. Validation, multi-step flows, file uploads, and conditional fields.", author:"Logic Packs Team", installs:"5.1k", version:"v1.6.0", icon:"solar:clipboard-list-linear", iconColor:"text-indigo-400", bgColor:"bg-indigo-500/10", borderColor:"border-indigo-500/20", verified:true },
+        { slug:"landing-kit", name:"Landing Page Kit", type:"ui", desc:"Marketing page components — hero sections, feature grids, pricing tables, testimonials, and CTA blocks.", author:"Community", installs:"3.2k", version:"v1.2.0", icon:"solar:window-frame-linear", iconColor:"text-pink-400", bgColor:"bg-pink-500/10", borderColor:"border-pink-500/20", verified:false },
+        { slug:"data-table", name:"Data Table Pro", type:"ui", desc:"Advanced data table with sorting, filtering, pagination, row selection, inline editing, and CSV export.", author:"Community", installs:"2.8k", version:"v1.1.3", icon:"solar:list-bold-linear", iconColor:"text-cyan-400", bgColor:"bg-cyan-500/10", borderColor:"border-cyan-500/20", verified:true },
+        { slug:"web-scraper", name:"Web Scraper", type:"automation", desc:"Puppeteer-based web scraping with retries, proxy rotation, rate limiting, and structured data extraction.", author:"Logic Packs Team", installs:"4.2k", version:"v1.5.0", icon:"solar:spider-linear", iconColor:"text-orange-400", bgColor:"bg-orange-500/10", borderColor:"border-orange-500/20", verified:true },
+        { slug:"pdf-generator", name:"PDF Generator", type:"automation", desc:"Create, merge, and manipulate PDFs — from HTML templates, markdown, or data. Supports headers, footers, watermarks.", author:"Community", installs:"2.4k", version:"v1.3.1", icon:"solar:document-text-linear", iconColor:"text-red-400", bgColor:"bg-red-500/10", borderColor:"border-red-500/20", verified:true },
+        { slug:"scheduler", name:"Task Scheduler", type:"automation", desc:"Cron-based task scheduling with retry logic, dead letter queues, execution logs, and webhook notifications.", author:"Community", installs:"1.9k", version:"v1.0.4", icon:"solar:clock-circle-linear", iconColor:"text-amber-400", bgColor:"bg-amber-500/10", borderColor:"border-amber-500/20", verified:false },
+        { slug:"image-gen", name:"Image Generator", type:"creative", desc:"Multi-model image generation — DALL·E, Stable Diffusion, Midjourney API. Batch processing and style presets.", author:"Logic Packs Team", installs:"3.6k", version:"v1.2.0", icon:"solar:gallery-wide-linear", iconColor:"text-fuchsia-400", bgColor:"bg-fuchsia-500/10", borderColor:"border-fuchsia-500/20", verified:true },
+        { slug:"html-prototyper", name:"HTML Prototyper", type:"creative", desc:"Rapid HTML/CSS prototyping with live preview, Tailwind support, and one-click export to UI Pack components.", author:"Logic Packs Team", installs:"2.1k", version:"v1.0.2", icon:"solar:code-linear", iconColor:"text-lime-400", bgColor:"bg-lime-500/10", borderColor:"border-lime-500/20", verified:true },
+        { slug:"postgres-connector", name:"Postgres Connector", type:"provider", desc:"PostgreSQL integration with connection pooling, migrations, query builder, and automatic schema sync.", author:"Logic Packs Team", installs:"7.2k", version:"v2.3.0", icon:"solar:database-linear", iconColor:"text-blue-400", bgColor:"bg-blue-500/10", borderColor:"border-blue-500/20", verified:true },
+        { slug:"redis-connector", name:"Redis Connector", type:"provider", desc:"Redis integration — caching, pub/sub, rate limiting, session store. Supports Cluster and Sentinel modes.", author:"Community", installs:"3.4k", version:"v1.1.0", icon:"solar:bolt-circle-linear", iconColor:"text-red-400", bgColor:"bg-red-500/10", borderColor:"border-red-500/20", verified:true },
+        { slug:"s3-connector", name:"S3 Storage", type:"provider", desc:"AWS S3 / compatible object storage — upload, download, presigned URLs, multipart uploads, and CDN integration.", author:"Community", installs:"2.6k", version:"v1.2.1", icon:"solar:cloud-storage-linear", iconColor:"text-orange-400", bgColor:"bg-orange-500/10", borderColor:"border-orange-500/20", verified:false },
+        { slug:"openai-connector", name:"OpenAI Connector", type:"provider", desc:"OpenAI API integration — chat completions, embeddings, function calling, streaming, and token counting.", author:"Logic Packs Team", installs:"5.8k", version:"v2.0.1", icon:"solar:star-linear", iconColor:"text-emerald-400", bgColor:"bg-emerald-500/10", borderColor:"border-emerald-500/20", verified:true },
+    ];
+
+    const TYPE_LABELS = { logic:"Logic", ui:"UI", automation:"Automation", creative:"Creative", provider:"Provider" };
+    const TYPE_COLORS = { logic:"bg-green-500/15 text-green-400 border-green-500/20", ui:"bg-blue-500/15 text-blue-400 border-blue-500/20", automation:"bg-orange-500/15 text-orange-400 border-orange-500/20", creative:"bg-fuchsia-500/15 text-fuchsia-400 border-fuchsia-500/20", provider:"bg-sky-500/15 text-sky-400 border-sky-500/20" };
+
+    function renderCard(p) {
+        const tc = TYPE_COLORS[p.type] || "";
+        return `<a href="pack.html?pack=${p.slug}" class="pack-card block border border-white/[0.06] rounded-xl p-5 relative" data-type="${p.type}" data-name="${p.name.toLowerCase()}" data-installs="${parseInt(p.installs.replace(/[^0-9]/g,''))}">
+            ${p.verified ? '<div class="absolute top-3 right-3"><iconify-icon icon="solar:verified-check-bold" class="text-green-500 text-sm" title="Verified"></iconify-icon></div>' : ''}
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 rounded-lg ${p.bgColor} ${p.borderColor} border flex items-center justify-center shrink-0">
+                    <iconify-icon icon="${p.icon}" class="${p.iconColor} text-lg"></iconify-icon>
+                </div>
+                <div class="min-w-0">
+                    <h3 class="text-white text-sm font-medium truncate">${p.name}</h3>
+                    <span class="text-neutral-600 text-xs">${p.author}</span>
+                </div>
+            </div>
+            <p class="text-neutral-500 text-xs leading-relaxed mb-4 line-clamp-2" style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${p.desc}</p>
+            <div class="flex items-center justify-between pt-3 border-t border-white/[0.04]">
+                <div class="flex items-center gap-3">
+                    <span class="inline-flex px-2 py-0.5 rounded text-[10px] font-medium border ${tc}">${TYPE_LABELS[p.type]}</span>
+                    <span class="text-[10px] font-mono text-neutral-700">${p.version}</span>
+                </div>
+                <span class="text-[10px] font-mono text-neutral-600 flex items-center gap-1"><iconify-icon icon="solar:download-minimalistic-linear" width="11"></iconify-icon>${p.installs}</span>
+            </div>
+        </a>`;
+    }
+
+    // Initial render
+    const grid = document.getElementById('pack-grid');
+    const empty = document.getElementById('empty-state');
+    let activeFilter = 'all';
+
+    function renderAll() {
+        const q = document.getElementById('search-input').value.toLowerCase().trim();
+        const filtered = PACKS.filter(p => {
+            const matchType = activeFilter === 'all' || p.type === activeFilter;
+            const matchSearch = !q || p.name.toLowerCase().includes(q) || p.type.includes(q) || p.desc.toLowerCase().includes(q);
+            return matchType && matchSearch;
+        });
+
+        const sortVal = document.getElementById('sort-select').value;
+        if (sortVal === 'name') filtered.sort((a,b) => a.name.localeCompare(b.name));
+        else if (sortVal === 'recent') filtered.reverse();
+        // 'popular' is default order (by installs desc already)
+
+        grid.innerHTML = filtered.map(renderCard).join('');
+        empty.classList.toggle('hidden', filtered.length > 0);
+    }
+
+    renderAll();
+
+    // Filters
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active-filter'));
+            btn.classList.add('active-filter');
+            activeFilter = btn.dataset.filter;
+            renderAll();
+        });
+    });
+
+    // Search
+    document.getElementById('search-input').addEventListener('input', renderAll);
+    document.getElementById('sort-select').addEventListener('change', renderAll);
+    </script>
+
+    <!-- Scroll Reveal -->
+    <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, i) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => { entry.target.classList.remove("reveal-hidden"); entry.target.classList.add("reveal"); }, i * 60);
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+        document.querySelectorAll(".reveal-hidden").forEach(el => observer.observe(el));
+    });
+    </script>
+</body>
+</html>
+
