@@ -1,0 +1,176 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Base ── */
+body {
+  background-color: #0a0a0a;
+  color: #ededed;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+::selection {
+  background: rgba(34,197,94,0.3);
+  color: #fff;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #0a0a0a; }
+::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+
+/* ── Scroll Reveal ── */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.reveal { animation: fadeInUp 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+.reveal-hidden { opacity: 0; }
+
+/* ── Marquee ── */
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.animate-marquee { animation: marquee 45s linear infinite; }
+.animate-marquee:hover { animation-play-state: paused; }
+
+/* ── Glitch (subtle) ── */
+.glitch-target { will-change: transform; backface-visibility: hidden; }
+.glitch-active { animation: glitch 0.2s ease both; }
+@keyframes glitch {
+  0% { transform: translate(0); }
+  25% { transform: translate(-1px, 1px); }
+  50% { transform: translate(1px, -1px); }
+  100% { transform: translate(0); }
+}
+
+/* ── Wireframe animation ── */
+@keyframes wireframe-loop {
+  0% { opacity: 0; transform: translateY(8px) scale(0.98); }
+  10%, 80% { opacity: 1; transform: translateY(0) scale(1); }
+  90%, 100% { opacity: 0; transform: translateY(-4px) scale(0.98); }
+}
+.animate-wireframe {
+  opacity: 0;
+  animation: wireframe-loop 6s cubic-bezier(0.4, 0, 0.2, 1) infinite both;
+}
+
+/* ── Typing animation ── */
+.typing-line {
+  overflow: hidden; white-space: nowrap; width: 0;
+  border-right: 2px solid transparent; will-change: width;
+}
+@keyframes type1 {
+  0% { width: 0; border-color: #22c55e; } 12% { width: 100%; border-color: transparent; }
+  90% { width: 100%; } 100% { width: 0; }
+}
+@keyframes type2 {
+  0%,15% { width: 0; border-color: #22c55e; } 27% { width: 100%; border-color: transparent; }
+  90% { width: 100%; } 100% { width: 0; }
+}
+@keyframes type3 {
+  0%,30% { width: 0; border-color: #22c55e; } 42% { width: 100%; border-color: transparent; }
+  90% { width: 100%; } 100% { width: 0; }
+}
+@keyframes type4 {
+  0%,45% { width: 0; border-color: #22c55e; } 55% { width: 100%; border-color: transparent; }
+  90% { width: 100%; } 100% { width: 0; }
+}
+@keyframes type5 {
+  0%,58% { width: 0; border-color: #22c55e; } 68% { width: 100%; border-color: transparent; }
+  90% { width: 100%; } 100% { width: 0; }
+}
+.line-1 { animation: type1 8s infinite; }
+.line-2 { animation: type2 8s infinite; }
+.line-3 { animation: type3 8s infinite; }
+.line-4 { animation: type4 8s infinite; }
+.line-5 { animation: type5 8s infinite; }
+
+/* ── Cube animation ── */
+@keyframes cube-left {
+  0%,100% { opacity:0; transform:translate(-12px,0) scale(0.98); }
+  15% { opacity:1; transform:translate(0,0) scale(1); }
+  60% { opacity:1; transform:translate(0,0) scale(1); }
+  75% { opacity:0; transform:translate(-12px,0) scale(0.98); }
+}
+@keyframes cube-right {
+  0%,100% { opacity:0; transform:translate(12px,0) scale(0.98); }
+  15% { opacity:1; transform:translate(0,0) scale(1); }
+  60% { opacity:1; transform:translate(0,0) scale(1); }
+  75% { opacity:0; transform:translate(12px,0) scale(0.98); }
+}
+@keyframes cube-bottom {
+  0%,100% { opacity:0; transform:translate(0,12px) scale(0.98); }
+  15% { opacity:1; transform:translate(0,0) scale(1); }
+  60% { opacity:1; transform:translate(0,0) scale(1); }
+  75% { opacity:0; transform:translate(0,12px) scale(0.98); }
+}
+.anim-cube-l { animation: cube-left 4s cubic-bezier(0.22,1,0.36,1) infinite; }
+.anim-cube-r { animation: cube-right 4s cubic-bezier(0.22,1,0.36,1) infinite; animation-delay:160ms; }
+.anim-cube-b { animation: cube-bottom 4s cubic-bezier(0.22,1,0.36,1) infinite; animation-delay:320ms; }
+
+/* ── Bar chart animation ── */
+@keyframes barReveal {
+  0% { transform: scaleY(0); opacity: 0; }
+  15% { transform: scaleY(1); opacity: 1; }
+  85% { transform: scaleY(1); opacity: 1; }
+  100% { transform: scaleY(0); opacity: 0; }
+}
+.animate-bar { animation: barReveal 6s cubic-bezier(0.22,1,0.36,1) infinite; transform-origin: bottom; }
+
+/* ── Terminal cursor blink ── */
+@keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0; } }
+.cursor-blink { animation: blink 1s step-end infinite; }
+
+/* ── Shimmer loader ── */
+@keyframes shimmer { 100% { transform: translateX(100%); } }
+
+/* ── Pack cards ── */
+.pack-card { transition: all 0.25s cubic-bezier(0.2,0.8,0.2,1); }
+.pack-card:hover { background: rgba(255,255,255,0.025); transform: translateY(-2px); }
+
+/* ── Filter buttons ── */
+.filter-btn { border-color: rgba(255,255,255,0.08); color: #a3a3a3; background: transparent; }
+.filter-btn:hover { border-color: rgba(255,255,255,0.15); color: #fff; background: rgba(255,255,255,0.03); }
+.filter-btn.active-filter { border-color: rgba(34,197,94,0.4); color: #22c55e; background: rgba(34,197,94,0.08); }
+
+/* ── FAQ ── */
+.faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.3s ease, padding 0.3s ease; padding: 0; }
+.faq-item.open .faq-answer { max-height: 200px; padding-bottom: 20px; }
+.faq-item.open .faq-chevron { transform: rotate(180deg); }
+.faq-chevron { transition: transform 0.3s ease; }
+
+/* ── Terminal ── */
+.terminal {
+  background: #111;
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 12px;
+  overflow: hidden;
+  font-family: 'JetBrains Mono', monospace;
+}
+.terminal-bar {
+  background: #1a1a1a;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.terminal-dot { width: 10px; height: 10px; border-radius: 50%; }
+.terminal-body { padding: 20px 24px; overflow-x: auto; }
+.terminal-body code { font-size: 13px; line-height: 1.8; }
+.t-prompt { color: #22c55e; }
+.t-cmd { color: #e5e5e5; }
+.t-flag { color: #60a5fa; }
+.t-arg { color: #fbbf24; }
+.t-comment { color: #525252; }
+.t-output { color: #737373; }
+.t-success { color: #22c55e; }
+.t-dim { color: #404040; }
+
+/* ── Copy button ── */
+.copy-btn { transition: all 0.2s; }
+.copy-btn:hover { background: rgba(255,255,255,0.08); }
+.copy-btn.copied { color: #22c55e; }
+
