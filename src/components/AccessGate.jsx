@@ -255,6 +255,23 @@ export default function AccessGate({ children }) {
             </span>
           </div>
         </div>
+
+        {/* DM for access link */}
+        <div
+          className="mt-8 opacity-0 translate-y-4"
+          style={{ animation: 'accessFadeIn 0.8s 0.8s cubic-bezier(0.2,0.8,0.2,1) forwards' }}
+        >
+          <a
+            href="https://www.linkedin.com/in/waleed-ajmal/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-white/[0.08] bg-white/[0.02] text-neutral-400 hover:text-white hover:border-white/15 hover:bg-white/[0.04] transition-all group"
+          >
+            <Icon icon="simple-icons:linkedin" className="text-sm group-hover:text-[#0077b5] transition-colors" />
+            <span className="text-xs font-medium">DM for access</span>
+            <Icon icon="solar:arrow-right-up-linear" className="text-[10px] opacity-60 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+          </a>
+        </div>
       </div>
 
       {/* Inline styles for animations */}
