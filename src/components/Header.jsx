@@ -9,6 +9,7 @@ const NAV_LINKS = [
   { to: '/ventures', label: 'Ventures' },
   { to: '/courses', label: 'Learn' },
   { to: '/ambassadors', label: 'Ambassadors' },
+  { to: '/payments', label: 'Payments' },
   { to: '/cli', label: 'CLI' },
   { to: '/#pricing', label: 'Pricing' },
 ];

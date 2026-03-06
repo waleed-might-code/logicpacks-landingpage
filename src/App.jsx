@@ -15,6 +15,7 @@ import Ambassadors from './pages/Ambassadors';
 import Courses from './pages/Courses';
 import BetaAccess from './pages/BetaAccess';
 import AmbassadorApply from './pages/AmbassadorApply';
+import Payments from './pages/Payments';
 
 export default function App() {
   return (
@@ -35,6 +36,7 @@ export default function App() {
             <Route path="/courses" element={<Courses />} />
             <Route path="/beta" element={<BetaAccess />} />
             <Route path="/ambassador-apply" element={<AmbassadorApply />} />
+            <Route path="/payments" element={<Payments />} />
           </Route>
         </Routes>
       </BetaProvider>
