@@ -20,6 +20,7 @@ const Courses = lazy(() => import('./pages/Courses'));
 const BetaAccess = lazy(() => import('./pages/BetaAccess'));
 const AmbassadorApply = lazy(() => import('./pages/AmbassadorApply'));
 const Payments = lazy(() => import('./pages/Payments'));
+const NotFound = lazy(() => import('./pages/NotFound'));
 
 function RouteFallback() {
   return (
@@ -50,6 +51,7 @@ export default function App() {
               <Route path="/beta" element={<BetaAccess />} />
               <Route path="/ambassador-apply" element={<AmbassadorApply />} />
               <Route path="/payments" element={<Payments />} />
+              <Route path="*" element={<NotFound />} />
             </Route>
           </Routes>
         </Suspense>
