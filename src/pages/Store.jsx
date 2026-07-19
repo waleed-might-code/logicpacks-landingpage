@@ -1,8 +1,10 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Icon } from '@iconify/react';
 import { PACKS, TYPE_LABELS, TYPE_COLORS } from '../data/packs';
+import { filterPacks, featuredPacks } from '../lib/catalog';
 import ScrollReveal from '../components/ScrollReveal';
+import PackCardSkeleton from '../components/PackCardSkeleton';
 import { useBeta } from '../components/BetaModal';
 
 const CATEGORIES = ['all', 'logic', 'ui', 'automation', 'creative', 'provider'];
@@ -10,17 +12,20 @@ const CATEGORIES = ['all', 'logic', 'ui', 'automation', 'creative', 'provider'];
 export default function Store() {
   const [activeFilter, setActiveFilter] = useState('all');
   const [search, setSearch] = useState('');
+  const [loading, setLoading] = useState(true);
   const { openBetaModal } = useBeta();
 
+  // Brief settle so the shimmer skeleton reads as a real loading state.
+  useEffect(() => {
+    const t = setTimeout(() => setLoading(false), 620);
+    return () => clearTimeout(t);
+  }, []);
+
   const filtered = useMemo(() => {
-    return PACKS.filter(p => {
-      const matchesType = activeFilter === 'all' || p.type === activeFilter;
-      const matchesSearch = !search || p.name.toLowerCase().includes(search.toLowerCase()) || p.desc.toLowerCase().includes(search.toLowerCase());
-      return matchesType && matchesSearch;
-    });
+    return filterPacks(PACKS, { type: activeFilter, search });
   }, [activeFilter, search]);
 
-  const featured = PACKS.filter(p => p.featured);
+  const featured = featuredPacks(PACKS);
 
   return (
     <>
@@ -58,11 +63,24 @@ export default function Store() {
       {/* Pack Grid */}
       <section className="border-b border-white/[0.06]">
         <div className="max-w-[1440px] mx-auto px-6 md:px-8 py-12">
+          {!loading && filtered.length > 0 && (
+            <div className="flex items-center justify-between mb-6">
+              <span className="text-neutral-500 text-xs font-mono">
+                {filtered.length} pack{filtered.length === 1 ? '' : 's'}
+                {activeFilter !== 'all' && <span className="text-neutral-700"> · {TYPE_LABELS[activeFilter]}</span>}
+              </span>
+            </div>
+          )}
+          {loading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {Array.from({ length: 6 }).map((_, i) => <PackCardSkeleton key={i} />)}
+            </div>
+          ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {filtered.map(pack => (
               <ScrollReveal key={pack.slug}>
                 <Link to={`/pack/${pack.slug}`} className="block group">
-                  <div className="p-5 rounded-xl border border-white/[0.06] bg-[#0f0f0f] hover:bg-[#131313] hover:border-white/10 transition-all h-full">
+                  <div className="lp-spotlight p-5 rounded-xl border border-white/[0.06] bg-[#0f0f0f] hover:bg-[#131313] hover:border-white/10 hover:-translate-y-0.5 transition-all duration-300 h-full">
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex items-center gap-3">
                         <div className={`w-9 h-9 rounded-lg ${pack.bgColor} border ${pack.borderColor} flex items-center justify-center`}>
@@ -93,10 +111,22 @@ export default function Store() {
               </ScrollReveal>
             ))}
           </div>
-          {filtered.length === 0 && (
-            <div className="text-center py-20">
-              <Icon icon="solar:box-minimalistic-linear" className="text-neutral-700 text-4xl mx-auto mb-4" />
-              <p className="text-neutral-600 text-sm">No packs found matching your criteria.</p>
+          )}
+          {!loading && filtered.length === 0 && (
+            <div className="text-center py-24 flex flex-col items-center lp-fade-in">
+              <div className="w-16 h-16 rounded-2xl bg-white/[0.03] border border-white/[0.06] flex items-center justify-center mb-5">
+                <Icon icon="solar:box-minimalistic-linear" className="text-neutral-600 text-2xl" />
+              </div>
+              <h3 className="text-white text-base font-medium mb-1.5">No packs found</h3>
+              <p className="text-neutral-600 text-sm max-w-xs mb-6">
+                Nothing matches {search ? <span className="text-neutral-400">&ldquo;{search}&rdquo;</span> : 'that filter'} yet. Try a different search or category.
+              </p>
+              <button
+                onClick={() => { setSearch(''); setActiveFilter('all'); }}
+                className="lp-btn inline-flex items-center gap-2 border border-white/10 text-neutral-300 px-4 py-2 rounded-md text-xs font-medium hover:bg-white/5 hover:border-white/20 transition-all"
+              >
+                <Icon icon="solar:restart-linear" width={13} /> Clear filters
+              </button>
             </div>
           )}
         </div>
@@ -111,7 +141,7 @@ export default function Store() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {featured.map(pack => (
                 <ScrollReveal key={pack.slug}>
-                  <Link to={`/pack/${pack.slug}`} className="group block p-6 rounded-xl border border-green-500/10 bg-green-500/[0.02] hover:bg-green-500/[0.04] hover:border-green-500/20 transition-all">
+                  <Link to={`/pack/${pack.slug}`} className="lp-spotlight group block p-6 rounded-xl border border-green-500/10 bg-green-500/[0.02] hover:bg-green-500/[0.04] hover:border-green-500/20 hover:-translate-y-0.5 transition-all duration-300">
                     <div className="flex items-center gap-3 mb-3">
                       <div className={`w-10 h-10 rounded-lg ${pack.bgColor} border ${pack.borderColor} flex items-center justify-center`}>
                         <Icon icon={pack.icon} className={`${pack.iconColor} text-lg`} />
@@ -140,8 +170,8 @@ export default function Store() {
           <ScrollReveal><p className="text-neutral-500 text-base mb-8">Create reusable packs and publish them to the marketplace. Help the community build faster.</p></ScrollReveal>
           <ScrollReveal>
             <div className="flex gap-3 justify-center">
-              <button onClick={openBetaModal} className="bg-white text-black font-semibold rounded-md px-7 py-3 text-sm hover:bg-neutral-200 transition-colors">Publish a Pack</button>
-              <button onClick={openBetaModal} className="border border-white/10 text-neutral-300 font-medium rounded-md px-7 py-3 text-sm hover:bg-white/5 transition-colors">Read the Docs</button>
+              <button onClick={openBetaModal} className="lp-btn bg-white text-black font-semibold rounded-md px-7 py-3 text-sm hover:bg-neutral-200 transition-colors">Publish a Pack</button>
+              <button onClick={openBetaModal} className="lp-btn border border-white/10 text-neutral-300 font-medium rounded-md px-7 py-3 text-sm hover:bg-white/5 transition-colors">Read the Docs</button>
             </div>
           </ScrollReveal>
         </div>

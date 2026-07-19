@@ -1,0 +1,118 @@
+/* ══════════════════════════════════════════════════════════════════
+   UI polish layer — micro-interactions, depth, loading & hover states.
+   Additive only; scoped by dedicated class names to avoid collisions.
+   ══════════════════════════════════════════════════════════════════ */
+
+/* ── Smoother base rendering ── */
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .lp-anim, .lp-anim * { animation: none !important; transition: none !important; }
+}
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* ── Refined scrollbar (upgrade over the 6px default) ── */
+::-webkit-scrollbar { width: 9px; height: 9px; }
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #2a2a2a, #1c1c1c);
+  border: 2px solid #0a0a0a;
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, #3a3a3a, #262626); }
+
+/* ── Scroll reading-progress bar ── */
+.lp-progress {
+  position: fixed; top: 0; left: 0; height: 2px; width: 100%;
+  transform: scaleX(var(--lp-scroll, 0)); transform-origin: 0 50%;
+  background: linear-gradient(90deg, #16a34a, #22c55e 45%, #86efac);
+  box-shadow: 0 0 12px rgba(34, 197, 94, 0.6);
+  z-index: 60; pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+/* ── Back-to-top orbit button ── */
+.lp-totop {
+  position: fixed; right: 24px; bottom: 24px; z-index: 55;
+  width: 44px; height: 44px; border-radius: 50%;
+  display: grid; place-items: center;
+  background: rgba(20, 20, 20, 0.85); backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #d4d4d4; cursor: pointer;
+  opacity: 0; transform: translateY(14px) scale(0.9); pointer-events: none;
+  transition: opacity 0.35s cubic-bezier(0.2, 0.8, 0.2, 1),
+              transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1),
+              border-color 0.25s ease, color 0.25s ease;
+}
+.lp-totop.is-visible { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
+.lp-totop:hover { color: #22c55e; border-color: rgba(34, 197, 94, 0.4); }
+.lp-totop:hover .lp-totop-arrow { transform: translateY(-2px); }
+.lp-totop-arrow { transition: transform 0.25s ease; }
+.lp-totop svg.lp-ring { position: absolute; inset: -1px; transform: rotate(-90deg); pointer-events: none; }
+.lp-totop .lp-ring-track { stroke: rgba(255, 255, 255, 0.06); }
+.lp-totop .lp-ring-fill {
+  stroke: #22c55e;
+  stroke-dasharray: var(--lp-circ);
+  stroke-dashoffset: calc(var(--lp-circ) * (1 - var(--lp-scroll, 0)));
+  transition: stroke-dashoffset 0.1s linear;
+  filter: drop-shadow(0 0 4px rgba(34, 197, 94, 0.5));
+}
+
+/* ── Ambient grain + vignette for filmic depth ── */
+.lp-grain {
+  position: fixed; inset: 0; z-index: 1; pointer-events: none;
+  mix-blend-mode: overlay; opacity: 0.4;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.lp-vignette {
+  position: fixed; inset: 0; z-index: 1; pointer-events: none;
+  background: radial-gradient(ellipse at 50% 40%, transparent 55%, rgba(0, 0, 0, 0.35) 100%);
+}
+
+/* ── Spotlight-follow hover for cards (opt-in via .lp-spotlight) ── */
+.lp-spotlight { position: relative; isolation: isolate; }
+.lp-spotlight::before {
+  content: ''; position: absolute; inset: 0; border-radius: inherit; z-index: -1;
+  opacity: 0; transition: opacity 0.3s ease;
+  background: radial-gradient(
+    240px circle at var(--lp-mx, 50%) var(--lp-my, 50%),
+    rgba(34, 197, 94, 0.12), transparent 70%
+  );
+}
+.lp-spotlight:hover::before { opacity: 1; }
+
+/* ── Premium button micro-interaction (opt-in via .lp-btn) ── */
+.lp-btn { position: relative; overflow: hidden; transition: transform 0.18s ease, box-shadow 0.25s ease; }
+.lp-btn:hover { transform: translateY(-1px); }
+.lp-btn:active { transform: translateY(0) scale(0.985); }
+.lp-btn::after {
+  content: ''; position: absolute; top: 0; left: -140%; width: 60%; height: 100%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+  transform: skewX(-18deg); transition: left 0.6s ease; pointer-events: none;
+}
+.lp-btn:hover::after { left: 140%; }
+
+/* ── Shimmer skeleton for loading states ── */
+.lp-skel {
+  position: relative; overflow: hidden;
+  background: rgba(255, 255, 255, 0.035); border-radius: 8px;
+}
+.lp-skel::after {
+  content: ''; position: absolute; inset: 0; transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.06), transparent);
+  animation: lp-shimmer 1.4s infinite;
+}
+@keyframes lp-shimmer { 100% { transform: translateX(100%); } }
+
+/* ── Focus-visible ring (accessibility polish) ── */
+a:focus-visible, button:focus-visible, input:focus-visible {
+  outline: 2px solid rgba(34, 197, 94, 0.6);
+  outline-offset: 2px; border-radius: 6px;
+}
+
+/* ── Entrance for mounted overlays ── */
+@keyframes lp-fade-in { from { opacity: 0; } to { opacity: 1; } }
+.lp-fade-in { animation: lp-fade-in 0.6s ease both; }
