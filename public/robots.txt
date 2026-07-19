@@ -1,0 +1,9 @@
+# Logic Packs — https://logicpacks.io
+User-agent: *
+Allow: /
+
+# Keep gated/utility routes out of the index
+Disallow: /beta
+Disallow: /ambassador-apply
+
+Sitemap: https://logicpacks.io/sitemap.xml
