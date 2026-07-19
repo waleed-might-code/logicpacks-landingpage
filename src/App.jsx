@@ -9,6 +9,7 @@ import AccessGate from './components/AccessGate';
 const HomeRouter = lazy(() => import('./pages/HomeRouter'));
 const CLI = lazy(() => import('./pages/CLI'));
 const Store = lazy(() => import('./pages/Store'));
+const StackBuilder = lazy(() => import('./pages/StackBuilder'));
 const PackDetail = lazy(() => import('./pages/PackDetail'));
 const Shop = lazy(() => import('./pages/Shop'));
 const ProductDetail = lazy(() => import('./pages/ProductDetail'));
@@ -40,6 +41,7 @@ export default function App() {
               <Route path="/" element={<HomeRouter />} />
               <Route path="/cli" element={<CLI />} />
               <Route path="/store" element={<Store />} />
+              <Route path="/stack" element={<StackBuilder />} />
               <Route path="/pack/:slug" element={<PackDetail />} />
               <Route path="/shop" element={<Shop />} />
               <Route path="/product/:slug" element={<ProductDetail />} />
