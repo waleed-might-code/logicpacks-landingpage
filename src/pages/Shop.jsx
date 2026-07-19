@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Icon } from '@iconify/react';
 import { PRODUCTS, PRODUCT_CATEGORIES } from '../data/products';
+import { filterProducts } from '../lib/catalog';
 import ScrollReveal from '../components/ScrollReveal';
 import { useBeta } from '../components/BetaModal';
 
@@ -10,8 +11,7 @@ export default function Shop() {
   const { openBetaModal } = useBeta();
 
   const filtered = useMemo(() => {
-    if (activeCategory === 'all') return PRODUCTS;
-    return PRODUCTS.filter(p => p.category === activeCategory);
+    return filterProducts(PRODUCTS, activeCategory);
   }, [activeCategory]);
 
   return (
