@@ -1,20 +1,44 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
 import gsap from 'gsap';
+import useReducedMotion from '../hooks/useReducedMotion';
+
+// Lightweight, dependency-free stand-in shown when WebGL is unavailable or the
+// visitor prefers reduced motion. Keeps the hero composition intact without the
+// GPU-heavy particle simulation.
+function StaticOrb({ centered }) {
+  return (
+    <div
+      aria-hidden="true"
+      className={`w-full h-full flex items-center ${centered ? 'justify-center' : 'justify-center md:justify-end md:pr-[8%]'}`}
+    >
+      <div className="relative w-[min(60vw,340px)] aspect-square">
+        <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle_at_35%_30%,rgba(34,197,94,0.35),rgba(10,10,10,0)_60%)]" />
+        <div className="absolute inset-[12%] rounded-full border border-green-500/20 bg-[radial-gradient(circle_at_40%_35%,rgba(134,239,172,0.18),rgba(5,5,5,0.9)_65%)] shadow-[0_0_120px_rgba(34,197,94,0.15)]" />
+        <div className="absolute inset-[28%] rounded-full border border-white/[0.06]" />
+      </div>
+    </div>
+  );
+}
 
 export default function HeroScene({ centered = false }) {
   const canvasRef = useRef(null);
   const sceneRef = useRef(null);
+  const reducedMotion = useReducedMotion();
+  const [webglFailed, setWebglFailed] = useState(false);
 
   useEffect(() => {
+    // Respect the OS "reduce motion" setting and skip the entire simulation.
+    if (reducedMotion) return;
     if (sceneRef.current) return; // prevent double-init in StrictMode
-    sceneRef.current = true;
 
     const canvas = canvasRef.current;
     if (!canvas) return;
+
+    sceneRef.current = true;
 
     const config = { colors: { bg: 0x0a0a0a, primary: 0x22c55e, secondary: 0x86efac } };
 
@@ -30,7 +54,17 @@ export default function HeroScene({ centered = false }) {
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
     camera.position.z = 6;
 
-    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance', alpha: false });
+    let renderer;
+    try {
+      renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance', alpha: false });
+      // If the browser hands back a renderer with no usable context, bail early.
+      if (!renderer.getContext()) throw new Error('WebGL context unavailable');
+    } catch (err) {
+      console.warn('HeroScene: WebGL unavailable, using static fallback.', err);
+      sceneRef.current = null;
+      setWebglFailed(true);
+      return;
+    }
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -331,7 +365,18 @@ export default function HeroScene({ centered = false }) {
     };
     window.addEventListener('resize', onResize);
 
+    // ── WebGL context loss (tab backgrounded, GPU reset, driver hiccup) ──
+    const onContextLost = (e) => {
+      e.preventDefault();
+      cancelAnimationFrame(animId);
+      console.warn('HeroScene: WebGL context lost, switching to static fallback.');
+      setWebglFailed(true);
+    };
+    canvas.addEventListener('webglcontextlost', onContextLost, false);
+
     // ── Init ──
+    // Reduced-motion visitors never reach this point — the effect returns early
+    // and <StaticOrb> is rendered instead, so the full animation runs here.
     animate();
     const sphereTl = gsap.timeline();
     sphereTl
@@ -339,16 +384,22 @@ export default function HeroScene({ centered = false }) {
       .from(sphereWire.scale, { x: 0, y: 0, z: 0, duration: 1.5, ease: 'elastic.out(1,0.7)' }, '<');
 
     return () => {
-      sphereTl.kill();
+      sphereTl?.kill();
       cancelAnimationFrame(animId);
       document.removeEventListener('mousemove', onMouseMove);
       window.removeEventListener('click', onClick);
       window.removeEventListener('resize', onResize);
       window.removeEventListener('scroll', updateScrollProgress);
+      canvas.removeEventListener('webglcontextlost', onContextLost);
+      document.body.style.cursor = 'default';
       renderer.dispose();
+      sceneRef.current = null;
     };
-  }, []);
+  }, [reducedMotion]);
 
-  return <canvas ref={canvasRef} className="w-full h-full outline-none cursor-grab active:cursor-grabbing" />;
+  if (reducedMotion || webglFailed) return <StaticOrb centered={centered} />;
+
+  // Decorative visual — hidden from assistive tech so screen readers skip it.
+  return <canvas ref={canvasRef} aria-hidden="true" role="presentation" className="w-full h-full outline-none cursor-grab active:cursor-grabbing" />;
 }
 

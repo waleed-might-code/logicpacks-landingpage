@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Icon } from '@iconify/react';
 import gsap from 'gsap';
-import HeroScene from '../components/HeroScene';
+import HeroScene from '../components/HeroCanvas';
 import Home from './Home';
 import HomeFounder from './HomeFounder';
 import HomePakistan from './HomePakistan';

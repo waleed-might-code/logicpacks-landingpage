@@ -2,7 +2,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { useEffect } from 'react';
 import { Icon } from '@iconify/react';
 import gsap from 'gsap';
-import HeroScene from '../components/HeroScene';
+import HeroScene from '../components/HeroCanvas';
 import ScrollReveal from '../components/ScrollReveal';
 import { useBeta } from '../components/BetaModal';
 

@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { Icon } from '@iconify/react';
 import { useSearchParams } from 'react-router-dom';
 import gsap from 'gsap';
-import HeroScene from '../components/HeroScene';
+import HeroScene from '../components/HeroCanvas';
 import ScrollReveal from '../components/ScrollReveal';
 import { useBeta } from '../components/BetaModal';
 
@@ -83,10 +83,10 @@ export default function Home() {
               </div>
               <div className="overflow-hidden pt-4">
                 <div className="hero-reveal flex flex-wrap pointer-events-auto gap-3">
-                  <button onClick={openBeta} className="inline-flex items-center gap-2 bg-white text-black font-medium rounded-md px-7 py-3 text-sm hover:bg-neutral-200 transition-colors">
+                  <button onClick={openBeta} className="lp-btn inline-flex items-center gap-2 bg-white text-black font-medium rounded-md px-7 py-3 text-sm hover:bg-neutral-200 transition-colors">
                     Get Started <Icon icon="solar:arrow-right-linear" width={16} />
                   </button>
-                  <button onClick={openBeta} className="inline-flex items-center gap-2 border border-white/15 text-white font-medium rounded-md px-7 py-3 text-sm hover:bg-white/5 transition-colors">
+                  <button onClick={openBeta} className="lp-btn inline-flex items-center gap-2 border border-white/15 text-white font-medium rounded-md px-7 py-3 text-sm hover:bg-white/5 transition-colors">
                     Documentation <Icon icon="solar:document-text-linear" width={16} className="text-neutral-400" />
                   </button>
                 </div>
@@ -518,10 +518,10 @@ export default function Home() {
           <ScrollReveal><p className="text-neutral-500 text-base md:text-lg leading-relaxed mb-10">Build once, install everywhere, compose into apps, publish and reuse. Join the developers who are done rebuilding from scratch.</p></ScrollReveal>
           <ScrollReveal>
             <div className="flex flex-wrap gap-3 justify-center">
-              <button onClick={openBeta} className="inline-flex items-center gap-2 bg-white text-black font-semibold rounded-md px-8 py-3 text-sm hover:bg-neutral-200 transition-colors">
+              <button onClick={openBeta} className="lp-btn inline-flex items-center gap-2 bg-white text-black font-semibold rounded-md px-8 py-3 text-sm hover:bg-neutral-200 transition-colors">
                 Get Started Free <Icon icon="solar:arrow-right-linear" width={16} />
               </button>
-              <button onClick={openBeta} className="inline-flex items-center gap-2 border border-white/15 text-white font-medium rounded-md px-8 py-3 text-sm hover:bg-white/5 transition-colors">
+              <button onClick={openBeta} className="lp-btn inline-flex items-center gap-2 border border-white/15 text-white font-medium rounded-md px-8 py-3 text-sm hover:bg-white/5 transition-colors">
                 View Documentation
               </button>
             </div>
