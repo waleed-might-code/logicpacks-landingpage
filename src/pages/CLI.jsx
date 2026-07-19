@@ -1,6 +1,7 @@
 import { Icon } from '@iconify/react';
 import ScrollReveal from '../components/ScrollReveal';
 import Terminal from '../components/Terminal';
+import CommandOutputModes from '../components/CommandOutputModes';
 import { useBeta } from '../components/BetaModal';
 
 const INSTALL_METHODS = [
@@ -203,6 +204,9 @@ export default function CLI() {
           </div>
         </div>
       </section>
+
+      {/* Output Modes — verbose / plain / json + theme toggle */}
+      <ScrollReveal><CommandOutputModes /></ScrollReveal>
 
       {/* Commands Reference */}
       <section id="commands" className="border-b border-white/[0.06]">

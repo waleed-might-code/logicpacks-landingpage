@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Icon } from '@iconify/react';
 import gsap from 'gsap';
-import HeroScene from '../components/HeroScene';
+import HeroScene from '../components/HeroCanvas';
+import HeroVariantB from '../components/HeroVariantB';
 import ScrollReveal from '../components/ScrollReveal';
 import { useBeta } from '../components/BetaModal';
 
@@ -98,9 +99,12 @@ const STEPS = [
 ];
 
 export default function HomeMarketplace() {
-  const [, setSearchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [activeCase, setActiveCase] = useState(0);
   const { openBeta } = useBeta();
+
+  // A/B hero test — ?variant=b swaps in the alternate (search-first) hero.
+  const heroVariant = searchParams.get('variant') === 'b' ? 'b' : 'a';
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -128,7 +132,11 @@ export default function HomeMarketplace() {
 
       {/* ═══════════════════════════════════════════════════════
           HERO — 3D sphere background, same as dev/founder pages
+          ?variant=b swaps in the alternate search-first hero.
       ═══════════════════════════════════════════════════════ */}
+      {heroVariant === 'b' ? (
+        <HeroVariantB openBeta={openBeta} />
+      ) : (
       <div className="relative h-screen w-full overflow-hidden pt-14">
         <div className="absolute inset-0 z-0">
           <HeroScene />
@@ -186,6 +194,7 @@ export default function HomeMarketplace() {
         </div>
         <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-[#0a0a0a] to-transparent z-[5] pointer-events-none" />
       </div>
+      )}
 
       {/* ═══════════════════════════════════════════════════════
           TRENDING — Marquee-style scrolling packs
