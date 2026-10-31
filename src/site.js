@@ -1,5 +1,6 @@
 import {
   BRANDS as BRANDS_CONFIRMED,
+  SHOW_BRANDS as SHOW_BRANDS_CONFIRMED,
   COMPANY_ADDRESS,
   COMPANY_CITY,
   COMPANY_FORM,
@@ -161,6 +162,7 @@ export const LEGAL_EFFECTIVE = '1 November 2026';
 
 // Brands we've built for, from src/confirm.js.
 export const BRANDS = BRANDS_CONFIRMED;
+export const SHOW_BRANDS = SHOW_BRANDS_CONFIRMED;
 export const brandLogo = (file) => `/brands/${file}.png`;
 
 // Our story, as the team tells it. Months are approximate.

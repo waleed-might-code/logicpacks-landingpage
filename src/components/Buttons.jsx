@@ -73,7 +73,7 @@ export function AgentButton({ className = '', onCopied, prompt = CONNECT_PROMPT,
 }
 
 // A one-line command or prompt with a copy button.
-export function CopyLine({ text, prefix = '$', label, className = '' }) {
+export function CopyLine({ text, prefix = '$', label, className = '', agentPrompt = false }) {
   const [copied, setCopied] = useState(false);
   const timer = useRef(null);
 
@@ -81,6 +81,7 @@ export function CopyLine({ text, prefix = '$', label, className = '' }) {
 
   return (
     <div
+      data-agent-prompt={agentPrompt ? 'true' : undefined}
       className={`flex min-w-0 items-center gap-2 rounded-full border border-line bg-panel py-1 pl-3.5 pr-1 ${className}`}
     >
       <span aria-hidden="true" className="shrink-0 font-mono text-[12px] text-faint">

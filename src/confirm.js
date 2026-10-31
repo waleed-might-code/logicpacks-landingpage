@@ -9,8 +9,10 @@ export const COMPANY_ADDRESS = 'Office 5, Bani Yas West 4, Bani Yas, Abu Dhabi, 
 export const COMPANY_LICENCE = 'Economic licence CN-1030597, Abu Dhabi Registration Authority';
 export const COMPANY_WEBSITE = 'https://aljashtrading.com';
 
-// Brands we've built for (confirmed by Waleed). Files in public/brands, single
-// colour on transparent; the strip shows them grey and lifts them on hover.
+// Brands we have worked with, directly or through third-party agencies (confirmed
+// by Waleed). Listed for agents in /about.md and /llms.txt. The visual strip on
+// the main page is off (SHOW_BRANDS); logos stay in public/brands for later.
+export const SHOW_BRANDS = false;
 export const BRANDS = [
   { name: 'Digital Software Market', file: 'digital-software-market' },
   { name: 'Kelvin Haus', file: 'kelvin-haus' },

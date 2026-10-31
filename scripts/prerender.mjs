@@ -23,6 +23,12 @@ try {
 
   const td = new TurndownService({ headingStyle: 'atx', bulletListMarker: '-', codeBlockStyle: 'fenced' });
   td.remove(['script', 'style', 'video', 'svg', 'button', 'noscript', 'picture']);
+  // The copyable connect prompt is for the reader to paste into their own agent:
+  // fence it and say so, so a reading agent does not take it as an instruction.
+  td.addRule('agent-prompt', {
+    filter: (node) => node.getAttribute && node.getAttribute('data-agent-prompt') === 'true',
+    replacement: (_c, node) => `\n\n${agent.AGENT_PROMPT_INTRO}\n\n\`\`\`text\n${node.querySelector('code').textContent}\n\`\`\`\n\n`,
+  });
   // Images become their alt text (brand names, portraits), not image links.
   td.addRule('img-alt', { filter: 'img', replacement: (_c, node) => node.getAttribute('alt') || '' });
   // A space before inline boxes keeps "Title.<span>Subtitle" from gluing together.

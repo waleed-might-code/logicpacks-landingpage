@@ -184,13 +184,17 @@ describe('Trust details', () => {
     expect(container.textContent).not.toMatch(/—|Waleed/);
   });
 
-  it('shows the brands we have built for as a quiet logo strip', () => {
+  it('keeps the brand strip off the human page, behind its flag', () => {
     const { container } = renderAt('/');
-    const strip = screen.getByRole('region', { name: 'Brands we’ve built for' });
-    const logos = within(strip).getAllByRole('img');
-    expect(logos).toHaveLength(12);
-    expect(logos[0]).toHaveAttribute('src', '/brands/digital-software-market.png');
-    expect(container.textContent).not.toMatch(/Running at|Your team|small team|Aljash/);
+    expect(screen.queryByRole('region', { name: /Brands we/ })).toBeNull();
+    expect(container.querySelector('img[src^="/brands/"]')).toBeNull();
+    expect(container.textContent).not.toMatch(/Bank Muscat|Toshiba|Running at|Your team|small team|Aljash/);
+  });
+
+  it('labels the connect prompt as text to paste into your own agent', () => {
+    renderAt('/');
+    expect(screen.getByText('Paste this into your agent:')).toBeInTheDocument();
+    expect(document.querySelector('[data-agent-prompt="true"]')).toHaveTextContent('setup.md');
   });
 
   it('footer links the company site with the licence and address', () => {

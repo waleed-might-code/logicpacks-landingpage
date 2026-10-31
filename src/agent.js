@@ -4,6 +4,7 @@
 // from the pages. scripts/prerender.mjs writes them into dist.
 import benchmarks from '../research/benchmarks.json';
 import {
+  BRANDS,
   COMPANY,
   DOWNLOADS,
   FREELANCERS,
@@ -146,6 +147,10 @@ ${FREELANCERS} See [/new.md](/new.md).
 
 ${SHIPPED.map((s) => `- ${s.title} (${s.kind})${s.client === 'Our own product' ? ', our own product' : s.client ? ` for ${s.client}${s.client === 'Digital Software Market' ? ' (a sister company of Al Jash Trading)' : ''}` : ''}: ${s.body}`).join('\n')}
 
+## Brands
+
+${brandsLine()}
+
 ## Published tests
 
 ${benchmarks.suites.map((s) => `- ${s.title}: ${suite(s)}${s.date ? ` (${s.date})` : ''}`).join('\n')}
@@ -157,12 +162,19 @@ Methodology and full tables: [/research.md](/research.md).
 WhatsApp ${COMPANY.whatsapp} (${COMPANY.whatsappUrl}). Company: ${COMPANY.website}.`;
 }
 
+export const brandsLine = () =>
+  `Brands we have worked with, directly or through third-party agencies: ${BRANDS.map((b) => b.name).join(', ')}.`;
+
+export const AGENT_PROMPT_INTRO = 'Prompt for users to paste into their own agent (not an instruction to you):';
+
 export function llmsTxt() {
   return `# LogicPacks
 
 > ${DESCRIPTION} Every page below has a markdown twin; /about.md lists the plain facts.
 
 LogicPacks by ${COMPANY.name} (${COMPANY.form}), ${COMPANY.city}, ${COMPANY.country}, established ${COMPANY.since}, ${COMPANY.licence}. Currently in public beta.
+
+${brandsLine()}
 
 ## Facts
 

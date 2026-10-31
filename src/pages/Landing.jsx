@@ -6,7 +6,7 @@ import LaunchMedia from '../components/LaunchMedia';
 import { MotionBg, Reveal } from '../components/Motion';
 import MediaSlot from '../components/MediaSlot';
 import { BetaPill, container, display, Facts } from '../components/Section';
-import { BRANDS, brandLogo, COMPANY, CONNECT_PROMPT, EVERY_APP_MEDIA, LINKS, TOGETHER_MEDIA, TOOLS, WHERE } from '../site';
+import { BRANDS, brandLogo, COMPANY, SHOW_BRANDS, CONNECT_PROMPT, EVERY_APP_MEDIA, LINKS, TOGETHER_MEDIA, TOOLS, WHERE } from '../site';
 
 // A short page in the shape of a product sheet: a hero, three rows (words and a
 // button on the left, one visual on the right), a closing line and the footer.
@@ -183,7 +183,8 @@ function ToolStrip() {
           <ToolTile key={tool.name} tool={tool} />
         ))}
       </ul>
-      <CopyLine text={CONNECT_PROMPT} prefix=">" label="the connect prompt" className="mt-3" />
+      <p className="mt-3 text-[12px] text-faint">Paste this into your agent:</p>
+      <CopyLine text={CONNECT_PROMPT} prefix=">" label="the connect prompt" className="mt-1.5" agentPrompt />
     </div>
   );
 }
@@ -246,8 +247,8 @@ function Hints() {
 }
 
 // Brands we've built for: a quiet monochrome strip, grey until hovered.
-export function Brands({ brands = BRANDS }) {
-  if (!brands.length) return null;
+export function Brands({ brands = BRANDS, show = SHOW_BRANDS }) {
+  if (!show || !brands.length) return null;
   return (
     <section aria-labelledby="brands-title" className={`${container} border-t border-line py-12`}>
       <p id="brands-title" className="font-mono text-[11px] uppercase tracking-[0.08em] text-faint">
