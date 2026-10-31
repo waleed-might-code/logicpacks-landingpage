@@ -1,78 +1,59 @@
 import { test, expect } from '@playwright/test';
 
-const ACCESS_CODE = 'buildanything';
-
-/**
- * Type the private-beta access code into the AccessGate character inputs and
- * wait for the protected app to render. The gate stores its grant in
- * sessionStorage, so this must run once per fresh page/context.
- */
-async function unlock(page) {
-  const inputs = page.locator('input[type="text"]');
-  await expect(inputs).toHaveCount(ACCESS_CODE.length);
-  for (let i = 0; i < ACCESS_CODE.length; i++) {
-    await inputs.nth(i).fill(ACCESS_CODE[i]);
-  }
-  // Reveal animation (~13*60ms) + 600ms grant delay before the app mounts.
-  await expect(page.getByText('Access Granted')).toBeVisible();
-  // The grant is committed to sessionStorage only after the delay; wait for it
-  // so a subsequent navigation doesn't race the gate back into view.
-  await page.waitForFunction(() => sessionStorage.getItem('lp_access_granted') === 'true');
-  await expect(page.getByText('Enter Access Code')).toHaveCount(0);
-}
-
-test.describe('Logic Packs landing — smoke', () => {
-  test('access gate blocks the app and unlocks with the correct code', async ({ page }) => {
+test.describe('LogicPacks landing: smoke', () => {
+  test('home renders the hero, launch media and sections', async ({ page }) => {
     await page.goto('/');
-    await expect(page.getByText('Enter Access Code')).toBeVisible();
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('The best place for agents and humans to work together.');
+    await expect(page.getByAltText(/The LogicPacks launch film/)).toBeVisible();
+    await expect(page.getByRole('heading', { name: /Sync to the cloud\./ })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /Every app, every agent, one machine\./ })).toBeAttached();
+    await expect(page.getByRole('heading', { name: /See exactly what everyone is doing\./ })).toBeAttached();
+    // The launch film loads over its poster and offers its voiceover.
+    await expect(page.getByTestId('media-video').first()).toHaveCSS('opacity', '1', { timeout: 15_000 });
+    await expect(page.getByRole('button', { name: 'Play with sound' })).toBeVisible();
+  });
 
-    // Wrong code keeps the gate up.
-    const inputs = page.locator('input[type="text"]');
-    for (let i = 0; i < ACCESS_CODE.length; i++) {
-      await inputs.nth(i).fill('z');
+  test('the launch film, its poster and the demo footage are served', async ({ request }) => {
+    for (const [path, type] of [
+      ['/launch.mp4', 'video/mp4'],
+      ['/launch.jpg', 'image/jpeg'],
+      ['/every-app.mp4', 'video/mp4'],
+      ['/every-app.jpg', 'image/jpeg'],
+    ]) {
+      const response = await request.get(path);
+      expect(response.status(), path).toBe(200);
+      expect(response.headers()['content-type'], path).toContain(type);
     }
-    await expect(page.getByText('Enter Access Code')).toBeVisible();
-
-    await page.reload();
-    await unlock(page);
-
-    // The persona chooser (default home) should now be reachable.
-    await expect(page.getByRole('heading', { name: 'What brings you here?' })).toBeVisible({ timeout: 15000 });
   });
 
-  test('persona chooser routes to the marketplace view', async ({ page }) => {
+  test('Download for Mac opens the download page', async ({ page }) => {
     await page.goto('/');
-    await unlock(page);
-    await expect(page.getByRole('heading', { name: 'What brings you here?' })).toBeVisible({ timeout: 15000 });
-
-    await page.getByRole('button', { name: /Browse Marketplace/i }).click();
-    await expect(page).toHaveURL(/view=marketplace/);
+    await page.getByRole('link', { name: 'Download for Mac' }).first().click();
+    await expect(page).toHaveURL(/\/download$/);
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('Download LogicPacks.');
+    await expect(page).toHaveTitle('Download LogicPacks');
   });
 
-  test('marketplace store lists packs and filters by search', async ({ page }) => {
-    // Grant access first, then deep-link to the store.
+  test('/download loads directly (SPA fallback)', async ({ page }) => {
+    await page.goto('/download');
+    await expect(page.getByRole('heading', { name: 'LogicPacks for Mac' })).toBeVisible();
+  });
+
+  test('Install with your agent copies the prompt', async ({ page, context }) => {
+    await context.grantPermissions(['clipboard-read', 'clipboard-write']);
     await page.goto('/');
-    await unlock(page);
-    await page.goto('/store');
-
-    await expect(page.getByRole('heading', { name: 'Pack Marketplace' })).toBeVisible({ timeout: 15000 });
-
-    // A known pack should be present, and search should narrow the list.
-    await expect(page.getByText('Auth Pack').first()).toBeVisible();
-
-    const search = page.getByPlaceholder(/search/i).first();
-    await search.fill('payments');
-    await expect(page.getByText('Payments Pack').first()).toBeVisible();
-    // "Redis Connector" is not featured, so once the search excludes it the
-    // pack disappears entirely (the featured strip would keep featured packs).
-    await expect(page.getByText('Redis Connector')).toHaveCount(0);
+    await page.getByRole('button', { name: 'Install with your agent' }).first().click();
+    await expect(page.getByText(/Paste it into Claude Code/)).toBeVisible();
+    const copied = await page.evaluate(() => navigator.clipboard.readText());
+    expect(copied).toContain('Install LogicPacks on this Mac');
   });
 
-  test('unknown routes render the not-found page', async ({ page }) => {
-    await page.goto('/');
-    await unlock(page);
-    await page.goto('/this-route-does-not-exist');
-    // NotFound page renders a 404 marker.
-    await expect(page.getByText(/404/).first()).toBeVisible({ timeout: 15000 });
-  });
+  for (const path of ['/', '/download']) {
+    test(`no horizontal scroll at phone width on ${path}`, async ({ page }) => {
+      await page.setViewportSize({ width: 375, height: 812 });
+      await page.goto(path);
+      const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+      expect(overflow).toBeLessThanOrEqual(0);
+    });
+  }
 });
