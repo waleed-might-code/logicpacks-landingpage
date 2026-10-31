@@ -547,7 +547,7 @@ const globalBlockBody = (projectTitle = null) => [
 	"- \"tell X ...\" -> `lp send X \"<message>\"`.",
 	"- To coordinate with a teammate's agent, use `lp ask <person> \"<question>\"` and `lp reply <id> \"<answer>\"`; check `lp inbox` for questions from other agents and answer them.",
 	"- \"request assistance\" / \"get an expert\" -> `lp assist request \"<brief>\"`.",
-	"- \"set goals\" / \"plan milestones\" / \"ask X to do Y\" -> `lp goals plan \"<text>\"`; then `lp goals list`, `lp goals done <milestone>`.",
+	"- \"set goals\" / \"ask X to do Y by Friday\" -> `lp goals plan \"<goal>\" \"<person>: <task> by <day>\" ...`; your user confirms with `lp goals confirm <id>`. Milestones for you arrive in `lp inbox`: `lp goals start|done <id>`.",
 	"- \"save this as a pack\" -> `lp packs save \"<name>\"`; `lp packs list`, `lp packs use <id>`.",
 	"- Before you edit shared files, run `lp who <file or topic>`; if a teammate is on it, tell the user first.",
 	"- On a conflict or negotiation in `lp inbox`, answer with `lp reply <id>`; when it needs a person, ask the user, then `lp decide <id> mine|theirs|both`.",
@@ -643,8 +643,20 @@ const AGENT_COMMANDS = [
 		does: "save this session as a pack, list packs, hand one to a thread"
 	},
 	{
-		usage: "lp goals plan \"<text>\" | list | show <id> | done <milestone> | review",
-		does: "plan milestones and send them to people's agents (beta)"
+		usage: "lp goals plan \"<goal>\" \"<person>: <task> [by <day>]\"...",
+		does: "draft a goal with milestones for people or experts (beta); nothing is sent yet"
+	},
+	{
+		usage: "lp goals list | show <id> | confirm <goal> | cancel <goal>",
+		does: "see goals; confirm a draft (sends the milestones) once your user agrees"
+	},
+	{
+		usage: "lp goals start|blocked|done <milestone> [--note \"<text>\"]",
+		does: "report on a milestone assigned to you"
+	},
+	{
+		usage: "lp goals review | decide <id> <action> [--note]",
+		does: "drift and review requests waiting for your user, and their decision"
 	},
 	{
 		usage: "lp setup --agent <id> [--file <path>] [--project]",
@@ -890,6 +902,7 @@ const AGENTS_END = "<!-- logicpacks:end -->";
 const agentsBlockBody = (projectTitle) => [
 	globalBlockBody(projectTitle),
 	"- With the `logicpacks` MCP tools: `who_is_working_on` before you start, `send_to_thread` / `ask` / `reply` to talk to other threads, `conflicts` and `propose_merge` on a conflict, `note` for your goal and decisions.",
+	"- When your user asks teammates to do work (\"ask Omar to do X by Friday\"), draft it with `goal_plan`; your user confirms it in LogicPacks. If a milestone is assigned to you, stay inside its scope and report with `goal_update`.",
 	"",
 	"LogicPacks keeps only the text between these markers up to date; edit anything outside them freely."
 ].join("\n");
@@ -1856,11 +1869,25 @@ const nextCommands = (item) => {
 		case "conflict": return [`lp who ${item.files[0] ?? item.people[0] ?? ""}`.trim(), ...item.people[0] ? [`lp ask ${handle(item.people[0])} ${quote("<how to merge>")}`] : []];
 		case "negotiation": return item.question !== null ? [`lp decide ${item.id} accept|mine|theirs|both   (ask your user first)`] : item.needsPosition ? [`lp reply ${item.id} ${quote("<why>")} --keep "<a,b>" --change "<c>" --drop "<d>"`] : [`lp inbox --all`];
 		case "drift": return [
-			`lp send ${handle(item.person)} ${quote("<message>")}`,
-			`lp agents   (watch what they are on)`,
-			`lp goals show ${item.id}`
+			`lp goals decide ${item.id} message --note ${quote("<what to change>")}   (ask your user first)`,
+			`lp goals decide ${item.id} accept|ignore`,
+			`lp agents   (watch what ${handle(item.person)} is on)`
 		];
-		case "review": return [`lp goals review`, `lp goals show ${item.id}`];
+		case "review": return [
+			`lp goals show ${item.goalId ?? item.id}`,
+			`lp goals decide ${item.id} approve   (ask your user first)`,
+			`lp goals decide ${item.id} changes --note ${quote("<what to fix>")}`
+		];
+		case "milestone": return [
+			`lp goals start ${item.id}`,
+			`lp goals done ${item.id} --note ${quote("<what you did>")}`,
+			`lp goals blocked ${item.id} --note ${quote("<why>")}`
+		];
+		case "goal": return [
+			`lp goals show ${item.id}`,
+			`lp goals confirm ${item.id}   (after your user agrees; this sends the milestones)`,
+			`lp goals cancel ${item.id}`
+		];
 	}
 };
 const headline = (item, nowMs) => {
@@ -1873,6 +1900,8 @@ const headline = (item, nowMs) => {
 		case "negotiation": return `[${item.id}] merge negotiation, ${item.state.replaceAll("_", " ")}, with ${item.people.join(", ")} (${item.projectTitle}, ${when})`;
 		case "drift": return `[${item.id}] drift: ${item.person} is off the plan (${item.projectTitle}, ${when})`;
 		case "review": return `[${item.id}] review requested by ${item.person} (${item.projectTitle}, ${when})`;
+		case "milestone": return `[${item.id}] milestone for you from ${item.person} (${item.projectTitle}, ${when})`;
+		case "goal": return `[${item.id}] draft goal to confirm (${item.projectTitle}, ${when})`;
 	}
 };
 const detail = (item) => {
@@ -1881,7 +1910,9 @@ const detail = (item) => {
 		case "reply":
 		case "notice":
 		case "drift":
-		case "review": return item.text;
+		case "review":
+		case "milestone":
+		case "goal": return item.text;
 		case "conflict": return item.reason;
 		case "negotiation": return item.question ?? (item.needsPosition ? "Your agent's position is needed." : "Waiting on the others.");
 	}
@@ -2884,17 +2915,157 @@ const packsCommand = async (ctx, args) => {
 	return refuse("Usage: lp packs save|list|use");
 };
 const GOALS_UNAVAILABLE = "Goals are not available on this host yet.";
+const DUE_WORDS = /\s+(?:by|due)\s+((?:today|tomorrow|tonight|(?:next\s+)?(?:mon|tues|wednes|thurs|fri|satur|sun)day|end of (?:day|week)|in \d+ (?:days?|weeks?)|\d{4}-\d{2}-\d{2}))\.?$/i;
+/**
+* One milestone as an agent writes it on the command line: "Omar: build the footer by
+* friday". The name before the colon is the assignee; a trailing "by <day>" is the due date.
+*/
+const parseMilestone = (text) => {
+	const colon = text.indexOf(":");
+	if (colon <= 0) return null;
+	const assignee = text.slice(0, colon).trim();
+	let title = text.slice(colon + 1).trim();
+	const due = DUE_WORDS.exec(title);
+	if (due !== null) title = title.slice(0, due.index).trim();
+	if (assignee.length === 0 || title.length === 0) return null;
+	return {
+		title,
+		assignee,
+		...due === null ? {} : { due: due[1].toLowerCase() }
+	};
+};
+const splitList = (value) => value === null ? void 0 : value.split(/;|\n/).map((entry) => entry.trim()).filter(Boolean);
+/** A host without Goals refuses the ledger tool (400) or has no route (404). */
+const goalsMissing = (error) => error instanceof RejectedError && (error.status === 404 || error.status === 400 || error.status === 503) && !/no goal|not found\. run lp goals/i.test(error.message);
+const GOALS_USAGE = [
+	"lp goals plan \"<goal>\" \"<person>: <task> [by <day>]\" ... [--outcome \"<text>\"] [--criteria \"<a; b>\"] [--paths \"<a; b>\"] [--avoid \"<a; b>\"]",
+	"lp goals list | show <id> | confirm <goal> | cancel <goal>",
+	"lp goals start|blocked|done <milestone> [--note \"<text>\"]",
+	"lp goals review | decide <id> <action> [--note \"<text>\"]"
+].join("\n");
 const goalsCommand = async (ctx, args) => {
 	const config = signedIn(ctx);
-	const [sub = "list"] = args.positionals;
-	const me = await register(ctx, args);
+	const [sub = "list", ...rest] = args.positionals;
 	try {
-		await ctx.call(config, `/api/lp/goals?projectId=${encodeURIComponent(me.projectId)}`);
+		return await goalsAction(ctx, config, args, sub, rest);
 	} catch (error) {
-		if (error instanceof RejectedError && (error.status === 401 || error.status === 403)) throw error;
-		return refuse(`${GOALS_UNAVAILABLE} (lp goals ${sub})`, { available: false });
+		if (goalsMissing(error)) return refuse(`${GOALS_UNAVAILABLE} (lp goals ${sub})`, { available: false });
+		throw error;
 	}
-	return refuse(`${GOALS_UNAVAILABLE} (lp goals ${sub})`, { available: false });
+};
+const goalsAction = async (ctx, config, args, sub, rest) => {
+	const me = await register(ctx, args);
+	const goalsCall = (body) => ctx.call(config, "/api/lp/connect/goals", { body });
+	switch (sub) {
+		case "list":
+		case "show": {
+			const goalId = sub === "show" ? rest[0] : void 0;
+			if (sub === "show" && !goalId) return refuse("Usage: lp goals show <goal id>");
+			const reply = await ledgerTool(ctx, "goals", goalId ? { goalId } : {}, args);
+			const { goals = [] } = await goalsCall({
+				op: "list",
+				projectId: me.projectId
+			});
+			return output(reply.text, {
+				projectId: me.projectId,
+				text: reply.text,
+				goals: goalId ? goals.filter((goal) => goal.id === goalId) : goals
+			});
+		}
+		case "plan": {
+			const [title, ...lines] = rest;
+			const fromJson = flagValue(args, "plan");
+			if (fromJson !== null) {
+				const plan = JSON.parse(fromJson);
+				const reply = await ledgerTool(ctx, "goal_plan", {
+					...plan,
+					...goalRef(args)
+				}, args);
+				return output(reply.text, { text: reply.text });
+			}
+			const milestones = lines.map((line) => ({
+				line,
+				parsed: parseMilestone(line)
+			}));
+			const bad = milestones.filter((entry) => entry.parsed === null).map((entry) => entry.line);
+			if (!title || milestones.length === 0 || bad.length > 0) return refuse([
+				bad.length > 0 ? `Write each milestone as "<person>: <task> [by <day>]": ${bad.join(", ")}` : "",
+				"Usage:",
+				GOALS_USAGE,
+				"Example: lp goals plan \"Launch the pricing page\" \"Omar: build the footer by friday\" \"Priya: write the tests\""
+			].filter(Boolean).join("\n"));
+			const criteria = splitList(flagValue(args, "criteria"));
+			const paths = splitList(flagValue(args, "paths"));
+			const avoid = splitList(flagValue(args, "avoid"));
+			const outcome = flagValue(args, "outcome") ?? void 0;
+			const reply = await ledgerTool(ctx, "goal_plan", {
+				title,
+				...outcome === void 0 ? {} : { outcome },
+				...goalRef(args),
+				milestones: milestones.map(({ parsed }) => ({
+					...parsed,
+					...criteria === void 0 ? {} : { criteria },
+					...paths === void 0 && avoid === void 0 ? {} : { scope: {
+						...paths ? { paths } : {},
+						...avoid ? { avoid } : {}
+					} }
+				}))
+			}, args);
+			const goalId = /Draft goal (\S+)/.exec(reply.text)?.[1] ?? null;
+			const text = reply.text.replace(/Nothing is sent yet:.*$/m, goalId === null ? "Nothing is sent yet: your user confirms it." : `Nothing is sent yet. Show your user the plan; when they agree, run lp goals confirm ${goalId} (or they confirm it in LogicPacks Goals).`);
+			return output(text, {
+				goalId,
+				text
+			});
+		}
+		case "confirm":
+		case "cancel": {
+			const goalId = rest[0];
+			if (!goalId) return refuse(`Usage: lp goals ${sub} <goal id>`);
+			const { goal } = await goalsCall({
+				op: sub,
+				goalId
+			});
+			return output(sub === "confirm" ? `Confirmed "${goal?.title}". Each milestone goes to its person's agent now; progress shows in lp goals list.` : `Cancelled "${goal?.title}".`, { goal });
+		}
+		case "start":
+		case "blocked":
+		case "done": {
+			const milestoneId = rest[0];
+			if (!milestoneId) return refuse(`Usage: lp goals ${sub} <milestone id> [--note "<text>"]`);
+			const note = flagValue(args, "note") ?? rest.slice(1).join(" ");
+			const reply = await ledgerTool(ctx, "goal_update", {
+				milestoneId,
+				status: sub === "start" ? "in_progress" : sub,
+				...note ? { note } : {}
+			}, args);
+			return output(reply.text, {
+				milestoneId,
+				text: reply.text
+			});
+		}
+		case "review": {
+			const items = (await fetchInbox(ctx, config, false)).filter((item) => item.kind === "drift" || item.kind === "review" || item.kind === "goal");
+			return output(items.length === 0 ? "Nothing to review or decide." : formatInbox(items, Date.now()), { items });
+		}
+		case "decide": {
+			const [decisionId, action] = rest;
+			if (!decisionId || !action) return refuse("Usage: lp goals decide <id> <action> [--note \"<text>\"]");
+			const note = flagValue(args, "note") ?? void 0;
+			const { goal } = await goalsCall({
+				op: "decide",
+				decisionId,
+				action,
+				...note === void 0 ? {} : { note }
+			});
+			return output(`Recorded "${action}" on ${decisionId} (goal "${goal?.title}").`, { goal });
+		}
+		default: return refuse(`Usage:\n${GOALS_USAGE}`);
+	}
+};
+const goalRef = (args) => {
+	const goalId = flagValue(args, "goal");
+	return goalId === null ? {} : { goalId };
 };
 const setupCommand = (ctx, args) => {
 	if (hasFlag(args, "list") || !flagValue(args, "agent") && args.positionals.length === 0) return output([
@@ -3133,6 +3304,91 @@ const LEDGER_TOOLS = [
 			properties: {}
 		},
 		annotations: { readOnlyHint: true }
+	},
+	{
+		name: "goals",
+		description: "Goals (Beta) in this project: drafts and active goals with each milestone's assignee, criteria, scope, due date and status, plus the people you can assign. goalId reads one.",
+		inputSchema: {
+			type: "object",
+			properties: { goalId: { type: "string" } }
+		},
+		annotations: { readOnlyHint: true }
+	},
+	{
+		name: "goal_plan",
+		description: "Draft a goal when your user asks teammates or experts to do work (\"ask Omar to do X, and Priya to do Y by Friday\"). Nothing is sent: your user reviews and confirms it in LogicPacks Goals. Pass goalId to revise your draft.",
+		inputSchema: {
+			type: "object",
+			properties: {
+				title: { type: "string" },
+				outcome: { type: "string" },
+				goalId: { type: "string" },
+				milestones: {
+					type: "array",
+					maxItems: 12,
+					items: {
+						type: "object",
+						properties: {
+							title: { type: "string" },
+							assignee: {
+								type: "string",
+								description: "A person's or expert's name."
+							},
+							criteria: list("Acceptance criteria."),
+							scope: {
+								type: "object",
+								properties: {
+									paths: list("Paths or globs the work may touch."),
+									avoid: list("Paths or globs it must not touch."),
+									branch: { type: "string" },
+									newDependencies: { type: "boolean" },
+									notes: list("Other boundaries, like \"don't change the API\".")
+								}
+							},
+							due: {
+								type: "string",
+								description: "YYYY-MM-DD or a weekday."
+							}
+						},
+						required: ["title", "assignee"]
+					}
+				}
+			},
+			required: ["title", "milestones"]
+		}
+	},
+	{
+		name: "goal_update",
+		description: "Report on the goal milestone assigned to this session: status in_progress, blocked or done. With done, add a note and each criterion with met and evidence.",
+		inputSchema: {
+			type: "object",
+			properties: {
+				milestoneId: { type: "string" },
+				status: {
+					type: "string",
+					enum: [
+						"in_progress",
+						"blocked",
+						"done"
+					]
+				},
+				note: { type: "string" },
+				criteria: {
+					type: "array",
+					maxItems: 12,
+					items: {
+						type: "object",
+						properties: {
+							criterion: { type: "string" },
+							met: { type: "boolean" },
+							evidence: { type: "string" }
+						},
+						required: ["criterion", "met"]
+					}
+				}
+			},
+			required: ["milestoneId", "status"]
+		}
 	}
 ];
 /** ask and reply are send_to_thread under friendlier names; inbox reads the connect route. */

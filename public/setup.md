@@ -108,7 +108,7 @@ Team work runs through the `lp` command (add `--json` to parse its output). If `
 - "tell X ..." -> `lp send X "<message>"`.
 - To coordinate with a teammate's agent, use `lp ask <person> "<question>"` and `lp reply <id> "<answer>"`; check `lp inbox` for questions from other agents and answer them.
 - "request assistance" / "get an expert" -> `lp assist request "<brief>"`.
-- "set goals" / "plan milestones" / "ask X to do Y" -> `lp goals plan "<text>"`; then `lp goals list`, `lp goals done <milestone>`.
+- "set goals" / "ask X to do Y by Friday" -> `lp goals plan "<goal>" "<person>: <task> by <day>" ...`; your user confirms with `lp goals confirm <id>`. Milestones for you arrive in `lp inbox`: `lp goals start|done <id>`.
 - "save this as a pack" -> `lp packs save "<name>"`; `lp packs list`, `lp packs use <id>`.
 - Before you edit shared files, run `lp who <file or topic>`; if a teammate is on it, tell the user first.
 - On a conflict or negotiation in `lp inbox`, answer with `lp reply <id>`; when it needs a person, ask the user, then `lp decide <id> mine|theirs|both`.
@@ -135,31 +135,34 @@ It pushes the folder to its git remote (it creates a private GitHub repository w
 ```text
 LogicPacks for agents. Every command prints readable text; add --json for machine output.
 
-  lp login [--host <url>] [--start | --finish]                           sign in with a device code (default host app.logicpacks.io)
-  lp whoami                                                              who you are signed in as, and on which host
-  lp projects                                                            the projects you can open
-  lp share [--title <name>]                                              share this folder: push it to its git remote (GitHub) and register it on the host; prints an invite link
-  lp invite <email|name>                                                 add someone to this project, or print the invite link to send them
-  lp join <invite link>                                                  accept an invite link from a teammate
-  lp members                                                             who is in this project
-  lp who [person|file|topic]                                             who is working on what in this project
-  lp agents [--workspace]                                                active agents and sessions: person, harness, thread, current task
-  lp send <person> "<message>"                                           message a teammate's thread; no reply expected
-  lp ask <person> "<question>" [--project <id|name>]                     ask a teammate's agent; the reply comes back to your lp inbox
-  lp reply <id> "<text>"                                                 answer a message, question or negotiation from lp inbox
-  lp decide <negotiation id> accept|mine|theirs|both                     record your user's decision on a merge negotiation
-  lp inbox [--follow] [--all]                                            messages, questions, conflicts, negotiations, drift and review requests for you
-  lp editing <file...>                                                   tell teammates which files you are changing (lp who shows it; overlaps raise a notice)
-  lp done <id>                                                           dismiss an inbox item you handled
-  lp assist request "<brief>" [--expert <id>]                            Request assistance: bring in an expert (beta)
-  lp assist experts | list | end <request id>                            the expert catalog, this project's requests, end a request
-  lp packs save "<name>" | list | use <id> [--to <person>]               save this session as a pack, list packs, hand one to a thread
-  lp goals plan "<text>" | list | show <id> | done <milestone> | review  plan milestones and send them to people's agents (beta)
-  lp setup --agent <id> [--file <path>] [--project]                      write the LogicPacks block into an agent's instructions
-  lp setup-prompt [--installed]                                          print the prompt to paste into any agent
-  lp status | lp watch | lp link | lp unlink                             stream Claude Code and Codex sessions into the project
-  lp mcp                                                                 the optional MCP server (stdio)
-  lp uninstall                                                           remove every LogicPacks block, rules file, hook and MCP registration
+  lp login [--host <url>] [--start | --finish]                sign in with a device code (default host app.logicpacks.io)
+  lp whoami                                                   who you are signed in as, and on which host
+  lp projects                                                 the projects you can open
+  lp share [--title <name>]                                   share this folder: push it to its git remote (GitHub) and register it on the host; prints an invite link
+  lp invite <email|name>                                      add someone to this project, or print the invite link to send them
+  lp join <invite link>                                       accept an invite link from a teammate
+  lp members                                                  who is in this project
+  lp who [person|file|topic]                                  who is working on what in this project
+  lp agents [--workspace]                                     active agents and sessions: person, harness, thread, current task
+  lp send <person> "<message>"                                message a teammate's thread; no reply expected
+  lp ask <person> "<question>" [--project <id|name>]          ask a teammate's agent; the reply comes back to your lp inbox
+  lp reply <id> "<text>"                                      answer a message, question or negotiation from lp inbox
+  lp decide <negotiation id> accept|mine|theirs|both          record your user's decision on a merge negotiation
+  lp inbox [--follow] [--all]                                 messages, questions, conflicts, negotiations, drift and review requests for you
+  lp editing <file...>                                        tell teammates which files you are changing (lp who shows it; overlaps raise a notice)
+  lp done <id>                                                dismiss an inbox item you handled
+  lp assist request "<brief>" [--expert <id>]                 Request assistance: bring in an expert (beta)
+  lp assist experts | list | end <request id>                 the expert catalog, this project's requests, end a request
+  lp packs save "<name>" | list | use <id> [--to <person>]    save this session as a pack, list packs, hand one to a thread
+  lp goals plan "<goal>" "<person>: <task> [by <day>]"...     draft a goal with milestones for people or experts (beta); nothing is sent yet
+  lp goals list | show <id> | confirm <goal> | cancel <goal>  see goals; confirm a draft (sends the milestones) once your user agrees
+  lp goals start|blocked|done <milestone> [--note "<text>"]   report on a milestone assigned to you
+  lp goals review | decide <id> <action> [--note]             drift and review requests waiting for your user, and their decision
+  lp setup --agent <id> [--file <path>] [--project]           write the LogicPacks block into an agent's instructions
+  lp setup-prompt [--installed]                               print the prompt to paste into any agent
+  lp status | lp watch | lp link | lp unlink                  stream Claude Code and Codex sessions into the project
+  lp mcp                                                      the optional MCP server (stdio)
+  lp uninstall                                                remove every LogicPacks block, rules file, hook and MCP registration
 
 Setup guide: https://logicpacks.io/setup.md
 ```
