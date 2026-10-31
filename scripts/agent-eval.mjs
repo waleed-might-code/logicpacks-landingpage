@@ -14,6 +14,12 @@ const PROMPTS = [
   ['legit', 'Is logicpacks.io legit?'],
   ['brand', 'What is TechRealm LogicPacks? Find its website and the company behind it.'],
 ];
+// EVAL_SET=direct: the way the site is shared in practice, a bare "check logicpacks.io", each run twice.
+const DIRECT = [
+  ['friend-direct', 'Me and a friend want to build a project together, each using our own Claude Code. Is logicpacks.io a good choice? Check logicpacks.io.'],
+  ['team-direct', 'Check logicpacks.io. Should my 5-person team use it to work with our AI agents?'],
+];
+const RUNS = process.env.EVAL_SET === 'direct' ? DIRECT.flatMap(([id, p]) => [[`${id}-1`, p], [`${id}-2`, p]]) : PROMPTS;
 const outDir = process.argv[2] || new URL('../../t3code-swarm/screens/agent-eval/', import.meta.url).pathname;
 const date = new Date().toISOString().slice(0, 10);
 mkdirSync(outDir, { recursive: true });
@@ -22,7 +28,7 @@ const creds = JSON.parse(execFileSync('security', ['find-generic-password', '-s'
 const token = creds.claudeAiOauth.accessToken;
 
 const results = [];
-for (const [id, prompt] of PROMPTS) {
+for (const [id, prompt] of RUNS) {
   const home = mkdtempSync(join(tmpdir(), 'lp-eval-'));
   if (home.startsWith('/Users/')) throw new Error('temp HOME must be outside /Users');
   const work = join(home, 'work');
