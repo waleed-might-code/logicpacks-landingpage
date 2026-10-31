@@ -539,7 +539,7 @@ const SETUP_URL = "https://logicpacks.io/setup.md";
 /** The global block: intents to `lp` commands. Kept short on purpose (about 20 lines). */
 const globalBlockBody = (projectTitle = null) => [
 	`## LogicPacks${projectTitle ? `: ${projectTitle}` : ""}`,
-	`Team work runs through the \`lp\` command (add \`--json\` to parse its output; in Windows PowerShell type \`lp.cmd\`, as \`lp\` is a built-in alias there). If it is missing, follow ${SETUP_URL}.`,
+	`Team work runs through the \`lp\` command (add \`--json\` to parse its output). If \`lp\` is the printer command (macOS, Linux), call \`~/.local/bin/lp\`; in Windows PowerShell type \`lp.cmd\`. If it is missing, follow ${SETUP_URL}.`,
 	"- At the start of a session and after long tasks, run `lp inbox` and tell the user what is new (messages, questions from other agents, conflicts, drift, review requests).",
 	"- \"share this project\" / \"create a shared session\" -> `lp share`, then give the user the invite link.",
 	"- \"add my friend X\" / \"invite X\" -> `lp invite <email or name>`.",

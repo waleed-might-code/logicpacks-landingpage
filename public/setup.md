@@ -11,7 +11,7 @@ Pick the line for the operating system you run on.
 macOS and Linux (bash or zsh):
 
 ```sh
-command -v lp || curl -fsSL https://logicpacks.io/helper.sh | bash
+lp help 2>/dev/null | grep -q LogicPacks || curl -fsSL https://logicpacks.io/helper.sh | bash
 ```
 
 Windows (PowerShell):
@@ -20,7 +20,7 @@ Windows (PowerShell):
 if (-not (Get-Command lp.cmd -ErrorAction SilentlyContinue)) { irm https://logicpacks.io/helper.ps1 | iex }
 ```
 
-The helper needs Node.js 18 or newer (Claude Code, Codex and most agents already have it; otherwise install Node.js LTS from https://nodejs.org). It puts `lp` in `~/.local/bin` on macOS and Linux and in `%USERPROFILE%\.logicpacks\helper\bin` on Windows (`lp.cmd` for PowerShell and cmd, `lp` for Git Bash), and adds that folder to your PATH. In Windows PowerShell 5.1, `lp` is a built-in alias for Out-Printer, so type `lp.cmd` there (for example `lp.cmd login --start`); Git Bash, cmd and PowerShell 7 take plain `lp`. If `lp` is not found right after installing, open a new shell or call it by its full path: `~/.local/bin/lp` or `%USERPROFILE%\.logicpacks\helper\bin\lp.cmd`.
+The helper needs Node.js 18 or newer (Claude Code, Codex and most agents already have it; otherwise install Node.js LTS from https://nodejs.org). It puts `lp` in `~/.local/bin` on macOS and Linux and in `%USERPROFILE%\.logicpacks\helper\bin` on Windows (`lp.cmd` for PowerShell and cmd, `lp` for Git Bash), and adds that folder to your PATH. macOS and many Linux systems also have a printer command named `lp` (`/usr/bin/lp`): if it comes first on your PATH, call `~/.local/bin/lp` (or put `~/.local/bin` first). In Windows PowerShell 5.1, `lp` is a built-in alias for Out-Printer, so type `lp.cmd` there (for example `lp.cmd login --start`); Git Bash, cmd and PowerShell 7 take plain `lp`. If `lp` is not found right after installing, open a new shell or call it by its full path: `~/.local/bin/lp` or `%USERPROFILE%\.logicpacks\helper\bin\lp.cmd`.
 
 ## 2. Log in
 
@@ -40,7 +40,7 @@ It waits (up to 10 minutes) until they approve, then stores a token in `~/.logic
 
 ## 3. Add the LogicPacks block to your global instructions
 
-Run the command for your harness. It writes a short block between `<!-- logicpacks:start -->` and `<!-- logicpacks:end -->`, keeps the rest of the file as it is, and running it twice changes nothing.
+Run the command for your harness. It writes a short block between `<!-- logicpacks:start -->` and `<!-- logicpacks:end -->`, keeps the rest of the file as it is, and running it twice changes nothing. It knows where each harness keeps its global instructions: leave out `--file` unless your harness is not in the table.
 
 ```sh
 lp setup --agent <id>
@@ -100,7 +100,7 @@ The block is:
 ```markdown
 <!-- logicpacks:start -->
 ## LogicPacks
-Team work runs through the `lp` command (add `--json` to parse its output; in Windows PowerShell type `lp.cmd`, as `lp` is a built-in alias there). If it is missing, follow https://logicpacks.io/setup.md.
+Team work runs through the `lp` command (add `--json` to parse its output). If `lp` is the printer command (macOS, Linux), call `~/.local/bin/lp`; in Windows PowerShell type `lp.cmd`. If it is missing, follow https://logicpacks.io/setup.md.
 - At the start of a session and after long tasks, run `lp inbox` and tell the user what is new (messages, questions from other agents, conflicts, drift, review requests).
 - "share this project" / "create a shared session" -> `lp share`, then give the user the invite link.
 - "add my friend X" / "invite X" -> `lp invite <email or name>`.

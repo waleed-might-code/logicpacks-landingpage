@@ -45,13 +45,19 @@ INSTALL_ARGS=()
 [ -n "${LP_HELPER_NO_WATCHER:-}" ] && INSTALL_ARGS+=(--no-watcher)
 "$HOME_DIR/bin/lp" install ${INSTALL_ARGS[@]+"${INSTALL_ARGS[@]}"}
 
+# macOS and many Linux systems ship a printer command named lp; say which one runs.
+LP_CMD=lp
+FOUND="$(command -v lp || true)"
+if [ "$FOUND" != "$BIN_DIR/lp" ] && [ "$FOUND" != "$HOME_DIR/bin/lp" ]; then
+  LP_CMD="$BIN_DIR/lp"
+  case ":$PATH:" in
+    *":$BIN_DIR:"*) printf 'Note: %s (the printer command) comes before %s on your PATH. Call %s, or put %s first.\n' "$FOUND" "$BIN_DIR" "$LP_CMD" "$BIN_DIR" ;;
+    *) printf 'Add %s to the front of your PATH to type lp from any terminal; until then call %s.\n' "$BIN_DIR" "$LP_CMD" ;;
+  esac
+fi
 if [ -n "${LP_SERVER:-}" ]; then
   "$HOME_DIR/bin/lp" login --host "$LP_SERVER" ${LP_TOKEN:+--token "$LP_TOKEN"}
 else
-  printf '\nNext: lp login\n'
+  printf '\nNext: %s login\n' "$LP_CMD"
 fi
-case ":$PATH:" in
-  *":$BIN_DIR:"*) ;;
-  *) printf 'Add %s to your PATH to run lp from any terminal.\n' "$BIN_DIR" ;;
-esac
-printf 'LogicPacks helper installed. Run lp status to check it.\n'
+printf 'LogicPacks helper installed. Run %s status to check it.\n' "$LP_CMD"
