@@ -71,7 +71,8 @@ describe('Landing', () => {
     Object.assign(navigator, { clipboard: { writeText } });
     const { container } = renderAt('/');
     expect(CONNECT_PROMPT).toContain('https://logicpacks.io/setup.md');
-    expect(screen.getByText(CONNECT_PROMPT)).toBeInTheDocument();
+    // The prompt is several lines; the copy line shows it as one (truncated) code line.
+    expect(screen.getByText((_, element) => element?.tagName === 'CODE' && element.textContent === CONNECT_PROMPT)).toBeInTheDocument();
     expect(container.querySelector('a[href*="setup.md"]')).toBeNull();
     fireEvent.click(screen.getAllByRole('button', { name: 'Connect your agent' })[0]);
     await waitFor(() => expect(writeText).toHaveBeenCalledWith(CONNECT_PROMPT));

@@ -1,0 +1,73 @@
+# LogicPacks helper installer for Windows: irm https://logicpacks.io/helper.ps1 | iex
+# Optional: $env:LP_SERVER (and $env:LP_TOKEN) to sign in during install, $env:LP_HELPER_URL to
+# install from another copy, $env:LP_HELPER_SHA256 to pin it, $env:LP_HELPER_NO_WATCHER = 1 /
+# $env:LP_HELPER_NO_HOOKS = 1 to skip those steps.
+# Runs inside the caller's PowerShell (iex), so it throws instead of calling exit.
+$ErrorActionPreference = 'Stop'
+
+function Fail($message) { throw "LogicPacks helper: $message" }
+
+$HelperHome = if ($env:LP_HELPER_HOME) { $env:LP_HELPER_HOME } else { Join-Path $env:USERPROFILE '.logicpacks\helper' }
+$Source = if ($env:LP_HELPER_URL) { $env:LP_HELPER_URL } else { 'https://logicpacks.io/helper/lp.mjs' }
+$BinDir = Join-Path $HelperHome 'bin'
+
+$NodeCommand = Get-Command node -ErrorAction SilentlyContinue
+if (-not $NodeCommand) {
+  Fail 'Node.js 18 or newer is needed. Install the LTS from https://nodejs.org (or: winget install OpenJS.NodeJS.LTS), open a new PowerShell and run this again.'
+}
+$Node = $NodeCommand.Source
+$NodeMajor = [int](& $Node -p 'process.versions.node.split(".")[0]')
+if ($NodeMajor -lt 18) { Fail "Node.js 18 or newer is needed; found $(& $Node -v)." }
+
+New-Item -ItemType Directory -Force -Path $BinDir | Out-Null
+$Tmp = Join-Path ([System.IO.Path]::GetTempPath()) ("lp-helper-" + [guid]::NewGuid().ToString('N') + '.mjs')
+try {
+  if ($Source -match '^https?://') {
+    [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
+    Invoke-WebRequest -UseBasicParsing -Uri $Source -OutFile $Tmp
+  } else {
+    Copy-Item -LiteralPath ($Source -replace '^file:///?', '') -Destination $Tmp
+  }
+  if ($env:LP_HELPER_SHA256) {
+    $actual = (Get-FileHash -Algorithm SHA256 -LiteralPath $Tmp).Hash.ToLower()
+    if ($actual -ne $env:LP_HELPER_SHA256.ToLower()) { Fail "checksum mismatch for $Source" }
+  }
+  & $Node --check $Tmp 2>$null
+  if ($LASTEXITCODE -ne 0) { Fail "$Source is not a valid helper script" }
+  Move-Item -Force -LiteralPath $Tmp -Destination (Join-Path $HelperHome 'lp.mjs')
+} finally {
+  if (Test-Path -LiteralPath $Tmp) { Remove-Item -Force -LiteralPath $Tmp }
+}
+
+$Script = Join-Path $HelperHome 'lp.mjs'
+# lp.cmd for PowerShell and cmd; an sh wrapper named lp for Git Bash, which Claude Code uses for
+# its shell and hooks on Windows. Both quote their paths, so spaces in the profile path work.
+$Ascii = New-Object System.Text.UTF8Encoding($false)
+[System.IO.File]::WriteAllText((Join-Path $BinDir 'lp.cmd'), "@echo off`r`n`"$Node`" `"$Script`" %*`r`n", $Ascii)
+$PosixNode = $Node -replace '\\', '/'
+$PosixScript = $Script -replace '\\', '/'
+[System.IO.File]::WriteAllText((Join-Path $BinDir 'lp'), "#!/bin/sh`nexec `"$PosixNode`" `"$PosixScript`" `"`$@`"`n", $Ascii)
+
+# Put the bin folder on the user's PATH (new shells) and this session's PATH.
+$UserPath = [Environment]::GetEnvironmentVariable('Path', 'User')
+if (-not (($UserPath -split ';') -contains $BinDir)) {
+  $NewPath = if ([string]::IsNullOrEmpty($UserPath)) { $BinDir } else { "$UserPath;$BinDir" }
+  [Environment]::SetEnvironmentVariable('Path', $NewPath, 'User')
+}
+if (-not (($env:Path -split ';') -contains $BinDir)) { $env:Path = "$env:Path;$BinDir" }
+
+$Lp = Join-Path $BinDir 'lp.cmd'
+$InstallArgs = @('install')
+if ($env:LP_HELPER_NO_HOOKS) { $InstallArgs += '--no-hooks' }
+if ($env:LP_HELPER_NO_WATCHER) { $InstallArgs += '--no-watcher' }
+& $Lp @InstallArgs
+
+if ($env:LP_SERVER) {
+  $LoginArgs = @('login', '--host', $env:LP_SERVER)
+  if ($env:LP_TOKEN) { $LoginArgs += @('--token', $env:LP_TOKEN) }
+  & $Lp @LoginArgs
+} else {
+  Write-Host ''
+  Write-Host 'Next: lp login'
+}
+Write-Host "LogicPacks helper installed in $HelperHome. Run lp status to check it."

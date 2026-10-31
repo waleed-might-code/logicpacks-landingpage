@@ -1,0 +1,12 @@
+/setup.md
+  Content-Type: text/markdown; charset=utf-8
+  Cache-Control: public, max-age=300
+/helper.ps1
+  Content-Type: text/plain; charset=utf-8
+  Cache-Control: public, max-age=300
+/helper.sh
+  Content-Type: text/plain; charset=utf-8
+  Cache-Control: public, max-age=300
+/helper/lp.mjs
+  Content-Type: text/javascript; charset=utf-8
+  Cache-Control: public, max-age=300

@@ -102,7 +102,10 @@ export const TOOLS = [
 
 // The paste-in prompt that connects an agent already in use to LogicPacks.
 export const SETUP_URL = 'https://logicpacks.io/setup.md';
-export const CONNECT_PROMPT = `Read ${SETUP_URL} and connect this agent to LogicPacks.`;
+// The same three lines as `lp setup-prompt` and the app's "Use your own agent" (helper connectText.ts).
+export const CONNECT_PROMPT = `Set up LogicPacks for me: read ${SETUP_URL} and follow it.
+Install the helper, log me in, and add the LogicPacks block to your global instructions.
+Then share this project and give me an invite link.`;
 
 // Sample experts for the Request assistance release on /new. Not real people: the
 // portraits are generated and the page says so. The app seeds the same eight.
