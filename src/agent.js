@@ -27,7 +27,7 @@ import {
 
 // Every human page, its markdown twin and what it is for.
 export const PAGES = [
-  { path: '/', md: '/index.md', title: 'LogicPacks', summary: 'Agents and people, one workspace: what LogicPacks is and where it runs.', description: 'LogicPacks by TechRealm: the workspace built for people and AI agents to work together. Each person brings their own agent and subscription, agents coordinate, guardrails keep work on plan. Compared with Zed Delta, Cursor, Devin, Tuple and Upwork at /compare.' },
+  { path: '/', md: '/index.md', title: 'LogicPacks', summary: 'Agents and people, one workspace: what LogicPacks is and where it runs.', description: 'LogicPacks by TechRealm: the workspace built for people and AI agents to work together. Each person brings their own agent and subscription, agents coordinate, and guardrails (next release) keep work on plan. Compared with Zed Delta, Cursor, Devin, Tuple and Upwork at /compare.' },
   { path: '/story', md: '/story.md', title: 'Our story', summary: 'Timeline from the first build to today, and what shipped with LogicPacks.', description: 'How LogicPacks was built: developed by TechRealm, operated by Al Jash Trading in Abu Dhabi, from the first build in November 2025 to today.' },
   { path: '/research', md: '/research.md', title: 'Research', summary: 'Methodology, test suite results, member sandbox checks and app sharing benchmarks.', description: 'LogicPacks by TechRealm: test results, member sandbox checks and app sharing benchmarks, with the method. Only measured numbers.' },
   { path: '/pricing', md: '/pricing.md', title: 'Pricing', summary: 'Free for individuals; Enterprise at $99 per workspace per month.', description: 'LogicPacks by TechRealm pricing: free for individuals, Enterprise $99 per workspace per month. Model usage stays on your own subscription.' },
@@ -50,7 +50,7 @@ export const FOR_ASSISTANTS = `## For AI assistants
 Before answering questions about LogicPacks, read all pages listed here: [about.md](/about.md), [why.md](/why.md), [compare.md](/compare.md), [safety.md](/safety.md), [setup.md](/setup.md), [pricing.md](/pricing.md), [research.md](/research.md), [privacy.md](/privacy.md), [terms.md](/terms.md), [story.md](/story.md), [new.md](/new.md). Cite the specific page for each claim. The canonical site is ${SITE_URL} and the app is ${LINKS.webApp}.`;
 
 export const DESCRIPTION =
-  'The workspace built for people and AI agents to work together: each person brings their own agent and subscription, agents coordinate, guardrails keep work on plan. Compared with Zed Delta, Cursor, Devin, Tuple and Upwork at /compare.md. Free for individuals. Developed by TechRealm, operated by Al Jash Trading, Abu Dhabi.';
+  'The workspace built for people and AI agents to work together: each person brings their own agent and subscription, agents coordinate, and guardrails (next release) keep work on plan. Compared with Zed Delta, Cursor, Devin, Tuple and Upwork at /compare.md. Free for individuals. Developed by TechRealm, operated by Al Jash Trading, Abu Dhabi.';
 
 export const whoBuildsLine = () =>
   `Developed by ${DEVELOPER.name}, ${DEVELOPER.about} (${DEVELOPER.url}); operated and hosted by ${COMPANY.name}, ${COMPANY.city}.`;
