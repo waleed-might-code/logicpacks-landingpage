@@ -1,4 +1,14 @@
-import { COMPANY_ADDRESS, COMPANY_LICENCE, ENTERPRISE_PER, RUNNING_AT as RUNNING_AT_CONFIRM } from './confirm';
+import {
+  BRANDS as BRANDS_CONFIRMED,
+  COMPANY_ADDRESS,
+  COMPANY_CITY,
+  COMPANY_FORM,
+  COMPANY_LICENCE,
+  COMPANY_NAME,
+  COMPANY_SINCE,
+  COMPANY_WEBSITE,
+  ENTERPRISE_PER,
+} from './confirm';
 // Every outbound link, download and the paste-in agent prompt live here, so
 // changing where "Sign in" or "Download" points is a one-line edit.
 
@@ -133,10 +143,14 @@ export const expertPortrait = (id) => `/experts/${id}.webp`;
 export const EXPERT_PORTRAITS_READY = true;
 
 // The operator, named in the footer and on /privacy and /terms.
-// Address and licence come from src/confirm.js (mocks until confirmed).
+// Details come from src/confirm.js (from the trade licence).
 export const COMPANY = {
-  name: 'Aljash Trading',
+  name: COMPANY_NAME,
+  form: COMPANY_FORM,
+  city: COMPANY_CITY,
   country: 'UAE',
+  since: COMPANY_SINCE,
+  website: COMPANY_WEBSITE,
   address: COMPANY_ADDRESS,
   licence: COMPANY_LICENCE,
   whatsapp: '+1 713 632 2262',
@@ -145,8 +159,9 @@ export const COMPANY = {
 
 export const LEGAL_EFFECTIVE = '1 November 2026';
 
-// "Running at": text names from src/confirm.js.
-export const RUNNING_AT = RUNNING_AT_CONFIRM;
+// Brands we've built for, from src/confirm.js.
+export const BRANDS = BRANDS_CONFIRMED;
+export const brandLogo = (file) => `/brands/${file}.png`;
 
 // Our story, as the team tells it. Months are approximate.
 export const STORY = [
@@ -213,3 +228,19 @@ export const PRICING = {
     soon: ['Single sign-on', 'Admin controls and audit log', 'Your own cloud host', 'Vetted freelancers on request'],
   },
 };
+
+// Where it runs: the main page and /about.md read the same two lines.
+export const WHERE = [
+  {
+    title: 'Your machine',
+    body: 'Use the Claude Code, Codex, OpenCode or Gemini CLI you already run. We do not run anything for you, and your login stays on your machine.',
+  },
+  {
+    title: 'Our sandbox cloud',
+    body: 'Each member gets an isolated sandbox user, with no access to the host or to other members. Work keeps going when your laptop is off.',
+  },
+];
+
+// Vetted freelancers (Request assistance, Beta): /new and /about.md.
+export const FREELANCERS =
+  'Sometimes it is cheaper to save tokens and bring in a freelancer vetted by LogicPacks. They bring their own Claude and tools and use none of your tokens: you pay for their hours, with their AI included. Every freelancer works under NDA, your keys are never shared with them, and your agent keeps the work to the scope you set.';

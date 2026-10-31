@@ -65,7 +65,7 @@ body {
 /* Glass pill header: faint fill, blur and a hairline that is brighter at the top. */
 .lp-glass {
   position: relative;
-  background: rgb(24 24 24 / 0.72);
+  background: rgb(22 22 22 / 0.92);
   backdrop-filter: blur(14px) saturate(120%);
   -webkit-backdrop-filter: blur(14px) saturate(120%);
   box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.08), 0 12px 32px -18px rgb(0 0 0 / 0.8);

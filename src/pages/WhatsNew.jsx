@@ -1,7 +1,7 @@
 import { BetaPill, container, display, Facts } from '../components/Section';
 import { Link } from 'react-router-dom';
 import MediaSlot from '../components/MediaSlot';
-import { EVERY_APP_MEDIA, EXPERT_PORTRAITS_READY, EXPERTS, expertPortrait, LINKS } from '../site';
+import { EVERY_APP_MEDIA, EXPERT_PORTRAITS_READY, EXPERTS, expertPortrait, FREELANCERS, LINKS } from '../site';
 
 const EVERY_APP = [
   { title: 'The same machine', body: 'Open the host’s apps with the same profiles. No VM.' },
@@ -67,10 +67,7 @@ export default function WhatsNew() {
           <span className="text-muted">When an agent is not enough, add an expert who gets it done for you.</span>
         </h2>
         <p className="mt-5 max-w-[680px] text-[14px] leading-[1.6] text-muted">
-          We remove the complex parts so you just get it done. Sometimes it is cheaper to save tokens and bring in a
-          freelancer vetted by LogicPacks. They bring their own Claude and tools and use none of your tokens: you pay
-          for their hours, with their AI included. Every freelancer works under NDA, your keys are never shared with
-          them, and your agent keeps the work to the scope you set.{' '}
+          We remove the complex parts so you just get it done. {FREELANCERS}{' '}
           <Link to={LINKS.pricing} className="text-ink underline decoration-line underline-offset-4">
             See pricing
           </Link>

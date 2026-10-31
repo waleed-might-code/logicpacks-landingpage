@@ -41,7 +41,7 @@ export default function App() {
         Skip to content
       </a>
       <Nav />
-      <main id="main" className="pt-16">
+      <main id="main" className="pt-[72px]">
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/download" element={<Download />} />

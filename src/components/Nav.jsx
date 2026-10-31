@@ -23,11 +23,11 @@ export default function Nav() {
   return (
     <header
       data-hidden={hidden ? 'true' : 'false'}
-      className="lp-header pointer-events-none fixed inset-x-0 top-0 z-40 px-3 pt-3 sm:px-6"
+      className="lp-header pointer-events-none fixed inset-x-0 top-0 z-40 pt-3"
     >
       <nav
         aria-label="Main"
-        className={`pointer-events-auto mx-auto flex h-12 w-full max-w-[1120px] items-center gap-5 rounded-full pl-5 pr-1.5 transition-colors sm:gap-7 lp-glass`}
+        className="pointer-events-auto mx-auto flex h-12 w-[calc(100%-32px)] max-w-[calc(1280px-64px)] items-center gap-5 rounded-full pl-5 pr-1.5 transition-colors sm:w-[calc(100%-64px)] sm:gap-7 lp-glass"
       >
         <Link to="/" aria-label="LogicPacks home" className="mr-auto flex items-center">
           <Logo />

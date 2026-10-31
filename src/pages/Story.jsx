@@ -11,7 +11,7 @@ export default function Story() {
           Our story. <span className="text-muted">A year in the works, eight months of it in testing.</span>
         </h1>
         <p className="mt-5 max-w-[640px] text-[14px] leading-[1.6] text-muted">
-          We are a small team at {COMPANY.name} in the {COMPANY.country}. We started LogicPacks for our own client work:
+          LogicPacks is built at {COMPANY.name} in {COMPANY.city}, trading since {COMPANY.since}. We started LogicPacks for our own client work:
           people and their agents in one project, seeing each other work. We opened it to our own team after two months,
           then to labs and tech agencies, TechRealm among them. It is in public beta now.
         </p>

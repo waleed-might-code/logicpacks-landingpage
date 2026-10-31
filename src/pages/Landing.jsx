@@ -6,7 +6,7 @@ import LaunchMedia from '../components/LaunchMedia';
 import { MotionBg, Reveal } from '../components/Motion';
 import MediaSlot from '../components/MediaSlot';
 import { BetaPill, container, display, Facts } from '../components/Section';
-import { CONNECT_PROMPT, EVERY_APP_MEDIA, LINKS, RUNNING_AT, TOGETHER_MEDIA, TOOLS } from '../site';
+import { BRANDS, brandLogo, COMPANY, CONNECT_PROMPT, EVERY_APP_MEDIA, LINKS, TOGETHER_MEDIA, TOOLS, WHERE } from '../site';
 
 // A short page in the shape of a product sheet: a hero, three rows (words and a
 // button on the left, one visual on the right), a closing line and the footer.
@@ -189,16 +189,6 @@ function ToolStrip() {
 }
 
 // Where the work runs: two plain options, side by side.
-const WHERE = [
-  {
-    title: 'Your machine',
-    body: 'Use the Claude Code, Codex, OpenCode or Gemini CLI you already run. We do not run anything for you, and your login stays on your machine.',
-  },
-  {
-    title: 'Our sandbox cloud',
-    body: 'Each member gets an isolated sandbox user, with no access to the host or to other members. Work keeps going when your laptop is off.',
-  },
-];
 
 function WhereItRuns() {
   return (
@@ -255,25 +245,27 @@ function Hints() {
   );
 }
 
-// "Running at": text names from src/confirm.js; open slots read "Your team".
-export function RunningAt({ names = RUNNING_AT }) {
-  if (!names.length) return null;
+// Brands we've built for: a quiet monochrome strip, grey until hovered.
+export function Brands({ brands = BRANDS }) {
+  if (!brands.length) return null;
   return (
-    <section aria-label="Running at" className={`${container} border-t border-line py-10`}>
-      <div className="flex flex-wrap items-center gap-x-10 gap-y-3">
-        <p className="font-mono text-[11px] uppercase tracking-[0.08em] text-faint">Running at</p>
-        {names.map((entry, i) =>
-          entry.slot ? (
-            <span key={`slot-${i}`} data-testid="running-at-slot" className="rounded-full border border-dashed border-line px-3 py-1 text-[13px] text-faint">
-              Your team
-            </span>
-          ) : (
-            <span key={entry.name} data-testid="running-at" className="text-[15px] font-medium tracking-[-0.01em] text-muted">
-              {entry.name}
-            </span>
-          ),
-        )}
-      </div>
+    <section aria-labelledby="brands-title" className={`${container} border-t border-line py-12`}>
+      <p id="brands-title" className="font-mono text-[11px] uppercase tracking-[0.08em] text-faint">
+        Brands we&rsquo;ve built for
+      </p>
+      <ul className="mt-7 grid grid-cols-3 items-center gap-x-8 gap-y-8 sm:grid-cols-4 lg:grid-cols-6">
+        {brands.map((b) => (
+          <li key={b.file} data-testid="brand" className="flex h-9 items-center justify-center">
+            <img
+              src={brandLogo(b.file)}
+              alt={b.name}
+              title={b.name}
+              loading="lazy"
+              className="max-h-full max-w-full object-contain opacity-45 grayscale transition-opacity duration-300 hover:opacity-100"
+            />
+          </li>
+        ))}
+      </ul>
     </section>
   );
 }
@@ -282,17 +274,13 @@ function Closing() {
   return (
     <section aria-labelledby="closing-title" className="relative isolate mt-6 overflow-hidden border-t border-line">
       <MotionBg name="wave" shade="bg-gradient-to-b from-page/85 via-page/70 to-page/90" />
-      <Reveal className={`${container} grid gap-6 py-20 sm:py-28 lg:grid-cols-[5fr_7fr] lg:gap-14`}>
+      <Reveal className={`${container} grid gap-6 py-20 sm:py-28 lg:grid-cols-[5fr_7fr] lg:items-end lg:gap-14`}>
         <h2 id="closing-title" className={rowTitle}>
-          Built by Aljash Trading in the UAE.
+          Built by {COMPANY.name}, {COMPANY.city}. Since {COMPANY.since}.
           <span className="block text-muted">Try it on your next project.</span>
         </h2>
         <div>
-          <p className="max-w-[520px] text-[14px] leading-[1.55] text-muted">
-            We are a small team. Use it for the work you already have, and tell us what breaks. New things land on the
-            releases page first.
-          </p>
-          <div className="mt-6 flex flex-wrap items-center gap-4">
+          <div className="flex flex-wrap items-center gap-4">
             <DownloadButton />
             <Link to={LINKS.whatsNew} className="inline-flex items-center gap-2 text-[13px] text-ink hover:underline">
               See what&rsquo;s new <span aria-hidden="true">→</span>
@@ -370,7 +358,7 @@ export default function Landing() {
       </Row>
       <WhereItRuns />
       <Hints />
-      <RunningAt />
+      <Brands />
       <Closing />
     </>
   );

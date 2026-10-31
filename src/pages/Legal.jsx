@@ -6,7 +6,7 @@ import { COMPANY, LEGAL_EFFECTIVE, LINKS } from '../site';
 // prerendered to static HTML at build time (scripts/prerender.mjs), so they read
 // the same without JavaScript.
 
-const operator = `${COMPANY.name}, ${COMPANY.country}`;
+const operator = `${COMPANY.name} (${COMPANY.form}), ${COMPANY.city}, ${COMPANY.country}`;
 
 function Contact() {
   return (
@@ -22,9 +22,8 @@ function Contact() {
 function Operator() {
   return (
     <p>
-      LogicPacks is operated by {operator}
-      {COMPANY.address ? `, ${COMPANY.address}` : ''}
-      {COMPANY.licence ? `, ${COMPANY.licence}` : ''}. Contact: <Contact />.
+      LogicPacks by {COMPANY.name} is operated by {operator}, {COMPANY.licence}. Address: {COMPANY.address}. Contact:{' '}
+      <Contact />.
     </p>
   );
 }
@@ -125,7 +124,10 @@ export function Terms() {
         <p>You can stop at any time and ask us to delete your data. We may suspend accounts that break these terms.</p>
       </Part>
       <Part title="Law">
-        <p>These terms are governed by the laws of the United Arab Emirates.</p>
+        <p>
+          These terms are governed by the laws of the Emirate of Abu Dhabi and the federal laws of the United Arab Emirates.
+          The courts of Abu Dhabi have jurisdiction over any dispute.
+        </p>
       </Part>
     </Page>
   );

@@ -53,12 +53,14 @@ export default function Footer() {
           <p className="mt-3 max-w-[260px] text-[13px] leading-[1.5] text-faint">
             Agents and people in one shared project.
           </p>
-          {(COMPANY.address || COMPANY.licence) && (
-            <p className="mt-4 text-[12px] leading-[1.5] text-faint">
-              {COMPANY.address && <span className="block">{COMPANY.address}</span>}
-              {COMPANY.licence && <span className="block">{COMPANY.licence}</span>}
-            </p>
-          )}
+          <p className="mt-4 max-w-[300px] text-[12px] leading-[1.5] text-faint">
+            <a href={COMPANY.website} className="text-muted transition-colors hover:text-ink">
+              {COMPANY.name}
+            </a>{' '}
+            ({COMPANY.form}), since {COMPANY.since}
+            <span className="block">{COMPANY.address}</span>
+            <span className="block">{COMPANY.licence}</span>
+          </p>
         </div>
         <div className="flex flex-wrap gap-x-14 gap-y-8">
           {COLUMNS.map((col) => (
@@ -97,7 +99,7 @@ export default function Footer() {
       </div>
       <div className="mx-auto flex w-full max-w-site items-center border-t border-line px-4 py-5 font-mono text-[11px] text-faint sm:px-8">
         <span>
-          &copy; {new Date().getFullYear()} LogicPacks by {COMPANY.name}, {COMPANY.country}
+          &copy; {new Date().getFullYear()} LogicPacks by {COMPANY.name}, {COMPANY.city}, {COMPANY.country}
         </span>
       </div>
     </footer>

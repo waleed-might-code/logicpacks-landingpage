@@ -52,7 +52,7 @@ describe('Landing', () => {
       'Delegate with guardrails.',
       'Works with your agent.',
       'Where it runs.',
-      'Built by Aljash Trading in the UAE.Try it on your next project.',
+      'Built by Al Jash Trading, Abu Dhabi. Since 1994.Try it on your next project.',
     ]);
     expect(screen.getByRole('link', { name: 'Start a shared project' })).toHaveAttribute('href', 'https://app.logicpacks.io');
     expect(screen.getByRole('link', { name: 'Plan a goal' })).toBeInTheDocument();
@@ -150,7 +150,7 @@ describe('Trust details', () => {
   it('names the operator in the footer, with privacy, terms and WhatsApp', () => {
     renderAt('/');
     const footer = screen.getByRole('contentinfo');
-    expect(footer).toHaveTextContent(/© \d{4} LogicPacks by Aljash Trading, UAE/);
+    expect(footer).toHaveTextContent(/© \d{4} LogicPacks by Al Jash Trading, Abu Dhabi, UAE/);
     expect(within(footer).getByRole('link', { name: 'Privacy' })).toHaveAttribute('href', '/privacy');
     expect(within(footer).getByRole('link', { name: 'Terms' })).toHaveAttribute('href', '/terms');
     expect(within(footer).getByRole('link', { name: 'WhatsApp +1 713 632 2262' })).toHaveAttribute('href', 'https://wa.me/17136322262');
@@ -169,7 +169,7 @@ describe('Trust details', () => {
   it('renders the privacy policy with what we store, what we never store, deletion and the operator', () => {
     const { container } = renderAt('/privacy');
     expect(screen.getByRole('heading', { level: 1, name: 'Privacy' })).toBeInTheDocument();
-    for (const text of ['Aljash Trading, UAE', 'What we store', 'never store or proxy model API keys', 'isolated sandbox user', 'delete your account', 'Effective 1 November 2026']) {
+    for (const text of ['Al Jash Trading (Establishment), Abu Dhabi, UAE', 'CN-1030597', 'Office 5, Bani Yas West 4', 'What we store', 'never store or proxy model API keys', 'isolated sandbox user', 'delete your account', 'Effective 1 November 2026']) {
       expect(container.textContent).toContain(text);
     }
     expect(container.textContent).not.toMatch(/—|Waleed/);
@@ -178,18 +178,27 @@ describe('Trust details', () => {
   it('renders the terms with the beta disclaimer and UAE law', () => {
     const { container } = renderAt('/terms');
     expect(screen.getByRole('heading', { level: 1, name: 'Terms' })).toBeInTheDocument();
-    for (const text of ['Aljash Trading, UAE', 'LogicPacks is in beta', 'laws of the United Arab Emirates']) {
+    for (const text of ['Al Jash Trading (Establishment), Abu Dhabi, UAE', 'CN-1030597', 'LogicPacks is in beta', 'laws of the United Arab Emirates', 'courts of Abu Dhabi']) {
       expect(container.textContent).toContain(text);
     }
     expect(container.textContent).not.toMatch(/—|Waleed/);
   });
 
-  it('shows the Running at strip from the config, names as text and open slots', () => {
+  it('shows the brands we have built for as a quiet logo strip', () => {
+    const { container } = renderAt('/');
+    const strip = screen.getByRole('region', { name: 'Brands we’ve built for' });
+    const logos = within(strip).getAllByRole('img');
+    expect(logos).toHaveLength(12);
+    expect(logos[0]).toHaveAttribute('src', '/brands/digital-software-market.png');
+    expect(container.textContent).not.toMatch(/Running at|Your team|small team|Aljash/);
+  });
+
+  it('footer links the company site with the licence and address', () => {
     renderAt('/');
-    const strip = screen.getByRole('region', { name: 'Running at' });
-    expect(within(strip).getAllByTestId('running-at').map((n) => n.textContent)).toEqual(['TechRealm', 'Aljash Trading']);
-    expect(within(strip).getAllByTestId('running-at-slot')[0]).toHaveTextContent('Your team');
-    expect(strip.querySelector('img, svg')).toBeNull();
+    const footer = screen.getByRole('contentinfo');
+    expect(within(footer).getByRole('link', { name: 'Al Jash Trading' })).toHaveAttribute('href', 'https://aljashtrading.com');
+    expect(footer).toHaveTextContent('CN-1030597');
+    expect(footer).toHaveTextContent('Office 5, Bani Yas West 4, Bani Yas, Abu Dhabi, UAE');
   });
 });
 

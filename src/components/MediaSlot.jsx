@@ -65,7 +65,7 @@ export default function MediaSlot({
         <video
           ref={videoRef}
           data-testid="media-video"
-          className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ${videoReady ? 'opacity-100' : 'pointer-events-none opacity-0'}`}
+          className={`absolute inset-0 h-full w-full object-contain transition-opacity duration-500 ${videoReady ? 'opacity-100' : 'pointer-events-none opacity-0'}`}
           poster={still ?? undefined}
           autoPlay
           muted

@@ -1,9 +1,21 @@
-# Logic Packs — https://logicpacks.io
+# LogicPacks, https://logicpacks.io
+# Everyone, including AI crawlers, is welcome. Agents: start at /llms.txt.
 User-agent: *
 Allow: /
 
-# Keep gated/utility routes out of the index
-Disallow: /beta
-Disallow: /ambassador-apply
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
 
 Sitemap: https://logicpacks.io/sitemap.xml

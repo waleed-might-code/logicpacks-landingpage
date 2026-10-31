@@ -29,7 +29,7 @@ function AppShot() {
 
 function AgentShot() {
   return (
-    <div className="flex aspect-[16/10] w-full flex-col overflow-hidden rounded-[10px] border border-[#3a3a3a] bg-page">
+    <div className="flex aspect-video w-full flex-col overflow-hidden rounded-[10px] border border-[#3a3a3a] bg-page">
       <div className="flex h-9 items-center gap-1.5 border-b border-line px-3">
         <span className="h-2.5 w-2.5 rounded-full bg-[#3a3a3a]" />
         <span className="h-2.5 w-2.5 rounded-full bg-[#3a3a3a]" />
@@ -48,29 +48,28 @@ export default function LaunchMedia() {
   const [tab, setTab] = useState('app');
   return (
     <section aria-label="LogicPacks app" className="lp-rise mt-12 sm:mt-16" style={{ '--d': '360ms' }}>
-      <div className="mx-auto w-full max-w-site sm:px-8">
-        <div className="relative isolate overflow-hidden bg-[#141414] px-4 py-6 sm:mr-[calc((100%-100vw)/2)] sm:rounded-l-2xl sm:py-14 sm:pl-14 sm:pr-[calc((100vw-100%)/2+24px)]">
+      <div className="mx-auto w-full max-w-site px-4 sm:px-8">
+        <div className="relative isolate overflow-hidden rounded-2xl border border-line bg-[#141414] p-3 sm:p-8 lg:p-10">
           <MotionBg name="fluted" shade="bg-black/45" />
           <div role="tabpanel" id={`launch-${tab}`} aria-labelledby={`launch-tab-${tab}`}>
             {tab === 'app' ? <AppShot /> : <AgentShot />}
           </div>
-        </div>
-        <div role="tablist" aria-label="Where you work" className="mt-3 flex gap-5 px-4 sm:px-0">
-          {TABS.map((t) => (
-            <button
-              key={t.id}
-              id={`launch-tab-${t.id}`}
-              role="tab"
-              type="button"
-              aria-selected={tab === t.id}
-              aria-controls={`launch-${t.id}`}
-              onClick={() => setTab(t.id)}
-              className={`relative pb-2 text-[13px] transition-colors ${tab === t.id ? 'text-ink' : 'text-faint hover:text-muted'}`}
-            >
-              {t.label}
-              <span className={`absolute bottom-0 left-0 h-[2px] w-1/2 rounded-full ${tab === t.id ? 'bg-ink' : 'bg-transparent'}`} />
-            </button>
-          ))}
+          <div role="tablist" aria-label="Where you work" className="mt-4 flex justify-center gap-1">
+            {TABS.map((t) => (
+              <button
+                key={t.id}
+                id={`launch-tab-${t.id}`}
+                role="tab"
+                type="button"
+                aria-selected={tab === t.id}
+                aria-controls={`launch-${t.id}`}
+                onClick={() => setTab(t.id)}
+                className={`h-8 rounded-full px-4 text-[13px] transition-colors ${tab === t.id ? 'bg-white/10 text-ink' : 'text-faint hover:text-muted'}`}
+              >
+                {t.label}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
     </section>
