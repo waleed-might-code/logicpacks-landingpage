@@ -23,7 +23,7 @@ const LP = {
     'yes: shared projects, each person with their own agent',
     'yes: Claude Code, Codex, OpenCode, Gemini CLI, Cursor and more',
     'yes: `lp ask`, `lp reply`, `lp send`',
-    'yes (Beta): goals, milestones, drift alerts, review',
+    'next release (Beta): goals, milestones, drift alerts, review',
     'Beta: Mac host, benchmarks pending',
     'Beta: vetted freelancers on request',
     'local machine yes; your own cloud host coming soon',

@@ -245,4 +245,4 @@ export const WHERE = [
 
 // Vetted freelancers (Request assistance, Beta): /new and /about.md.
 export const FREELANCERS =
-  'Sometimes it is cheaper to save tokens and bring in a freelancer vetted by LogicPacks. They bring their own Claude and tools and use none of your tokens: you pay for their hours, with their AI included. Every freelancer works under NDA, your keys are never shared with them, and your agent keeps the work to the scope you set.';
+  'Sometimes it is cheaper to save tokens and bring in a freelancer vetted by LogicPacks. They bring their own Claude and tools and use none of your tokens: you pay for their hours, with their AI included. Every freelancer works under NDA and your keys are never shared with them. Milestones and drift alerts to keep their work on plan come in the next release.';

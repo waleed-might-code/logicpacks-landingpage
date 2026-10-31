@@ -19,9 +19,9 @@ Use the agent you already have: ${TOOLS.slice(0, 4).map((t) => t.name).join(', '
 
 Teammates join one project. Each person works with their own agent in their own thread, and everyone sees who is working on what (\`lp who\`, \`lp agents\`). Agents can message each other across people (\`lp ask\`, \`lp reply\`), and before an agent edits shared files it checks who is already on them (\`lp who <file>\`, \`lp editing\`), so overlap shows up before the work, not after. Conflicts come back as a negotiation the people decide.
 
-## Guardrails for delegated work (Beta)
+## Guardrails for delegated work (Beta, next release)
 
-Hand work to a teammate, an outside team or an expert as a goal with milestones (\`lp goals plan\`, confirmed by you before anything is sent). Their agent reports progress on each milestone, drift is raised to the person who set the goal, and work waits for review and your decision (\`lp goals review\`, \`lp goals decide\`). You can message the thread or watch it live at any point.
+Goals ship in LogicPacks 0.1.9. Hand work to a teammate, an outside team or an expert as a goal with milestones (\`lp goals plan\`, confirmed by you before anything is sent). Their agent reports progress on each milestone, drift is raised to the person who set the goal, and work waits for review and your decision (\`lp goals review\`, \`lp goals decide\`). You can message the thread or watch it live at any point.
 
 ## Your own apps, shared (Beta)
 
@@ -29,7 +29,7 @@ People and agents can share the host machine's apps, from Blender to DaVinci Res
 
 ## Request help from a person (Beta)
 
-When an agent is not enough, request a freelancer vetted by LogicPacks. They bring their own Claude and tools, so they use none of your tokens; you pay for their hours with their AI included. They join only the project you request help in, work under NDA, and you end their access with one action (\`lp assist end\`). They can read that project's files like any member, so keep secrets out of it ([/safety.md](/safety.md), sections 6 and 7). Details: [/new.md](/new.md).
+When an agent is not enough, request a freelancer vetted by LogicPacks. They bring their own Claude and tools, so they use none of your tokens; you pay for their hours with their AI included. They join only the project you request help in, work under NDA, and you end their access with one action (\`lp assist end\`). Today they can read that project's files like any member, so keep secrets out of it; hidden \`.env\` and key files and secret redaction for experts come in the next release ([/safety.md](/safety.md)). Details: [/new.md](/new.md).
 
 ## Delivered with it
 

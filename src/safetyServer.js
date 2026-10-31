@@ -23,7 +23,7 @@ What teammates cannot do:
 ## 6. Secrets and access to files
 
 - A member reaches only their own folder, the projects shared with them and those projects' worktrees. Every request is checked against their current role. Host-level actions are refused, and terminals are off for members.
-- On the cloud host, each member's agent can run as its own Unix user with a scrubbed environment (no host credentials, no GitHub token, no SSH agent). Status of that check: [/research.md](/research.md) (Member sandbox).
+- On the LogicPacks cloud (app.logicpacks.io), each member's agent runs as its own Unix user with a scrubbed environment (no host credentials, no GitHub token, no SSH agent). Checks: [/research.md](/research.md) (Member sandbox). This applies to the LogicPacks cloud. A machine you host yourself is your own: its owner and admins can reach everything on it.
 - **A member can read everything in a shared project folder, including \`.env\` and key files.** Experts from Request assistance join as ordinary project members, so the same applies to them. Neither files nor pasted text are filtered or redacted for them today.
 - Keep secrets out of shared projects: use \`.gitignore\` for \`.env\` and key files, keep them outside the project folder, or use a secrets manager. Do not paste keys into a shared thread. \`lp share\` pushes the project to its GitHub remote, so anything committed is in that repository as well.
 - Do not put access to other machines (servers, home lab, VPN, SSH keys) in a shared project.
@@ -37,4 +37,13 @@ What teammates cannot do:
 - **A shared agent login:** "Revoke login" in the Request assistance panel. Their next turn on your login is refused; their project membership stays until you end the session.
 - **From the command line:** \`lp members\` lists who is in the project. Removing people is done in the app; there is no \`lp\` command for it.
 - **Timing:** removal applies to the person's next request (each request checks their current access), and their helper can no longer stream into the project. An agent turn that is already running is not stopped and keeps its access until it ends. Removal does not touch GitHub: LogicPacks does not add teammates as collaborators on your repository, and any copy a person already cloned stays with them.
+
+## In the next release (built, not live yet)
+
+These are built and ship with LogicPacks 0.1.9. Until then, sections 5 to 7 describe what is live.
+
+- Experts: \`.env\` and key files hidden from them, pasted secrets redacted, and their work scoped by goals and milestones.
+- Session streaming: secrets redacted, and less of each tool call and result sent.
+- Invites: invite links scoped to one project by default, instead of the whole workspace.
+- Command line: \`lp remove <person>\` and \`lp revoke-invite\` (see section 4 for the other helper changes).
 `;
