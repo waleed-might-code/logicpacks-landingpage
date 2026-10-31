@@ -16,7 +16,8 @@ if (-not $NodeCommand) {
   Fail 'Node.js 18 or newer is needed. Install the LTS from https://nodejs.org (or: winget install OpenJS.NodeJS.LTS), open a new PowerShell and run this again.'
 }
 $Node = $NodeCommand.Source
-$NodeMajor = [int](& $Node -p 'process.versions.node.split(".")[0]')
+# No double quotes in native arguments: Windows PowerShell 5.1 strips them.
+$NodeMajor = [int](& $Node -p 'parseInt(process.versions.node)')
 if ($NodeMajor -lt 18) { Fail "Node.js 18 or newer is needed; found $(& $Node -v)." }
 
 New-Item -ItemType Directory -Force -Path $BinDir | Out-Null
@@ -68,6 +69,12 @@ if ($env:LP_SERVER) {
   & $Lp @LoginArgs
 } else {
   Write-Host ''
-  Write-Host 'Next: lp login'
+  Write-Host 'Next: lp.cmd login'
 }
-Write-Host "LogicPacks helper installed in $HelperHome. Run lp status to check it."
+# Windows PowerShell 5.1 has a built-in alias lp (Out-Printer) that wins over lp.cmd: drop it in
+# this session; in new PowerShell windows type lp.cmd (cmd, Git Bash and PowerShell 7 take lp).
+if (Test-Path Alias:lp) {
+  Remove-Item Alias:lp -Force -ErrorAction SilentlyContinue
+  Write-Host 'In Windows PowerShell, type lp.cmd: lp is a built-in alias for Out-Printer there.'
+}
+Write-Host "LogicPacks helper installed in $HelperHome. Run lp.cmd status to check it."

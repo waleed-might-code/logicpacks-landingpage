@@ -17,10 +17,10 @@ command -v lp || curl -fsSL https://logicpacks.io/helper.sh | bash
 Windows (PowerShell):
 
 ```powershell
-if (-not (Get-Command lp -ErrorAction SilentlyContinue)) { irm https://logicpacks.io/helper.ps1 | iex }
+if (-not (Get-Command lp.cmd -ErrorAction SilentlyContinue)) { irm https://logicpacks.io/helper.ps1 | iex }
 ```
 
-The helper needs Node.js 18 or newer (Claude Code, Codex and most agents already have it; otherwise install Node.js LTS from https://nodejs.org). It puts `lp` in `~/.local/bin` on macOS and Linux and in `%USERPROFILE%\.logicpacks\helper\bin` on Windows (`lp.cmd` for PowerShell and cmd, `lp` for Git Bash), and adds that folder to your PATH. If `lp` is not found right after installing, open a new shell or call it by its full path: `~/.local/bin/lp` or `%USERPROFILE%\.logicpacks\helper\bin\lp.cmd`.
+The helper needs Node.js 18 or newer (Claude Code, Codex and most agents already have it; otherwise install Node.js LTS from https://nodejs.org). It puts `lp` in `~/.local/bin` on macOS and Linux and in `%USERPROFILE%\.logicpacks\helper\bin` on Windows (`lp.cmd` for PowerShell and cmd, `lp` for Git Bash), and adds that folder to your PATH. In Windows PowerShell 5.1, `lp` is a built-in alias for Out-Printer, so type `lp.cmd` there (for example `lp.cmd login --start`); Git Bash, cmd and PowerShell 7 take plain `lp`. If `lp` is not found right after installing, open a new shell or call it by its full path: `~/.local/bin/lp` or `%USERPROFILE%\.logicpacks\helper\bin\lp.cmd`.
 
 ## 2. Log in
 
@@ -100,7 +100,7 @@ The block is:
 ```markdown
 <!-- logicpacks:start -->
 ## LogicPacks
-Team work runs through the `lp` command (add `--json` to parse its output). If `lp` is missing, follow https://logicpacks.io/setup.md.
+Team work runs through the `lp` command (add `--json` to parse its output; in Windows PowerShell type `lp.cmd`, as `lp` is a built-in alias there). If it is missing, follow https://logicpacks.io/setup.md.
 - At the start of a session and after long tasks, run `lp inbox` and tell the user what is new (messages, questions from other agents, conflicts, drift, review requests).
 - "share this project" / "create a shared session" -> `lp share`, then give the user the invite link.
 - "add my friend X" / "invite X" -> `lp invite <email or name>`.

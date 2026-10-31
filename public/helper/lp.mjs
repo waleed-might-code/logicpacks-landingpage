@@ -539,7 +539,7 @@ const SETUP_URL = "https://logicpacks.io/setup.md";
 /** The global block: intents to `lp` commands. Kept short on purpose (about 20 lines). */
 const globalBlockBody = (projectTitle = null) => [
 	`## LogicPacks${projectTitle ? `: ${projectTitle}` : ""}`,
-	`Team work runs through the \`lp\` command (add \`--json\` to parse its output). If \`lp\` is missing, follow ${SETUP_URL}.`,
+	`Team work runs through the \`lp\` command (add \`--json\` to parse its output; in Windows PowerShell type \`lp.cmd\`, as \`lp\` is a built-in alias there). If it is missing, follow ${SETUP_URL}.`,
 	"- At the start of a session and after long tasks, run `lp inbox` and tell the user what is new (messages, questions from other agents, conflicts, drift, review requests).",
 	"- \"share this project\" / \"create a shared session\" -> `lp share`, then give the user the invite link.",
 	"- \"add my friend X\" / \"invite X\" -> `lp invite <email or name>`.",
@@ -2374,7 +2374,8 @@ const output = (text, json) => ({
 });
 const loginCommand = async (ctx, args) => {
 	const config = ctx.loadConfig();
-	const server = (flagValue(args, "host") ?? flagValue(args, "server") ?? ctx.env.LP_SERVER ?? config.server ?? "https://app.logicpacks.io").replace(/\/+$/, "");
+	const finishOnly = hasFlag(args, "finish");
+	const server = (flagValue(args, "host") ?? flagValue(args, "server") ?? ctx.env.LP_SERVER ?? null ?? (finishOnly ? config.pending?.server : void 0) ?? config.server ?? "https://app.logicpacks.io").replace(/\/+$/, "");
 	const token = flagValue(args, "token") ?? ctx.env.LP_TOKEN ?? null;
 	if (token) {
 		const me = await ctx.call({
@@ -2394,9 +2395,9 @@ const loginCommand = async (ctx, args) => {
 			who: me.who
 		});
 	}
-	const finishOnly = hasFlag(args, "finish");
 	let pending = config.pending ?? null;
-	if (!finishOnly || pending === null || pending.server !== server) {
+	if (finishOnly && (pending === null || pending.server !== server)) return refuse(`No sign-in is waiting for ${server}. Run lp login --start first.`);
+	if (!finishOnly || pending === null) {
 		const started = await ctx.call({
 			server,
 			token: null
