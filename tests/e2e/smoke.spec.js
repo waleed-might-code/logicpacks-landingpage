@@ -1,78 +1,44 @@
 import { test, expect } from '@playwright/test';
 
-const ACCESS_CODE = 'buildanything';
+test.describe('LogicPacks landing: smoke', () => {
+  test('home renders the hero, launch media and sections', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('The best place for agents and humans to work together.');
+    await expect(page.getByAltText(/The LogicPacks app/)).toBeVisible();
+    await expect(page.getByRole('heading', { name: /Sync to the cloud\./ })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /Every app, every agent, one machine\./ })).toBeAttached();
+    // No launch.mp4 shipped yet: the video stays hidden behind the screenshot.
+    await expect(page.getByTestId('media-video').first()).toHaveCSS('opacity', '0');
+  });
 
-/**
- * Type the private-beta access code into the AccessGate character inputs and
- * wait for the protected app to render. The gate stores its grant in
- * sessionStorage, so this must run once per fresh page/context.
- */
-async function unlock(page) {
-  const inputs = page.locator('input[type="text"]');
-  await expect(inputs).toHaveCount(ACCESS_CODE.length);
-  for (let i = 0; i < ACCESS_CODE.length; i++) {
-    await inputs.nth(i).fill(ACCESS_CODE[i]);
+  test('Download for Mac opens the download page', async ({ page }) => {
+    await page.goto('/');
+    await page.getByRole('link', { name: 'Download for Mac' }).first().click();
+    await expect(page).toHaveURL(/\/download$/);
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('Download LogicPacks.');
+    await expect(page).toHaveTitle('Download LogicPacks');
+  });
+
+  test('/download loads directly (SPA fallback)', async ({ page }) => {
+    await page.goto('/download');
+    await expect(page.getByRole('heading', { name: 'LogicPacks for Mac' })).toBeVisible();
+  });
+
+  test('Install with your agent copies the prompt', async ({ page, context }) => {
+    await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+    await page.goto('/');
+    await page.getByRole('button', { name: 'Install with your agent' }).first().click();
+    await expect(page.getByText(/Paste it into Claude Code/)).toBeVisible();
+    const copied = await page.evaluate(() => navigator.clipboard.readText());
+    expect(copied).toContain('Install LogicPacks on this Mac');
+  });
+
+  for (const path of ['/', '/download']) {
+    test(`no horizontal scroll at phone width on ${path}`, async ({ page }) => {
+      await page.setViewportSize({ width: 375, height: 812 });
+      await page.goto(path);
+      const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+      expect(overflow).toBeLessThanOrEqual(0);
+    });
   }
-  // Reveal animation (~13*60ms) + 600ms grant delay before the app mounts.
-  await expect(page.getByText('Access Granted')).toBeVisible();
-  // The grant is committed to sessionStorage only after the delay; wait for it
-  // so a subsequent navigation doesn't race the gate back into view.
-  await page.waitForFunction(() => sessionStorage.getItem('lp_access_granted') === 'true');
-  await expect(page.getByText('Enter Access Code')).toHaveCount(0);
-}
-
-test.describe('Logic Packs landing — smoke', () => {
-  test('access gate blocks the app and unlocks with the correct code', async ({ page }) => {
-    await page.goto('/');
-    await expect(page.getByText('Enter Access Code')).toBeVisible();
-
-    // Wrong code keeps the gate up.
-    const inputs = page.locator('input[type="text"]');
-    for (let i = 0; i < ACCESS_CODE.length; i++) {
-      await inputs.nth(i).fill('z');
-    }
-    await expect(page.getByText('Enter Access Code')).toBeVisible();
-
-    await page.reload();
-    await unlock(page);
-
-    // The persona chooser (default home) should now be reachable.
-    await expect(page.getByRole('heading', { name: 'What brings you here?' })).toBeVisible({ timeout: 15000 });
-  });
-
-  test('persona chooser routes to the marketplace view', async ({ page }) => {
-    await page.goto('/');
-    await unlock(page);
-    await expect(page.getByRole('heading', { name: 'What brings you here?' })).toBeVisible({ timeout: 15000 });
-
-    await page.getByRole('button', { name: /Browse Marketplace/i }).click();
-    await expect(page).toHaveURL(/view=marketplace/);
-  });
-
-  test('marketplace store lists packs and filters by search', async ({ page }) => {
-    // Grant access first, then deep-link to the store.
-    await page.goto('/');
-    await unlock(page);
-    await page.goto('/store');
-
-    await expect(page.getByRole('heading', { name: 'Pack Marketplace' })).toBeVisible({ timeout: 15000 });
-
-    // A known pack should be present, and search should narrow the list.
-    await expect(page.getByText('Auth Pack').first()).toBeVisible();
-
-    const search = page.getByPlaceholder(/search/i).first();
-    await search.fill('payments');
-    await expect(page.getByText('Payments Pack').first()).toBeVisible();
-    // "Redis Connector" is not featured, so once the search excludes it the
-    // pack disappears entirely (the featured strip would keep featured packs).
-    await expect(page.getByText('Redis Connector')).toHaveCount(0);
-  });
-
-  test('unknown routes render the not-found page', async ({ page }) => {
-    await page.goto('/');
-    await unlock(page);
-    await page.goto('/this-route-does-not-exist');
-    // NotFound page renders a 404 marker.
-    await expect(page.getByText(/404/).first()).toBeVisible({ timeout: 15000 });
-  });
 });
