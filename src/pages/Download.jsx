@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { copyText } from '../components/Buttons';
+import { InstallCommand, copyText } from '../components/Buttons';
 import { AppleIcon, CheckIcon } from '../components/Icons';
 import { AGENT_PROMPT, DOWNLOADS, LINKS } from '../site';
 
@@ -78,6 +78,12 @@ function MacBox() {
         </a>
       </div>
       {meta && <p className="mt-4 text-[12px] text-faint">{meta}</p>}
+      {ready && (
+        <div className="mt-5">
+          <p className="text-[12px] text-faint">Or in Terminal: installs to Applications and checks the file for you.</p>
+          <InstallCommand className="mt-1.5" />
+        </div>
+      )}
       <div className="mt-auto pt-6">
         <p className="text-[12px] text-faint">SHA-256</p>
         {mac.sha256 ? (

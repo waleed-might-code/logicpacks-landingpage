@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { AGENT_PROMPT, LINKS } from '../site';
+import { AGENT_PROMPT, INSTALL_COMMAND, LINKS } from '../site';
 import { AppleIcon, CheckIcon, TerminalIcon } from './Icons';
 
 const base =
@@ -69,5 +69,37 @@ export function AgentButton({ className = '', onCopied }) {
       </span>
       {copied ? 'Prompt copied' : 'Install with your agent'}
     </button>
+  );
+}
+
+// The one-line Terminal install, with a copy button.
+export function InstallCommand({ className = '' }) {
+  const [copied, setCopied] = useState(false);
+  const timer = useRef(null);
+
+  useEffect(() => () => clearTimeout(timer.current), []);
+
+  return (
+    <div
+      className={`flex min-w-0 items-center gap-2 rounded-full border border-line bg-panel py-1 pl-3.5 pr-1 ${className}`}
+    >
+      <span aria-hidden="true" className="font-mono text-[12px] text-faint">
+        $
+      </span>
+      <code className="min-w-0 flex-1 truncate font-mono text-[12px] text-muted">{INSTALL_COMMAND}</code>
+      <button
+        type="button"
+        onClick={async () => {
+          if (!(await copyText(INSTALL_COMMAND))) return;
+          setCopied(true);
+          clearTimeout(timer.current);
+          timer.current = setTimeout(() => setCopied(false), 2000);
+        }}
+        className="inline-flex h-7 shrink-0 items-center gap-1.5 rounded-full border border-line bg-raised px-3 text-[12px] text-ink transition-colors hover:border-[#3a3a3a] hover:bg-[#232323]"
+      >
+        {copied && <CheckIcon className="h-3 w-3" />}
+        {copied ? 'Copied' : 'Copy'}
+      </button>
+    </div>
   );
 }

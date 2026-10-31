@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { AgentButton, DownloadButton } from '../components/Buttons';
+import { AgentButton, DownloadButton, InstallCommand } from '../components/Buttons';
 import { AppsIcon, CodeIcon, LinkIcon } from '../components/Icons';
 import LaunchMedia from '../components/LaunchMedia';
 import MediaSlot from '../components/MediaSlot';
@@ -74,6 +74,7 @@ function Hero() {
         <DownloadButton />
         <AgentButton onCopied={(ok) => setHint(ok ? 'copied' : 'failed')} />
       </div>
+      <InstallCommand className="mt-3 max-w-[460px]" />
       <p aria-live="polite" className="mt-3 min-h-[18px] text-[13px] text-faint">
         {hint === 'copied' && 'Copied. Paste it into Claude Code, Codex or any agent and it installs LogicPacks for you.'}
         {hint === 'failed' && 'Could not copy here. Open the "In your agent" tab below and copy the prompt from there.'}

@@ -37,6 +37,7 @@ describe('Download page', () => {
     );
     expect(screen.getByText(sha)).toBeInTheDocument();
     expect(screen.getByText(/Version 1\.0\.0/)).toBeInTheDocument();
+    expect(screen.getByText('curl -fsSL https://logicpacks.io/install.sh | bash')).toBeInTheDocument();
   });
 
   it('lists Windows and iOS as coming soon and links the web app', async () => {
