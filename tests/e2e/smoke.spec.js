@@ -23,6 +23,10 @@ test.describe('LogicPacks landing: smoke', () => {
       ['/launch.jpg', 'image/jpeg'],
       ['/every-app.mp4', 'video/mp4'],
       ['/every-app.jpg', 'image/jpeg'],
+      ['/packs.mp4', 'video/mp4'],
+      ['/packs.jpg', 'image/jpeg'],
+      ['/assist.jpg', 'image/jpeg'],
+      ['/context.jpg', 'image/jpeg'],
     ]) {
       const response = await request.get(path);
       expect(response.status(), path).toBe(200);

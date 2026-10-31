@@ -71,12 +71,12 @@ export const PACKS_MEDIA = {
 
 export const ASSIST_MEDIA = {
   image: '/assist.jpg',
-  alt: 'Request assistance in LogicPacks: a panel of experts with their faces, and one being added to the project.',
+  alt: 'Request assistance in LogicPacks: a panel of experts with their portraits, skills and a Request button each.',
 };
 
 export const CONTEXT_MEDIA = {
   image: '/context.jpg',
-  alt: 'A pack carrying a project\'s context from Blender to DaVinci Resolve to code, with Use in on each app.',
+  alt: 'A thread saved as the pack "Menu layout", with Use in handing its context to another thread or project.',
 };
 
 // The agents people log in with. Plain wordmarks, no vendor logos.
