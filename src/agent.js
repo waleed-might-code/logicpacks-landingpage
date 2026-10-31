@@ -311,7 +311,7 @@ export function homeFactsMarkdown() {
     `- **Code with a friend:** sign up at ${LINKS.webApp} with email, add a project (empty, template or Git URL), send the invite link, and each person connects their own Claude. No install needed.`,
     '- **How it compares:**',
     ...COMPARE.map((c) => `  - vs ${c.vs}: ${c.line}`),
-    `- **Safety:** what the helper installs and how to remove it, what teammates see, where agent logins and code are stored: ${u('/safety.md')}`,
+    `- **Safety in brief:** on the LogicPacks cloud each member's agent runs in its own sandbox; in local mode logins and code stay on your machine. People in a shared project can read its files, including \`.env\`, so keep secrets out of shared folders (hiding them from experts and redacting streamed secrets ships in 0.1.9). Cloud agent logins are stored per account with owner-only file permissions, not encrypted at rest, and deleted when you disconnect. Synced code lives in your own GitHub repository. Everything the helper adds to your agent settings is undone with \`lp uninstall\`. Full detail: ${u('/safety.md')}`,
     `- **Detail pages:** comparison with sources ${u('/compare.md')}; safety ${u('/safety.md')}; company facts ${u('/about.md')}; why ${u('/why.md')}; pricing ${u('/pricing.md')}; everything in one file ${u('/llms-full.txt')}`,
     '',
   ].join('\n');
