@@ -43,7 +43,7 @@ What teammates cannot do:
 These are built and ship with LogicPacks 0.1.9. Until then, sections 5 to 7 describe what is live.
 
 - Experts: \`.env\` and key files hidden from them, pasted secrets redacted, and their work scoped by goals and milestones.
-- Session streaming: secrets redacted, and less of each tool call and result sent.
-- Invites: invite links scoped to one project by default, instead of the whole workspace.
-- Command line: \`lp remove <person>\` and \`lp revoke-invite\` (see section 4 for the other helper changes).
+- Session streaming: secrets (API keys and tokens, private keys, passwords in commands, config and connection strings) are redacted on your computer before anything is sent. MCP tool calls stream as the tool name only (opt in per folder with \`lp stream --mcp-details on\`). Reading \`.env\`, key, credential or \`.ssh\` files sends the path only, never the content. \`lp stream --status\` shows exactly what a folder sends.
+- Invites: \`lp share\` and \`lp invite\` print a link for this project only; the workspace link needs \`--workspace\`. \`lp revoke-invite\` resets a link or cancels one pending invite.
+- Command line: \`lp remove <person>\` (from the project and workspace, or \`--project-only\`) and \`lp revoke-invite\` (see section 4 for the other helper changes).
 `;
