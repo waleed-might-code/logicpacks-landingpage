@@ -18,6 +18,9 @@ function AppShot() {
       video={LAUNCH_MEDIA.video}
       alt={LAUNCH_MEDIA.alt}
       label="LogicPacks launch video"
+      width={1920}
+      height={1080}
+      soundToggle
       priority
     />
   );

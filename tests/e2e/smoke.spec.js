@@ -4,11 +4,26 @@ test.describe('LogicPacks landing: smoke', () => {
   test('home renders the hero, launch media and sections', async ({ page }) => {
     await page.goto('/');
     await expect(page.getByRole('heading', { level: 1 })).toContainText('The best place for agents and humans to work together.');
-    await expect(page.getByAltText(/The LogicPacks app/)).toBeVisible();
+    await expect(page.getByAltText(/The LogicPacks launch film/)).toBeVisible();
     await expect(page.getByRole('heading', { name: /Sync to the cloud\./ })).toBeVisible();
     await expect(page.getByRole('heading', { name: /Every app, every agent, one machine\./ })).toBeAttached();
-    // No launch.mp4 shipped yet: the video stays hidden behind the screenshot.
-    await expect(page.getByTestId('media-video').first()).toHaveCSS('opacity', '0');
+    await expect(page.getByRole('heading', { name: /See exactly what everyone is doing\./ })).toBeAttached();
+    // The launch film loads over its poster and offers its voiceover.
+    await expect(page.getByTestId('media-video').first()).toHaveCSS('opacity', '1', { timeout: 15_000 });
+    await expect(page.getByRole('button', { name: 'Play with sound' })).toBeVisible();
+  });
+
+  test('the launch film, its poster and the demo footage are served', async ({ request }) => {
+    for (const [path, type] of [
+      ['/launch.mp4', 'video/mp4'],
+      ['/launch.jpg', 'image/jpeg'],
+      ['/every-app.mp4', 'video/mp4'],
+      ['/every-app.jpg', 'image/jpeg'],
+    ]) {
+      const response = await request.get(path);
+      expect(response.status(), path).toBe(200);
+      expect(response.headers()['content-type'], path).toContain(type);
+    }
   });
 
   test('Download for Mac opens the download page', async ({ page }) => {

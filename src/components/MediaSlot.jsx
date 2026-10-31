@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 // A media frame that is ready for a video before the video exists. The image
 // (or, without one, a plain placeholder) always renders; if `video` loads, it
@@ -16,8 +16,24 @@ export default function MediaSlot({
   placeholder,
   className = '',
   priority = false,
+  soundToggle = false,
 }) {
   const [videoReady, setVideoReady] = useState(false);
+  const [withSound, setWithSound] = useState(false);
+  const videoRef = useRef(null);
+
+  // The film autoplays muted; one click restarts it with its voiceover.
+  const playWithSound = () => {
+    const el = videoRef.current;
+    if (!el) return;
+    const next = !withSound;
+    el.muted = !next;
+    if (next) {
+      el.currentTime = 0;
+      el.play().catch(() => {});
+    }
+    setWithSound(next);
+  };
   const still = image ?? poster;
 
   return (
@@ -46,6 +62,7 @@ export default function MediaSlot({
       )}
       {video && (
         <video
+          ref={videoRef}
           data-testid="media-video"
           className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ${videoReady ? 'opacity-100' : 'pointer-events-none opacity-0'}`}
           poster={still ?? undefined}
@@ -61,6 +78,17 @@ export default function MediaSlot({
         >
           <source src={video} type="video/mp4" onError={() => setVideoReady(false)} />
         </video>
+      )}
+      {video && soundToggle && videoReady && (
+        <button
+          type="button"
+          data-testid="media-sound"
+          onClick={playWithSound}
+          aria-pressed={withSound}
+          className="absolute bottom-3 right-3 rounded-full border border-[#3a3a3a] bg-page/85 px-3 py-1.5 text-[12px] text-ink backdrop-blur hover:bg-raised"
+        >
+          {withSound ? 'Mute' : 'Play with sound'}
+        </button>
       )}
     </div>
   );

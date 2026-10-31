@@ -45,18 +45,18 @@ export const AGENT_PROMPT = `Install LogicPacks on this Mac and set this project
 4. Add this folder as a project. It will show "Not synced" until I choose to share it.
 5. Tell me when it is ready, and remind me that saying "sync this to the cloud" in the project's chat shares it with my team.`;
 
-// The hero visual. The screenshot always shows; drop public/launch.mp4 in and
-// the video plays over it.
+// The hero visual: the launch film (public/launch.mp4) over its poster frame.
 export const LAUNCH_MEDIA = {
   image: '/launch.jpg',
   imageWebp: '/launch.webp',
   video: '/launch.mp4',
-  alt: 'The LogicPacks app: a project open with a new thread and a prompt typed in the composer.',
+  alt: 'The LogicPacks launch film: two people and their agents working side by side in one synced project.',
 };
 
-// Demo footage for the coming-soon "every app" section. No poster exists yet,
-// so until public/every-app.mp4 is added the slot shows a plain placeholder.
+// Demo footage for the coming-soon "every app" section: the app's own
+// coming-soon demo route (/demo/machine), recorded and sped up 2x.
 export const EVERY_APP_MEDIA = {
   video: '/every-app.mp4',
-  poster: null,
+  poster: '/every-app.jpg',
+  alt: 'The coming-soon any-app preview: a live Blender view with named cursors for each person and agent, their turns and an action log.',
 };
