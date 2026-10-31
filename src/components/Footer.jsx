@@ -31,6 +31,8 @@ const COLUMNS = [
     links: [
       { label: 'Privacy', to: LINKS.privacy },
       { label: 'Terms', to: LINKS.terms },
+      { label: 'Safety', href: '/safety.md' },
+      { label: 'Compare', href: '/compare.md' },
     ],
   },
   {

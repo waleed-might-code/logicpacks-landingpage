@@ -1,0 +1,343 @@
+{
+  "source": {
+    "repo": "feat/v2-connect",
+    "commit": "1f0f438734",
+    "file": "packages/helper/src/connectText.ts"
+  },
+  "helperInstall": "curl -fsSL https://logicpacks.io/helper.sh | bash",
+  "helperInstallWindows": "irm https://logicpacks.io/helper.ps1 | iex",
+  "defaultHost": "https://app.logicpacks.io",
+  "markers": {
+    "start": "<!-- logicpacks:start -->",
+    "end": "<!-- logicpacks:end -->"
+  },
+  "yamlMarkers": {
+    "start": "# logicpacks:start",
+    "end": "# logicpacks:end"
+  },
+  "ownFileMark": "<!-- logicpacks: this file is managed by `lp setup`; lp uninstall removes it -->",
+  "block": "## LogicPacks\nTeam work runs through the `lp` command (add `--json` to parse its output). If `lp` is the printer command (macOS, Linux), call `~/.local/bin/lp`; in Windows PowerShell type `lp.cmd`. If it is missing, follow https://logicpacks.io/setup.md.\n- At the start of a session and after long tasks, run `lp inbox` and tell the user what is new (messages, questions from other agents, conflicts, drift, review requests).\n- \"share this project\" / \"create a shared session\" -> `lp share`, then give the user the invite link.\n- \"add my friend X\" / \"invite X\" -> `lp invite <email or name>`.\n- \"what is X working on\" -> `lp who X`; \"who is working right now\" -> `lp agents` (`--workspace` for every project).\n- \"tell X ...\" -> `lp send X \"<message>\"`.\n- To coordinate with a teammate's agent, use `lp ask <person> \"<question>\"` and `lp reply <id> \"<answer>\"`; check `lp inbox` for questions from other agents and answer them.\n- \"request assistance\" / \"get an expert\" -> `lp assist request \"<brief>\"`.\n- \"set goals\" / \"ask X to do Y by Friday\" -> `lp goals plan \"<goal>\" \"<person>: <task> by <day>\" ...`; your user confirms with `lp goals confirm <id>`. Milestones for you arrive in `lp inbox`: `lp goals start|done <id>`.\n- \"save this as a pack\" -> `lp packs save \"<name>\"`; `lp packs list`, `lp packs use <id>`.\n- Before you edit shared files, run `lp who <file or topic>`; if a teammate is on it, tell the user first.\n- On a conflict or negotiation in `lp inbox`, answer with `lp reply <id>`; when it needs a person, ask the user, then `lp decide <id> mine|theirs|both`.\n- If you cannot run shell commands, ask the user to run the `lp` command, or use the `logicpacks` MCP tools if they are set up.\n- Everything else: `lp help agents` or https://logicpacks.io/setup.md. `lp uninstall` removes this block.",
+  "setupPrompt": "Set up LogicPacks for me: read https://logicpacks.io/setup.md and follow it.\nInstall the helper, log me in, and add the LogicPacks block to your global instructions.\nThen share this project and give me an invite link.",
+  "harnesses": [
+    {
+      "id": "claude",
+      "name": "Claude Code",
+      "kind": "block",
+      "global": "~/.claude/CLAUDE.md",
+      "globalWindows": "~\\.claude\\CLAUDE.md",
+      "project": "CLAUDE.md"
+    },
+    {
+      "id": "codex",
+      "name": "Codex CLI",
+      "kind": "block",
+      "global": "~/.codex/AGENTS.md",
+      "globalWindows": null,
+      "project": "AGENTS.md"
+    },
+    {
+      "id": "opencode",
+      "name": "OpenCode",
+      "kind": "block",
+      "global": "~/.config/opencode/AGENTS.md",
+      "globalWindows": null,
+      "project": "AGENTS.md"
+    },
+    {
+      "id": "gemini",
+      "name": "Gemini CLI",
+      "kind": "block",
+      "global": "~/.gemini/GEMINI.md",
+      "globalWindows": null,
+      "project": "GEMINI.md"
+    },
+    {
+      "id": "command-code",
+      "name": "Command Code",
+      "kind": "block",
+      "global": "~/.commandcode/AGENTS.md",
+      "globalWindows": null,
+      "project": "AGENTS.md"
+    },
+    {
+      "id": "cursor",
+      "name": "Cursor",
+      "kind": "ui",
+      "global": "settings UI only",
+      "globalWindows": null,
+      "project": ".cursor/rules/logicpacks.mdc"
+    },
+    {
+      "id": "copilot",
+      "name": "VS Code + GitHub Copilot",
+      "kind": "block",
+      "global": "~/.copilot/copilot-instructions.md",
+      "globalWindows": null,
+      "project": ".github/copilot-instructions.md"
+    },
+    {
+      "id": "windsurf",
+      "name": "Windsurf",
+      "kind": "block",
+      "global": "~/.devin/global_rules.md",
+      "globalWindows": null,
+      "project": "AGENTS.md"
+    },
+    {
+      "id": "cline",
+      "name": "Cline",
+      "kind": "file",
+      "global": "~/Documents/Cline/Rules/logicpacks.md",
+      "globalWindows": "~\\Documents\\Cline\\Rules\\logicpacks.md",
+      "project": ".clinerules/logicpacks.md"
+    },
+    {
+      "id": "roo",
+      "name": "Roo Code",
+      "kind": "file",
+      "global": "~/.roo/rules/logicpacks.md",
+      "globalWindows": "~\\.roo\\rules\\logicpacks.md",
+      "project": ".roo/rules/logicpacks.md"
+    },
+    {
+      "id": "kilo",
+      "name": "Kilo Code",
+      "kind": "ui",
+      "global": "settings UI only",
+      "globalWindows": null,
+      "project": ".kilo/rules/logicpacks.md"
+    },
+    {
+      "id": "zed",
+      "name": "Zed",
+      "kind": "block",
+      "global": "~/.config/zed/AGENTS.md",
+      "globalWindows": "~\\AppData\\Roaming\\Zed\\AGENTS.md",
+      "project": ".rules"
+    },
+    {
+      "id": "continue",
+      "name": "Continue",
+      "kind": "ui",
+      "global": "settings UI only",
+      "globalWindows": null,
+      "project": ".continue/rules/logicpacks.md"
+    },
+    {
+      "id": "aider",
+      "name": "Aider",
+      "kind": "yaml-read",
+      "global": "~/.aider.conf.yml (read: ~/.logicpacks/rules/logicpacks.md)",
+      "globalWindows": null,
+      "project": "CONVENTIONS.md"
+    },
+    {
+      "id": "amp",
+      "name": "Amp",
+      "kind": "block",
+      "global": "~/.config/amp/AGENTS.md",
+      "globalWindows": null,
+      "project": "AGENTS.md"
+    },
+    {
+      "id": "warp",
+      "name": "Warp",
+      "kind": "ui",
+      "global": "settings UI only",
+      "globalWindows": null,
+      "project": "AGENTS.md"
+    },
+    {
+      "id": "kiro",
+      "name": "Kiro",
+      "kind": "file",
+      "global": "~/.kiro/steering/logicpacks.md",
+      "globalWindows": null,
+      "project": ".kiro/steering/logicpacks.md"
+    },
+    {
+      "id": "goose",
+      "name": "Goose",
+      "kind": "block",
+      "global": "~/.config/goose/.goosehints",
+      "globalWindows": null,
+      "project": ".goosehints"
+    },
+    {
+      "id": "qwen",
+      "name": "Qwen Code",
+      "kind": "block",
+      "global": "~/.qwen/QWEN.md",
+      "globalWindows": null,
+      "project": "QWEN.md"
+    },
+    {
+      "id": "crush",
+      "name": "Crush",
+      "kind": "block",
+      "global": "~/.config/crush/CRUSH.md",
+      "globalWindows": null,
+      "project": "AGENTS.md"
+    },
+    {
+      "id": "droid",
+      "name": "Factory Droid",
+      "kind": "block",
+      "global": "~/.factory/AGENTS.md",
+      "globalWindows": null,
+      "project": "AGENTS.md"
+    },
+    {
+      "id": "junie",
+      "name": "JetBrains Junie",
+      "kind": "block",
+      "global": "~/.junie/AGENTS.md",
+      "globalWindows": "~\\.junie\\AGENTS.md",
+      "project": ".junie/AGENTS.md"
+    },
+    {
+      "id": "hermes",
+      "name": "Hermes Agent",
+      "kind": "ui",
+      "global": "settings UI only",
+      "globalWindows": null,
+      "project": "AGENTS.md"
+    },
+    {
+      "id": "t3code",
+      "name": "T3 Code",
+      "kind": "ui",
+      "global": "settings UI only",
+      "globalWindows": null,
+      "project": "AGENTS.md"
+    },
+    {
+      "id": "generic",
+      "name": "Any other agent",
+      "kind": "ui",
+      "global": "settings UI only",
+      "globalWindows": null,
+      "project": "AGENTS.md"
+    }
+  ],
+  "commands": [
+    {
+      "usage": "lp login [--host <url>] [--start | --finish]",
+      "does": "sign in with a device code (default host app.logicpacks.io)"
+    },
+    {
+      "usage": "lp whoami",
+      "does": "who you are signed in as, and on which host"
+    },
+    {
+      "usage": "lp projects",
+      "does": "the projects you can open"
+    },
+    {
+      "usage": "lp share [--title <name>]",
+      "does": "share this folder: push it to its git remote (GitHub) and register it on the host; prints an invite link"
+    },
+    {
+      "usage": "lp invite <email|name>",
+      "does": "add someone to this project, or print the invite link to send them"
+    },
+    {
+      "usage": "lp join <invite link>",
+      "does": "accept an invite link from a teammate"
+    },
+    {
+      "usage": "lp members",
+      "does": "who is in this project"
+    },
+    {
+      "usage": "lp who [person|file|topic]",
+      "does": "who is working on what in this project"
+    },
+    {
+      "usage": "lp agents [--workspace]",
+      "does": "active agents and sessions: person, harness, thread, current task"
+    },
+    {
+      "usage": "lp send <person> \"<message>\"",
+      "does": "message a teammate's thread; no reply expected"
+    },
+    {
+      "usage": "lp ask <person> \"<question>\" [--project <id|name>]",
+      "does": "ask a teammate's agent; the reply comes back to your lp inbox"
+    },
+    {
+      "usage": "lp reply <id> \"<text>\"",
+      "does": "answer a message, question or negotiation from lp inbox"
+    },
+    {
+      "usage": "lp decide <negotiation id> accept|mine|theirs|both",
+      "does": "record your user's decision on a merge negotiation"
+    },
+    {
+      "usage": "lp inbox [--follow] [--all]",
+      "does": "messages, questions, conflicts, negotiations, drift and review requests for you"
+    },
+    {
+      "usage": "lp editing <file...>",
+      "does": "tell teammates which files you are changing (lp who shows it; overlaps raise a notice)"
+    },
+    {
+      "usage": "lp done <id>",
+      "does": "dismiss an inbox item you handled"
+    },
+    {
+      "usage": "lp assist request \"<brief>\" [--expert <id>]",
+      "does": "Request assistance: bring in an expert (beta)"
+    },
+    {
+      "usage": "lp assist experts | list | end <request id>",
+      "does": "the expert catalog, this project's requests, end a request"
+    },
+    {
+      "usage": "lp packs save \"<name>\" | list | use <id> [--to <person>]",
+      "does": "save this session as a pack, list packs, hand one to a thread"
+    },
+    {
+      "usage": "lp goals plan \"<goal>\" \"<person>: <task> [by <day>]\"...",
+      "does": "draft a goal with milestones for people or experts (beta); nothing is sent yet"
+    },
+    {
+      "usage": "lp goals list | show <id> | confirm <goal> | cancel <goal>",
+      "does": "see goals; confirm a draft (sends the milestones) once your user agrees"
+    },
+    {
+      "usage": "lp goals start|blocked|done <milestone> [--note \"<text>\"]",
+      "does": "report on a milestone assigned to you"
+    },
+    {
+      "usage": "lp goals review | decide <id> <action> [--note]",
+      "does": "drift and review requests waiting for your user, and their decision"
+    },
+    {
+      "usage": "lp setup --agent <id> [--file <path>] [--project]",
+      "does": "write the LogicPacks block into an agent's instructions"
+    },
+    {
+      "usage": "lp setup-prompt [--installed]",
+      "does": "print the prompt to paste into any agent"
+    },
+    {
+      "usage": "lp status | lp watch | lp link | lp unlink",
+      "does": "stream Claude Code and Codex sessions into the project"
+    },
+    {
+      "usage": "lp mcp",
+      "does": "the optional MCP server (stdio)"
+    },
+    {
+      "usage": "lp uninstall",
+      "does": "remove every LogicPacks block, rules file, hook and MCP registration"
+    }
+  ],
+  "features": {
+    "dryRun": false,
+    "blockBackup": false,
+    "settingsBackup": true,
+    "loginRegistersMcp": true
+  }
+}

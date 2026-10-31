@@ -47,6 +47,7 @@ try {
     const title = page.path === '/' ? 'LogicPacks' : `${page.title} · LogicPacks`;
     const html = shell
       .replace('<div id="root"></div>', `<div id="root">${body}</div>`)
+      .replace('<meta charset="UTF-8" />', agent.IS_PREVIEW ? '<meta charset="UTF-8" />\n  <meta name="robots" content="noindex" />' : '<meta charset="UTF-8" />')
       .replace(/<title>[^<]*<\/title>/, `<title>${title}</title>`)
       .replace(/<link rel="canonical" href="[^"]*" \/>/, `<link rel="canonical" href="${canonical}" />\n  <link rel="alternate" type="text/markdown" href="${page.md}" title="${page.title} (markdown)" />`)
       .replace(/<meta property="og:url" content="[^"]*" \/>/, `<meta property="og:url" content="${canonical}" />`)
@@ -54,14 +55,24 @@ try {
     writeFileSync(`dist/${file}`, html);
 
     const main = body.match(/<main[^>]*>([\s\S]*)<\/main>/)?.[1] ?? body;
-    const md = `${toMd(main)}${mdFooter()}`;
+    const md = `${toMd(main)}${mdFooter(canonical)}`;
     writeFileSync(`dist${page.md}`, md);
     twins.push([page, md]);
     console.log(`prerendered ${page.path} -> dist/${file} (${html.length} B) + ${page.md} (${md.length} B)`);
   }
 
-  const about = `${agent.aboutMarkdown()}${mdFooter()}`;
-  const research = `${agent.researchMarkdown()}${mdFooter()}`;
+  const about = `${agent.aboutMarkdown()}${mdFooter(`${SITE_URL}/about.md`)}`;
+  const research = `${agent.researchMarkdown()}${mdFooter(`${SITE_URL}/research`)}`;
+  const safety = `${agent.safetyMarkdown()}${mdFooter(`${SITE_URL}/safety.md`)}`;
+  writeFileSync('dist/safety.md', safety);
+  const why = `${agent.whyMarkdown()}${mdFooter(`${SITE_URL}/why.md`)}`;
+  const compare = `${agent.compareMarkdown()}${mdFooter(`${SITE_URL}/compare.md`)}`;
+  writeFileSync('dist/why.md', why);
+  writeFileSync('dist/compare.md', compare);
+  // setup.md comes from the helper (renderSetupGuide); point it at the safety page too.
+  if (existsSync('dist/setup.md') && !readFileSync('dist/setup.md', 'utf8').includes('/safety.md')) {
+    appendFileSync('dist/setup.md', `\n## Before you run it\n\nWhat this setup installs and changes, how to back up first, what teammates can see and how to remove access: ${SITE_URL}/safety.md\n`);
+  }
   writeFileSync('dist/about.md', about);
   // The research twin is the generated tables (methodology + every result), not the page render.
   writeFileSync('dist/research.md', research);
@@ -70,6 +81,9 @@ try {
   const full = [
     agent.llmsTxt(),
     about,
+    why,
+    compare,
+    safety,
     ...twins.map(([p, md]) => (p.md === '/research.md' ? research : md)),
     setup && `# Agent setup (/setup.md)\n\n${setup}`,
   ]
@@ -82,7 +96,7 @@ try {
     ...PAGES.flatMap((p) => [
       `  <url>\n    <loc>${SITE_URL}${p.path === '/' ? '/' : p.path}</loc>\n    <lastmod>${today}</lastmod>\n    <xhtml:link rel="alternate" type="text/markdown" href="${SITE_URL}${p.md}" />\n  </url>`,
     ]),
-    ...['/about.md', '/llms.txt', '/llms-full.txt', '/setup.md'].map(
+    ...['/about.md', '/why.md', '/compare.md', '/safety.md', '/llms.txt', '/llms-full.txt', '/setup.md'].map(
       (u) => `  <url>\n    <loc>${SITE_URL}${u}</loc>\n    <lastmod>${today}</lastmod>\n  </url>`,
     ),
   ];
@@ -91,12 +105,16 @@ try {
     `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n${urls.join('\n')}\n</urlset>\n`,
   );
 
-  const mdFiles = ['/about.md', '/research.md', ...PAGES.map((p) => p.md)];
+  const mdFiles = ['/about.md', '/why.md', '/compare.md', '/research.md', '/safety.md', ...PAGES.map((p) => p.md)];
+  const canonicalOf = (f) => {
+    const page = PAGES.find((p) => p.md === f);
+    return page ? `${SITE_URL}${page.path === '/' ? '/' : page.path}` : `${SITE_URL}${f}`;
+  };
   appendFileSync(
     'dist/_headers',
     `\n${[...new Set(mdFiles)]
-      .map((f) => `${f}\n  Content-Type: text/markdown; charset=utf-8\n  Cache-Control: public, max-age=300\n  Access-Control-Allow-Origin: *`)
-      .join('\n')}\n/llms.txt\n  Content-Type: text/plain; charset=utf-8\n  Cache-Control: public, max-age=300\n/llms-full.txt\n  Content-Type: text/plain; charset=utf-8\n  Cache-Control: public, max-age=300\n`,
+      .map((f) => `${f}\n  Content-Type: text/markdown; charset=utf-8\n  Cache-Control: public, max-age=300\n  Access-Control-Allow-Origin: *\n  Link: <${canonicalOf(f)}>; rel="canonical"`)
+      .join('\n')}\n/llms.txt\n  Content-Type: text/plain; charset=utf-8\n  Cache-Control: public, max-age=300\n/llms-full.txt\n  Content-Type: text/plain; charset=utf-8\n  Cache-Control: public, max-age=300\n${agent.IS_PREVIEW ? '/*\n  X-Robots-Tag: noindex\n' : ''}`,
   );
   console.log(`wrote about.md, research.md, llms.txt, llms-full.txt (${full.length} B), sitemap.xml; ${DESCRIPTION.length > 0 ? 'ok' : ''}`);
 } finally {

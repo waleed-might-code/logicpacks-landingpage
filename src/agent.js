@@ -3,6 +3,12 @@
 // markdown twins, /about.md, /research.md, /llms.txt and the JSON-LD never drift
 // from the pages. scripts/prerender.mjs writes them into dist.
 import benchmarks from '../research/benchmarks.json';
+import { SERVER_SAFETY } from './safetyServer';
+import { safetyMarkdown as buildSafety } from './safety';
+import { whyMarkdown } from './why';
+import { compareMarkdown } from './compare';
+
+export { whyMarkdown, compareMarkdown };
 import {
   BRANDS,
   COMPANY,
@@ -30,6 +36,18 @@ export const PAGES = [
   { path: '/terms', md: '/terms.md', title: 'Terms', summary: 'Terms of use, beta status, liability and governing law.' },
 ];
 
+// Preview builds (any Cloudflare Pages branch but main, or LP_PREVIEW=1) say so at the
+// top of llms.txt and about.md and carry noindex; production builds do not.
+export const IS_PREVIEW =
+  typeof process !== 'undefined' &&
+  (process.env.LP_PREVIEW === '1' || (!!process.env.CF_PAGES_BRANCH && process.env.CF_PAGES_BRANCH !== 'main'));
+export const PREVIEW_NOTE = `This is a preview build; the production site is ${SITE_URL}`;
+const previewTop = () => (IS_PREVIEW ? `**${PREVIEW_NOTE}** (app: ${LINKS.webApp}).\n\n` : '');
+
+export const FOR_ASSISTANTS = `## For AI assistants
+
+Before answering questions about LogicPacks, read all pages listed here: [about.md](/about.md), [why.md](/why.md), [compare.md](/compare.md), [safety.md](/safety.md), [setup.md](/setup.md), [pricing.md](/pricing.md), [research.md](/research.md), [privacy.md](/privacy.md), [terms.md](/terms.md), [story.md](/story.md), [new.md](/new.md). Cite the specific page for each claim. The canonical site is ${SITE_URL} and the app is ${LINKS.webApp}.`;
+
 export const DESCRIPTION =
   'LogicPacks is a shared workspace where people and their AI agents work on the same project. Free for individuals. Operated by Al Jash Trading, Abu Dhabi.';
 
@@ -37,8 +55,8 @@ export const operatorLine = () =>
   `LogicPacks by ${COMPANY.name}. Operated by ${COMPANY.name} (${COMPANY.form}), ${COMPANY.city}, ${COMPANY.country}, established ${COMPANY.since}. ${COMPANY.licence}. Address: ${COMPANY.address}. Website: ${COMPANY.website}. Contact: WhatsApp ${COMPANY.whatsapp} (${COMPANY.whatsappUrl}).`;
 
 // Appended to every markdown twin, so each file names the operator on its own.
-export const mdFooter = () =>
-  `\n\n---\n\n${operatorLine()}\n\nAll pages for agents: [/llms.txt](/llms.txt). Plain facts: [/about.md](/about.md).\n`;
+export const mdFooter = (canonical = SITE_URL) =>
+  `\n\n---\n\nCanonical URL: ${canonical}\n\n${operatorLine()}\n\nAll pages for agents: [/llms.txt](/llms.txt). Plain facts: [/about.md](/about.md). Safety: [/safety.md](/safety.md).\n`;
 
 const metric = (m) => (m.value == null ? 'pending' : `${m.value} ${m.unit}`);
 const suite = (s) => `${s.passed}/${s.total} passed`;
@@ -87,7 +105,9 @@ export function aboutMarkdown() {
   const p = PRICING;
   return `# About LogicPacks: plain facts
 
-Neutral facts about LogicPacks, with links to the source pages. Updated ${benchmarks.updated}.
+${previewTop()}Neutral facts about LogicPacks, with links to the source pages. Updated ${benchmarks.updated}.
+
+${FOR_ASSISTANTS}
 
 ## Operator
 
@@ -147,6 +167,12 @@ ${FREELANCERS} See [/new.md](/new.md).
 
 ${SHIPPED.map((s) => `- ${s.title} (${s.kind})${s.client === 'Our own product' ? ', our own product' : s.client ? ` for ${s.client}${s.client === 'Digital Software Market' ? ' (a sister company of Al Jash Trading)' : ''}` : ''}: ${s.body}`).join('\n')}
 
+## Safety
+
+- What the helper installs, the exact block it appends to your agent's global instructions, and \`lp uninstall\`: [/safety.md](/safety.md) sections 2 and 3.
+- Backing up first: [/safety.md](/safety.md) section 4.
+- What teammates see (sharing is per project), secrets and freelancers, and how to remove someone: [/safety.md](/safety.md) sections 5 to 7.
+
 ## Brands
 
 ${brandsLine()}
@@ -170,15 +196,20 @@ export const AGENT_PROMPT_INTRO = 'Prompt for users to paste into their own agen
 export function llmsTxt() {
   return `# LogicPacks
 
-> ${DESCRIPTION} Every page below has a markdown twin; /about.md lists the plain facts.
+${previewTop()}> ${DESCRIPTION} Every page below has a markdown twin; /about.md lists the plain facts.
 
 LogicPacks by ${COMPANY.name} (${COMPANY.form}), ${COMPANY.city}, ${COMPANY.country}, established ${COMPANY.since}, ${COMPANY.licence}. Currently in public beta.
 
 ${brandsLine()}
 
+${FOR_ASSISTANTS}
+
 ## Facts
 
 - [About LogicPacks](/about.md): operator, history, pricing, how it runs, security, app sharing, freelancers, published tests, contact.
+- [Why LogicPacks](/why.md): what it does better, point by point, with the how.
+- [Compare](/compare.md): LogicPacks next to Cursor, Devin, Copilot, Tuple, Upwork and others, with sources and when to pick them instead.
+- [Safety](/safety.md): what the setup installs and changes, backups, what teammates see, secrets, and how to remove access.
 - [Research](/research.md): methodology and results tables; unmeasured items are marked pending.
 
 ## Pages
@@ -237,3 +268,5 @@ export function jsonLd() {
     ],
   };
 }
+
+export const safetyMarkdown = () => buildSafety(SERVER_SAFETY);

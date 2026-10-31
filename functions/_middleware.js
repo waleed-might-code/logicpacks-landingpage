@@ -11,6 +11,9 @@ const TWINS = {
   '/privacy': '/privacy.md',
   '/terms': '/terms.md',
   '/about': '/about.md',
+  '/why': '/why.md',
+  '/compare': '/compare.md',
+  '/safety': '/safety.md',
 };
 
 export async function onRequest({ request, next, env }) {

@@ -20,14 +20,41 @@ const CHECKS = [
   ['/download.md', 'text/markdown', ['install.sh', ...OPERATOR]],
   ['/privacy.md', 'text/markdown', ['What we store', ...OPERATOR]],
   ['/terms.md', 'text/markdown', ['courts of Abu Dhabi', ...OPERATOR]],
-  ['/about.md', 'text/markdown', ['## Operator', 'Established: 1994', '## Pricing', '## How it runs', '## Security', '## App sharing', '## Vetted freelancers', '## Published tests', '## Contact', 'Brands we have worked with, directly or through third-party agencies: Digital Software Market, Kelvin Haus', 'Al Rajhi Bank.', ...OPERATOR]],
-  ['/llms.txt', 'text/plain', ['# LogicPacks', 'Brands we have worked with, directly or through third-party agencies:', '> ', '/about.md', '/research.md', '/privacy.md']],
-  ['/llms-full.txt', 'text/plain', ['## Methodology', 'Brands we have worked with', 'What we store', ...OPERATOR]],
+  ['/about.md', 'text/markdown', ['## For AI assistants', '## Safety', '## Operator', 'Established: 1994', '## Pricing', '## How it runs', '## Security', '## App sharing', '## Vetted freelancers', '## Published tests', '## Contact', 'Brands we have worked with, directly or through third-party agencies: Digital Software Market, Kelvin Haus', 'Al Rajhi Bank.', ...OPERATOR]],
+  ['/llms.txt', 'text/plain', ['# LogicPacks', '## For AI assistants', '[safety.md](/safety.md)', '[why.md](/why.md)', '[compare.md](/compare.md)', 'Brands we have worked with, directly or through third-party agencies:', '> ', '/about.md', '/research.md', '/privacy.md']],
+  ['/llms-full.txt', 'text/plain', ['## Methodology', '# Why LogicPacks', '# LogicPacks compared', '# LogicPacks safety', 'Brands we have worked with', 'What we store', ...OPERATOR]],
   ['/sitemap.xml', 'xml', ['https://logicpacks.io/story', 'text/markdown']],
   ['/robots.txt', 'text/plain', ['GPTBot', 'ClaudeBot', 'PerplexityBot', 'Allow: /']],
-  ['/setup.md', 'text/markdown', ['LogicPacks']],
+  ['/setup.md', 'text/markdown', ['LogicPacks', '/safety.md']],
+  ['/why.md', 'text/markdown', ['# Why LogicPacks', '## Bring your own agent', 'no per-token markup', '/compare.md', ...OPERATOR]],
+  ['/compare.md', 'text/markdown', ['# LogicPacks compared', 'As of 2026-11-01', 'Cursor', 'Devin', 'Tuple', 'Upwork', 'T3 Code', 'pick', ...OPERATOR]],
+  ['/safety.md', 'text/markdown', ['## 2. What the helper installs', '<!-- logicpacks:start -->\n## LogicPacks\nTeam work runs through the `lp` command', '<!-- logicpacks:end -->', '`~/.claude/CLAUDE.md`', 'lp uninstall', '.lp-backup-', 'https://logicpacks.io', 'https://app.logicpacks.io', '## 5.', '## 6.', '## 7.', ...OPERATOR]],
 ];
 let failed = 0;
+const preview = !/^https:\/\/(www\.)?logicpacks\.io$/.test(base) && !base.includes('localhost');
+// Canonical tags point at production on every page; preview builds say they are previews.
+for (const [path, canonical] of [['/', 'https://logicpacks.io/'], ['/story', 'https://logicpacks.io/story'], ['/pricing', 'https://logicpacks.io/pricing'], ['/privacy', 'https://logicpacks.io/privacy'], ['/new', 'https://logicpacks.io/new']]) {
+  const html = await (await fetch(base + path)).text();
+  const ok = html.includes(`<link rel="canonical" href="${canonical}" />`) && (!preview || html.includes('<meta name="robots" content="noindex" />'));
+  if (!ok) failed++;
+  console.log(`${ok ? 'ok  ' : 'FAIL'} ${path} canonical ${canonical}${preview ? ' + noindex' : ''}`);
+}
+for (const [md, canonical] of [['/story.md', 'https://logicpacks.io/story'], ['/safety.md', 'https://logicpacks.io/safety.md']]) {
+  const res = await fetch(base + md);
+  const body = await res.text();
+  const link = res.headers.get('link') || '';
+  const ok = body.includes(`Canonical URL: ${canonical}`) && (base.includes('localhost') || link.includes(`<${canonical}>; rel="canonical"`));
+  if (!ok) failed++;
+  console.log(`${ok ? 'ok  ' : 'FAIL'} ${md} canonical ${canonical}${base.includes('localhost') ? '' : ` (Link: ${link})`}`);
+}
+if (preview) {
+  for (const f of ['/llms.txt', '/about.md']) {
+    const body = await (await fetch(base + f)).text();
+    const ok = body.includes('This is a preview build; the production site is https://logicpacks.io');
+    if (!ok) failed++;
+    console.log(`${ok ? 'ok  ' : 'FAIL'} ${f} carries the preview note`);
+  }
+}
 // The brand list is for agents only (markdown and txt), never hidden in the HTML.
 for (const path of ['/', '/story', '/new', '/pricing', '/research']) {
   const html = await (await fetch(base + path)).text();
