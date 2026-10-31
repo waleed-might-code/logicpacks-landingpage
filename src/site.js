@@ -4,11 +4,17 @@
 export const SITE_URL = 'https://logicpacks.io';
 export const APP_URL = 'https://app.logicpacks.io';
 
+// public/setup.md is the agent setup guide. Until it ships, Docs points at the repo
+// docs so nothing links a 404. The build sets __HAS_SETUP__ (vite.config.js).
+// eslint-disable-next-line no-undef
+export const HAS_SETUP = typeof __HAS_SETUP__ !== 'undefined' && __HAS_SETUP__;
+
 export const LINKS = {
-  docs: 'https://github.com/Majboor/t3code/tree/main/docs',
+  docs: HAS_SETUP ? '/setup.md' : 'https://github.com/Majboor/t3code/tree/main/docs',
   signIn: APP_URL,
   webApp: APP_URL,
   download: '/download',
+  whatsNew: '/new',
 };
 
 // Release files. The ship step fills these in; while a field is null the
@@ -61,23 +67,57 @@ export const EVERY_APP_MEDIA = {
   alt: 'The Beta any-app preview: a live Blender view with named cursors for each person and agent, their turns and an action log.',
 };
 
-// Footage for the Beta sections, recorded from the app's own routes. A section
-// shows its poster until the video loads.
-export const PACKS_MEDIA = {
-  video: '/packs.mp4',
-  poster: '/packs.jpg',
-  alt: 'The packs preview: one pack built from real work, plugged into Claude, Codex, OpenCode and Gemini, with its versions and a before and after answer.',
+// Row 1 on the landing page: ten seconds of the launch film, two people working
+// in one shared project.
+export const TOGETHER_MEDIA = {
+  video: '/together.mp4',
+  poster: '/together.jpg',
+  alt: 'Two people in one shared project, each with their own agent thread, messaging each other.',
 };
 
-export const ASSIST_MEDIA = {
-  image: '/assist.jpg',
-  alt: 'Request assistance in LogicPacks: a panel of experts with their portraits, skills and a Request button each.',
-};
+// Every harness and editor shown in the "works with" strip, in order: agents, editors,
+// then the rest. `mark` is a simple-icons slug (CC0); without one the name is the mark.
+export const TOOLS = [
+  { name: 'Claude Code', mark: 'claudecode' },
+  { name: 'Codex' },
+  { name: 'OpenCode', mark: 'opencode' },
+  { name: 'Gemini CLI', mark: 'googlegemini' },
+  { name: 'Command Code' },
+  { name: 'Z.ai GLM', mark: 'zdotai' },
+  { name: 'Cursor', mark: 'cursor' },
+  { name: 'VS Code Copilot', mark: 'githubcopilot' },
+  { name: 'Windsurf', mark: 'windsurf' },
+  { name: 'Cline', mark: 'cline' },
+  { name: 'Zed', mark: 'zedindustries' },
+  { name: 'JetBrains', mark: 'jetbrains' },
+  { name: 'Aider' },
+  { name: 'Amp' },
+  { name: 'Kiro' },
+  { name: 'Goose' },
+  { name: 'Qwen Code', mark: 'qwen' },
+  { name: 'Warp', mark: 'warp' },
+  { name: 'Hermes' },
+  { name: 'T3 Code' },
+];
 
-export const CONTEXT_MEDIA = {
-  image: '/context.jpg',
-  alt: 'A thread saved as the pack "Menu layout", with Use in handing its context to another thread or project.',
-};
+// The paste-in prompt that connects an agent already in use to LogicPacks.
+export const SETUP_URL = 'https://logicpacks.io/setup.md';
+export const CONNECT_PROMPT = `Read ${SETUP_URL} and connect this agent to LogicPacks.`;
 
-// The agents people log in with. Plain wordmarks, no vendor logos.
-export const AGENTS = ['Claude Code', 'Codex', 'OpenCode', 'Gemini CLI'];
+// Sample experts for the Request assistance release on /new. Not real people: the
+// portraits are generated and the page says so. The app seeds the same eight.
+export const EXPERTS = [
+  { id: 'ingrid-solberg', name: 'Ingrid Solberg', role: 'Blender artist', line: 'Scenes, lighting and clean topology.' },
+  { id: 'tomas-reyes', name: 'Tomás Reyes', role: 'DaVinci colourist', line: 'Grades and conforms edits ready to deliver.' },
+  { id: 'anika-rao', name: 'Anika Rao', role: 'Frontend engineer', line: 'React, accessibility and fast pages.' },
+  { id: 'jonas-weber', name: 'Jonas Weber', role: 'Backend engineer', line: 'Postgres, APIs and the slow query.' },
+  { id: 'kofi-mensah', name: 'Kofi Mensah', role: 'DevOps engineer', line: 'Builds, deploys and cloud hosts.' },
+  { id: 'lea-moreau', name: 'Léa Moreau', role: 'Motion designer', line: 'Titles and product shots you can edit.' },
+  { id: 'yuna-park', name: 'Yuna Park', role: 'AI/ML engineer', line: 'Evals and retrieval for your agents.' },
+  { id: 'karim-haddad', name: 'Karim Haddad', role: 'QA engineer', line: 'Tests and release checks before it ships.' },
+];
+
+export const expertPortrait = (id) => `/experts/${id}.webp`;
+
+// The expert cards show once their portraits are in public/experts.
+export const EXPERT_PORTRAITS_READY = false;

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { AGENT_PROMPT, INSTALL_COMMAND, LINKS } from '../site';
+import { CONNECT_PROMPT, INSTALL_COMMAND, LINKS } from '../site';
 import { AppleIcon, CheckIcon, TerminalIcon } from './Icons';
 
 const base =
@@ -40,16 +40,16 @@ export async function copyText(text) {
   }
 }
 
-// Copies the paste-in prompt that installs LogicPacks through the visitor's own
-// agent (Claude Code, Codex, ...). `onCopied` lets the page show where to paste.
-export function AgentButton({ className = '', onCopied }) {
+// Copies the paste-in prompt that connects the visitor's own agent (Claude Code,
+// Codex, Cursor, ...) to LogicPacks. `onCopied` lets the page show where to paste.
+export function AgentButton({ className = '', onCopied, prompt = CONNECT_PROMPT, label = 'Connect your agent' }) {
   const [copied, setCopied] = useState(false);
   const timer = useRef(null);
 
   useEffect(() => () => clearTimeout(timer.current), []);
 
   const onClick = async () => {
-    const ok = await copyText(AGENT_PROMPT);
+    const ok = await copyText(prompt);
     onCopied?.(ok);
     if (!ok) return;
     setCopied(true);
@@ -67,13 +67,13 @@ export function AgentButton({ className = '', onCopied }) {
       <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#2a2a2a] text-ink">
         {copied ? <CheckIcon className="h-3.5 w-3.5" /> : <TerminalIcon className="h-4 w-4" />}
       </span>
-      {copied ? 'Prompt copied' : 'Install with your agent'}
+      {copied ? 'Prompt copied' : label}
     </button>
   );
 }
 
-// The one-line Terminal install, with a copy button.
-export function InstallCommand({ className = '' }) {
+// A one-line command or prompt with a copy button.
+export function CopyLine({ text, prefix = '$', label, className = '' }) {
   const [copied, setCopied] = useState(false);
   const timer = useRef(null);
 
@@ -83,14 +83,15 @@ export function InstallCommand({ className = '' }) {
     <div
       className={`flex min-w-0 items-center gap-2 rounded-full border border-line bg-panel py-1 pl-3.5 pr-1 ${className}`}
     >
-      <span aria-hidden="true" className="font-mono text-[12px] text-faint">
-        $
+      <span aria-hidden="true" className="shrink-0 font-mono text-[12px] text-faint">
+        {prefix}
       </span>
-      <code className="min-w-0 flex-1 truncate font-mono text-[12px] text-muted">{INSTALL_COMMAND}</code>
+      <code className="min-w-0 flex-1 truncate font-mono text-[12px] text-muted">{text}</code>
       <button
         type="button"
+        aria-label={label ? `Copy ${label}` : undefined}
         onClick={async () => {
-          if (!(await copyText(INSTALL_COMMAND))) return;
+          if (!(await copyText(text))) return;
           setCopied(true);
           clearTimeout(timer.current);
           timer.current = setTimeout(() => setCopied(false), 2000);
@@ -102,4 +103,9 @@ export function InstallCommand({ className = '' }) {
       </button>
     </div>
   );
+}
+
+// The one-line Terminal install, with a copy button.
+export function InstallCommand({ className = '' }) {
+  return <CopyLine text={INSTALL_COMMAND} className={className} />;
 }
