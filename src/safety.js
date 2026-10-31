@@ -73,7 +73,7 @@ ${harnessTable()}
       : ' There is no dry-run option yet; to see the change first, run `lp setup-block` and read it, or diff the file after setup against your backup.'
   }
 
-**Undo:** \`lp uninstall\` removes every LogicPacks block and LogicPacks-owned rules file, the Claude Code hooks, the watcher and the MCP registrations. A file it appended to comes back byte for byte as it was before; a file it created and that now holds only the block is deleted. \`lp uninstall --agent <id>\` removes just that harness's block.
+**Undo:** \`lp uninstall\` removes every LogicPacks block and LogicPacks-owned rules file, the Claude Code hooks, the watcher and the MCP registrations. A file it appended to comes back byte for byte as it was before; a file it created and that now holds only the block is deleted. \`lp uninstall --agent <id>\` removes just that harness's block. \`lp uninstall\` leaves the helper itself in place; to remove it too, run \`lp logout\`, then delete \`~/.logicpacks\` and \`~/.local/bin/lp\` (Windows: \`%USERPROFILE%\\.logicpacks\` and its \`bin\` entry in your user PATH). \`lp uninstall\` does not delete projects you shared: they stay on the host and on GitHub.
 
 ## 4. Back up first
 
