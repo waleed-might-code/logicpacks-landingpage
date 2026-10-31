@@ -22,7 +22,7 @@ function Hero() {
   return (
     <section className={`${container} pt-14 sm:pt-20`}>
       <h1 className={`${display} lp-rise`}>
-        The best place for agents and humans to work together.
+        Agents and people, one workspace.
         <span className="block text-muted">Your code, your team and your agents in one shared project.</span>
       </h1>
       <div className="lp-rise mt-8 flex flex-wrap items-center gap-2" style={{ '--d': '120ms' }}>
@@ -49,7 +49,7 @@ const EVERY_APP = [
 // The scripted any-app demo, kept compact: one clip and three short cards.
 function EveryApp() {
   return (
-    <section id="every-app" aria-labelledby="every-app-title" className={`${container} pb-16 pt-20 sm:pt-24`}>
+    <section id="every-app" aria-labelledby="every-app-title" className={`${container} border-t border-line py-12 sm:py-14`}>
       <Reveal>
         <BetaPill />
         <h2 id="every-app-title" className={`${rowTitle} mt-4`}>
@@ -212,13 +212,6 @@ function WhereItRuns() {
           Where it runs.
         </h2>
         <p className={rowBody}>Pick per project. You can start on your machine and sync to the cloud later.</p>
-        <p className="mt-4 text-[13px] text-faint">
-          What we store, and what we never touch, is in the{' '}
-          <Link to={LINKS.privacy} className="text-muted underline decoration-line underline-offset-4 hover:text-ink">
-            privacy policy
-          </Link>
-          .
-        </p>
       </Reveal>
       <Reveal delay={140} className="grid min-w-0 gap-px overflow-hidden rounded-xl border border-line bg-line sm:grid-cols-2">
         {WHERE.map((item) => (
@@ -232,18 +225,54 @@ function WhereItRuns() {
   );
 }
 
-// "Running at": confirmed company names only. Renders nothing while the list is empty.
+// Everything else is a hint: one line each, the detail lives on its own page.
+const HINTS = [
+  { to: LINKS.story, title: 'Our story', line: 'A year in the works, and what we shipped with it.' },
+  { to: LINKS.research, title: 'Research', line: 'Test runs, sandbox checks and benchmarks.' },
+  { to: LINKS.pricing, title: 'Pricing', line: 'Free for individuals.' },
+  { to: LINKS.whatsNew, title: 'What’s new', line: 'Vetted freelancers, apps and packs.' },
+];
+
+function Hints() {
+  return (
+    <nav aria-label="More about LogicPacks" className={`${container} border-t border-line py-12 sm:py-14`}>
+      <ul className="grid gap-px overflow-hidden rounded-xl border border-line bg-line sm:grid-cols-2 lg:grid-cols-4">
+        {HINTS.map((h) => (
+          <li key={h.title} className="bg-panel">
+            <Link to={h.to} data-testid="hint" className="group flex h-full flex-col p-[18px] transition-colors hover:bg-raised">
+              <span className="flex items-center justify-between text-[14px] text-ink">
+                {h.title}
+                <span aria-hidden="true" className="text-faint transition-transform group-hover:translate-x-0.5">
+                  →
+                </span>
+              </span>
+              <span className="mt-1 text-[12px] leading-[1.45] text-faint">{h.line}</span>
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  );
+}
+
+// "Running at": text names from src/confirm.js; open slots read "Your team".
 export function RunningAt({ names = RUNNING_AT }) {
   if (!names.length) return null;
   return (
     <section aria-label="Running at" className={`${container} border-t border-line py-10`}>
       <div className="flex flex-wrap items-center gap-x-10 gap-y-3">
         <p className="font-mono text-[11px] uppercase tracking-[0.08em] text-faint">Running at</p>
-        {names.map((name) => (
-          <span key={name} data-testid="running-at" className="text-[15px] font-medium tracking-[-0.01em] text-muted">
-            {name}
-          </span>
-        ))}
+        {names.map((entry, i) =>
+          entry.slot ? (
+            <span key={`slot-${i}`} data-testid="running-at-slot" className="rounded-full border border-dashed border-line px-3 py-1 text-[13px] text-faint">
+              Your team
+            </span>
+          ) : (
+            <span key={entry.name} data-testid="running-at" className="text-[15px] font-medium tracking-[-0.01em] text-muted">
+              {entry.name}
+            </span>
+          ),
+        )}
       </div>
     </section>
   );
@@ -255,12 +284,13 @@ function Closing() {
       <MotionBg name="wave" shade="bg-gradient-to-b from-page/85 via-page/70 to-page/90" />
       <Reveal className={`${container} grid gap-6 py-20 sm:py-28 lg:grid-cols-[5fr_7fr] lg:gap-14`}>
         <h2 id="closing-title" className={rowTitle}>
-          We are a small team.
+          Built by Aljash Trading in the UAE.
           <span className="block text-muted">Try it on your next project.</span>
         </h2>
         <div>
           <p className="max-w-[520px] text-[14px] leading-[1.55] text-muted">
-            Use it for the work you already have, and tell us what breaks. New things land on the releases page first.
+            We are a small team. Use it for the work you already have, and tell us what breaks. New things land on the
+            releases page first.
           </p>
           <div className="mt-6 flex flex-wrap items-center gap-4">
             <DownloadButton />
@@ -279,7 +309,6 @@ export default function Landing() {
     <>
       <Hero />
       <LaunchMedia />
-      <EveryApp />
       <Row
         id="together"
         title="Work together."
@@ -305,6 +334,7 @@ export default function Landing() {
           working on what, and agents can message each other.
         </p>
       </Row>
+      <EveryApp />
       <Row
         id="delegate"
         title="Delegate with guardrails."
@@ -320,6 +350,12 @@ export default function Landing() {
           Hand work to a teammate, or an outside team, as clear milestones with limits. Their agent stays on plan, and you
           see the moment anything drifts. Message them or watch, right there.
         </p>
+        <p className="mt-3 max-w-[460px] text-[13px] leading-[1.55] text-faint">
+          Or bring in a freelancer vetted by LogicPacks, with their own Claude and tools.{' '}
+          <Link to={LINKS.whatsNew} className="text-muted underline decoration-line underline-offset-4 hover:text-ink">
+            How it works
+          </Link>
+        </p>
       </Row>
       <Row
         id="agents"
@@ -333,6 +369,7 @@ export default function Landing() {
         </p>
       </Row>
       <WhereItRuns />
+      <Hints />
       <RunningAt />
       <Closing />
     </>

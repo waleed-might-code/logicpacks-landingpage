@@ -24,7 +24,7 @@ function Operator() {
     <p>
       LogicPacks is operated by {operator}
       {COMPANY.address ? `, ${COMPANY.address}` : ''}
-      {COMPANY.licence ? `, trade licence ${COMPANY.licence}` : ''}. Contact: <Contact />.
+      {COMPANY.licence ? `, ${COMPANY.licence}` : ''}. Contact: <Contact />.
     </p>
   );
 }

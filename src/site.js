@@ -1,3 +1,4 @@
+import { COMPANY_ADDRESS, COMPANY_LICENCE, ENTERPRISE_PER, RUNNING_AT as RUNNING_AT_CONFIRM } from './confirm';
 // Every outbound link, download and the paste-in agent prompt live here, so
 // changing where "Sign in" or "Download" points is a one-line edit.
 
@@ -16,6 +17,9 @@ export const LINKS = {
   download: '/download',
   whatsNew: '/new',
   privacy: '/privacy',
+  story: '/story',
+  research: '/research',
+  pricing: '/pricing',
   terms: '/terms',
 };
 
@@ -126,23 +130,86 @@ export const EXPERTS = [
 export const expertPortrait = (id) => `/experts/${id}.webp`;
 
 // The expert cards show once their portraits are in public/experts.
-export const EXPERT_PORTRAITS_READY = false;
+export const EXPERT_PORTRAITS_READY = true;
 
 // The operator, named in the footer and on /privacy and /terms.
-// TODO(company): registered address and trade licence number of Aljash Trading
-// (UAE) are pending. Add them here as `address` and `licence` once confirmed;
-// the footer and legal pages show them when set. Do not guess them.
+// Address and licence come from src/confirm.js (mocks until confirmed).
 export const COMPANY = {
   name: 'Aljash Trading',
   country: 'UAE',
-  address: null,
-  licence: null,
+  address: COMPANY_ADDRESS,
+  licence: COMPANY_LICENCE,
   whatsapp: '+1 713 632 2262',
   whatsappUrl: 'https://wa.me/17136322262',
 };
 
 export const LEGAL_EFFECTIVE = '1 November 2026';
 
-// "Running at": companies using LogicPacks. Only names confirmed by the team go
-// here; while the list is empty the strip does not render.
-export const RUNNING_AT = [];
+// "Running at": text names from src/confirm.js.
+export const RUNNING_AT = RUNNING_AT_CONFIRM;
+
+// Our story, as the team tells it. Months are approximate.
+export const STORY = [
+  { when: 'Nov 2025', title: 'Started building', body: 'A shared workspace where people and their agents work on the same project.' },
+  { when: 'Jan 2026', title: 'Internal testing', body: 'Opened to our own team after two months, used on our client work every day.' },
+  { when: 'Feb to Oct 2026', title: 'Eight months of testing', body: 'Used in labs and by tech agencies, TechRealm and others, on real projects.' },
+  { when: 'Nov 2026', title: 'Public beta', body: 'Open to everyone, free for individuals.' },
+];
+
+// Launches built with LogicPacks. Facts only from the project notes.
+export const SHIPPED = [
+  {
+    id: 'virtual-sizing',
+    title: 'Virtual sizing',
+    kind: 'E-commerce',
+    client: 'Digital Software Market',
+    body: 'A shopper’s photo becomes body measurements and a size recommendation, for an online clothing store.',
+  },
+  {
+    id: 'virtual-try-on',
+    title: 'Virtual try-on',
+    kind: 'E-commerce',
+    client: 'Digital Software Market',
+    body: 'Try a garment on your own photo from any product page, with an admin for try-ons, sizing and customers.',
+  },
+  {
+    id: 'reform',
+    title: 'Reform',
+    kind: 'iPhone and Mac app',
+    client: 'Darian Woehr and Hailey Sadler',
+    body: 'Consent and release forms for people on camera, with Shot Guard blurring anyone who said no. In TestFlight.',
+  },
+  {
+    id: 'taas',
+    title: 'TAAS',
+    kind: 'AI fashion app',
+    client: 'Our own product',
+    body: 'An AI fashion app we build and run ourselves.',
+    // TODO(taas-video): the TAAS film was not found in the landing repo or notes. Add
+    // `video: '/shipped/taas.mp4'` and `poster` here once it is located.
+    video: null,
+  },
+];
+
+// Pricing. TODO(confirm): the list of coming-soon features; the period is in src/confirm.js.
+export const PRICING = {
+  individual: {
+    name: 'Individuals',
+    price: 'Free',
+    note: 'For you and the people you work with.',
+    features: [
+      'Shared projects with your team',
+      'Your own agent and subscription: Claude Code, Codex, OpenCode, Gemini CLI and more',
+      'Mac app and web app',
+      'Beta features as they land',
+    ],
+  },
+  enterprise: {
+    name: 'Enterprise',
+    price: '$99',
+    per: ENTERPRISE_PER,
+    note: 'For companies that want more control.',
+    features: ['Everything in Individuals'],
+    soon: ['Single sign-on', 'Admin controls and audit log', 'Your own cloud host', 'Vetted freelancers on request'],
+  },
+};

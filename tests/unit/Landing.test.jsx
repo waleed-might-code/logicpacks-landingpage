@@ -17,7 +17,7 @@ describe('Landing', () => {
   it('leads with the positioning line, the two buttons, the install line and the launch film', () => {
     renderAt('/');
     expect(
-      screen.getByRole('heading', { level: 1, name: /The best place for agents and humans to work together\./ }),
+      screen.getByRole('heading', { level: 1, name: /Agents and people, one workspace\./ }),
     ).toBeInTheDocument();
     const downloads = screen.getAllByRole('link', { name: /Download for Mac/ });
     expect(downloads.length).toBeGreaterThanOrEqual(2);
@@ -37,7 +37,7 @@ describe('Landing', () => {
     renderAt('/');
     const nav = within(screen.getByRole('navigation', { name: 'Main' }));
     const names = nav.getAllByRole('link').map((a) => a.textContent);
-    expect(names).toEqual(['LogicPacks', 'What’s new', 'Docs', 'Download', 'Sign in']);
+    expect(names).toEqual(['LogicPacks', 'What’s new', 'Pricing', 'Docs', 'Download', 'Sign in']);
     // Motion backgrounds: the launch band and the closing line.
     expect(document.querySelectorAll('[data-testid="motion-bg"]')).toHaveLength(2);
     expect(nav.getByRole('link', { name: 'What’s new' })).toHaveAttribute('href', '/new');
@@ -47,12 +47,12 @@ describe('Landing', () => {
     renderAt('/');
     const h2 = screen.getAllByRole('heading', { level: 2 }).map((h) => h.textContent);
     expect(h2).toEqual([
-      'Every app, every agent, one machine. People and agents share the host’s apps, from Blender to DaVinci Resolve.',
       'Work together.',
+      'Every app, every agent, one machine. People and agents share the host’s apps, from Blender to DaVinci Resolve.',
       'Delegate with guardrails.',
       'Works with your agent.',
       'Where it runs.',
-      'We are a small team.Try it on your next project.',
+      'Built by Aljash Trading in the UAE.Try it on your next project.',
     ]);
     expect(screen.getByRole('link', { name: 'Start a shared project' })).toHaveAttribute('href', 'https://app.logicpacks.io');
     expect(screen.getByRole('link', { name: 'Plan a goal' })).toBeInTheDocument();
@@ -112,7 +112,7 @@ describe('Landing', () => {
 
   it('sends unknown routes home', () => {
     renderAt('/store');
-    expect(screen.getByRole('heading', { level: 1, name: /work together/ })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 1, name: /one workspace/ })).toBeInTheDocument();
   });
 });
 
@@ -150,11 +150,10 @@ describe('Trust details', () => {
   it('names the operator in the footer, with privacy, terms and WhatsApp', () => {
     renderAt('/');
     const footer = screen.getByRole('contentinfo');
-    expect(footer).toHaveTextContent('LogicPacks by Aljash Trading, UAE');
-    expect(footer).toHaveTextContent(/© \d{4} Aljash Trading/);
+    expect(footer).toHaveTextContent(/© \d{4} LogicPacks by Aljash Trading, UAE/);
     expect(within(footer).getByRole('link', { name: 'Privacy' })).toHaveAttribute('href', '/privacy');
     expect(within(footer).getByRole('link', { name: 'Terms' })).toHaveAttribute('href', '/terms');
-    expect(within(footer).getByRole('link', { name: 'WhatsApp' })).toHaveAttribute('href', 'https://wa.me/17136322262');
+    expect(within(footer).getByRole('link', { name: 'WhatsApp +1 713 632 2262' })).toHaveAttribute('href', 'https://wa.me/17136322262');
     expect(footer.textContent).not.toMatch(/Waleed/i);
   });
 
@@ -185,10 +184,57 @@ describe('Trust details', () => {
     expect(container.textContent).not.toMatch(/—|Waleed/);
   });
 
-  it('hides the Running at strip until names are confirmed', () => {
+  it('shows the Running at strip from the config, names as text and open slots', () => {
     renderAt('/');
-    expect(screen.queryByRole('region', { name: 'Running at' })).toBeNull();
-    render(<RunningAt names={['Aljash Trading']} />);
-    expect(screen.getByRole('region', { name: 'Running at' })).toHaveTextContent('Aljash Trading');
+    const strip = screen.getByRole('region', { name: 'Running at' });
+    expect(within(strip).getAllByTestId('running-at').map((n) => n.textContent)).toEqual(['TechRealm', 'Aljash Trading']);
+    expect(within(strip).getAllByTestId('running-at-slot')[0]).toHaveTextContent('Your team');
+    expect(strip.querySelector('img, svg')).toBeNull();
+  });
+});
+
+describe('Story, research and pricing', () => {
+  it('main page only hints at story, research, pricing and what is new, one line each', () => {
+    const { container } = renderAt('/');
+    const hints = screen.getAllByTestId('hint');
+    expect(hints.map((h) => h.getAttribute('href'))).toEqual(['/story', '/research', '/pricing', '/new']);
+    expect(container.textContent).not.toMatch(/testimonial|Virtual sizing|Benchmark running|\$99|access code|waitlist|invite-only/i);
+    expect(screen.getByText(/freelancer vetted by LogicPacks/)).toBeInTheDocument();
+  });
+
+  it('/story lists the shipped launches', () => {
+    renderAt('/story');
+    const shipped = screen.getAllByTestId('shipped-card').map((c) => c.textContent);
+    for (const name of ['Virtual sizing', 'Virtual try-on', 'Reform', 'TAAS']) {
+      expect(shipped.some((t) => t.includes(name))).toBe(true);
+    }
+  });
+
+  it('/story tells the timeline as a team and never names a founder', () => {
+    const { container } = renderAt('/story');
+    expect(screen.getByRole('heading', { level: 1, name: /Our story\./ })).toBeInTheDocument();
+    for (const when of ['Nov 2025', 'Jan 2026', 'Feb to Oct 2026', 'Nov 2026']) expect(container.textContent).toContain(when);
+    expect(container.textContent).toContain('TechRealm');
+    expect(container.textContent).not.toMatch(/Waleed|founder/i);
+  });
+
+  it('/research shows measured numbers and "Benchmark running" for the rest, never invented values', () => {
+    renderAt('/research');
+    const bench = screen.getAllByTestId('benchmark').map((r) => r.textContent);
+    expect(bench.length).toBe(4);
+    bench.forEach((t) => expect(t).toContain('Benchmark running'));
+    expect(screen.getAllByTestId('suite')[0]).toHaveTextContent('9/9 passed');
+    expect(screen.getAllByTestId('security-check').some((r) => r.textContent.includes('Refused (401)'))).toBe(true);
+  });
+
+  it('/pricing: Individuals free, Enterprise $99 a month with coming-soon features', () => {
+    renderAt('/pricing');
+    const plans = screen.getAllByTestId('plan');
+    expect(plans[0]).toHaveTextContent('Individuals');
+    expect(plans[0]).toHaveTextContent('Free');
+    expect(plans[1]).toHaveTextContent('Enterprise');
+    expect(plans[1]).toHaveTextContent('$99per workspace / month');
+    expect(screen.getAllByTestId('coming-soon').length).toBeGreaterThan(0);
+    screen.getAllByTestId('coming-soon').forEach((li) => expect(li).toHaveTextContent('Coming soon'));
   });
 });

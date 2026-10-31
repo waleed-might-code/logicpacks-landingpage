@@ -6,6 +6,9 @@ import Download from './pages/Download';
 import Landing from './pages/Landing';
 import WhatsNew from './pages/WhatsNew';
 import { Privacy, Terms } from './pages/Legal';
+import Pricing from './pages/Pricing';
+import Research from './pages/Research';
+import Story from './pages/Story';
 
 const TITLES = {
   '/': 'LogicPacks',
@@ -13,6 +16,9 @@ const TITLES = {
   '/new': 'What\'s new in LogicPacks',
   '/privacy': 'Privacy · LogicPacks',
   '/terms': 'Terms · LogicPacks',
+  '/pricing': 'Pricing · LogicPacks',
+  '/research': 'Research · LogicPacks',
+  '/story': 'Our story · LogicPacks',
 };
 
 // Start each page at the top and give it its own tab title.
@@ -42,7 +48,12 @@ export default function App() {
           <Route path="/new" element={<WhatsNew />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/terms" element={<Terms />} />
+          <Route path="/pricing" element={<Pricing />} />
+          <Route path="/research" element={<Research />} />
+          <Route path="/story" element={<Story />} />
+          <Route path="/about" element={<Navigate to="/story" replace />} />
           <Route path="/releases" element={<Navigate to="/new" replace />} />
+          <Route path="/whats-new" element={<Navigate to="/new" replace />} />
           {/* The old marketplace routes are gone; send any deep link home. */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

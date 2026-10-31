@@ -35,6 +35,9 @@ export default function Nav() {
         <Link to={LINKS.whatsNew} className={link}>
           What&rsquo;s new
         </Link>
+        <Link to={LINKS.pricing} className={`${link} hidden sm:inline`}>
+          Pricing
+        </Link>
         <a href={LINKS.docs} className={`${link} hidden sm:inline`}>
           Docs
         </a>

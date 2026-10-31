@@ -1,23 +1,23 @@
 import { test, expect } from '@playwright/test';
 
 // Flip with EXPERT_PORTRAITS_READY in src/site.js.
-const PORTRAITS = false;
+const PORTRAITS = true;
 const EXPERT_IDS = ['ingrid-solberg', 'tomas-reyes', 'anika-rao', 'jonas-weber', 'kofi-mensah', 'lea-moreau', 'yuna-park', 'karim-haddad'];
 
 test.describe('LogicPacks landing: smoke', () => {
   test('home is the hero, the launch film, every-app, three rows and a closing line', async ({ page }) => {
     await page.goto('/');
-    await expect(page.getByRole('heading', { level: 1 })).toContainText('The best place for agents and humans to work together.');
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('Agents and people, one workspace.');
     // The launch film loads over its poster and offers its voiceover.
     await expect(page.getByTestId('media-video').first()).toHaveCSS('opacity', '1', { timeout: 15_000 });
     await expect(page.getByRole('button', { name: 'Play with sound' })).toBeVisible();
     await expect(page.getByRole('heading', { level: 2 })).toHaveText([
-      /Every app, every agent, one machine\./,
       'Work together.',
+      /Every app, every agent, one machine\./,
       'Delegate with guardrails.',
       'Works with your agent.',
       'Where it runs.',
-      /We are a small team\./,
+      /Built by Aljash Trading in the UAE\./,
     ]);
     // Row 1 clip plays too.
     const together = page.locator('#together [data-testid="media-video"]');
@@ -126,7 +126,7 @@ test.describe('LogicPacks landing: smoke', () => {
   test('the footer names the operator and links privacy and terms', async ({ page }) => {
     await page.goto('/');
     const footer = page.getByRole('contentinfo');
-    await expect(footer).toContainText('LogicPacks by Aljash Trading, UAE');
+    await expect(footer).toContainText(/© \d{4} LogicPacks by Aljash Trading, UAE/);
     await footer.getByRole('link', { name: 'Privacy' }).click();
     await expect(page).toHaveURL(/\/privacy$/);
     await expect(page.getByRole('heading', { level: 1, name: 'Privacy' })).toBeVisible();
@@ -140,14 +140,14 @@ test.describe('LogicPacks landing: smoke', () => {
     await expect(page).toHaveTitle('Download LogicPacks');
   });
 
-  for (const path of ['/download', '/new']) {
+  for (const path of ['/download', '/new', '/story', '/research', '/pricing', '/whats-new']) {
     test(`${path} loads directly (SPA fallback)`, async ({ page }) => {
       await page.goto(path);
       await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
     });
   }
 
-  for (const path of ['/', '/download', '/new', '/privacy', '/terms']) {
+  for (const path of ['/', '/download', '/new', '/privacy', '/terms', '/story', '/research', '/pricing']) {
     test(`no horizontal scroll at phone width on ${path}`, async ({ page }) => {
       await page.setViewportSize({ width: 375, height: 812 });
       await page.goto(path);

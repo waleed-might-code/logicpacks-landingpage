@@ -1,0 +1,102 @@
+{
+  "updated": "2026-11-01",
+  "note": "Only measured numbers go here. An entry with \"value\": null shows as \"Benchmark running\" on /research. Streaming entries are filled by the app-stream runs.",
+  "streaming": [
+    {
+      "id": "resolve-playback",
+      "title": "DaVinci Resolve playback",
+      "detail": "Timeline playback in a shared app view, viewer on the same network.",
+      "metrics": [
+        {
+          "label": "Glass to glass latency",
+          "unit": "ms",
+          "value": null
+        },
+        {
+          "label": "Frame rate",
+          "unit": "fps",
+          "value": null
+        }
+      ]
+    },
+    {
+      "id": "blender-viewport",
+      "title": "Heavy Blender viewport",
+      "detail": "Orbiting a dense scene in a shared app view, viewer on the same network.",
+      "metrics": [
+        {
+          "label": "Input to screen latency",
+          "unit": "ms",
+          "value": null
+        },
+        {
+          "label": "Frame rate",
+          "unit": "fps",
+          "value": null
+        }
+      ]
+    }
+  ],
+  "suites": [
+    {
+      "id": "cloud-live",
+      "title": "Cloud end to end, live host",
+      "detail": "Sign up, project from a real GitHub repo, invite, agent turns, sync. Run against app.logicpacks.io.",
+      "passed": 9,
+      "total": 9,
+      "date": "2026-10-31"
+    },
+    {
+      "id": "cloud-live-invite",
+      "title": "Cloud end to end, joining by invite link",
+      "detail": "The same flow joining through an invite link, without agent turns.",
+      "passed": 7,
+      "total": 7,
+      "date": "2026-11-01"
+    },
+    {
+      "id": "server-logicpacks",
+      "title": "Server tests, LogicPacks modules",
+      "detail": "Every test in the LogicPacks server modules.",
+      "passed": 139,
+      "total": 139,
+      "date": "2026-11-01"
+    },
+    {
+      "id": "any-app-demo",
+      "title": "Any-app demo",
+      "detail": "Play, pause, window switching and the full 72 second timeline.",
+      "passed": 19,
+      "total": 19,
+      "date": null
+    }
+  ],
+  "security": [
+    {
+      "id": "member-user",
+      "title": "Each member runs as their own sandbox user",
+      "detail": "Agent turns run as a separate Unix user per member, with a scrubbed environment and no host credentials.",
+      "result": "In place",
+      "date": "2026-11-01"
+    },
+    {
+      "id": "member-agent-server",
+      "title": "One member cannot drive another member's agent server",
+      "detail": "Request to another member's local agent server without its password.",
+      "result": "Refused (401)",
+      "date": "2026-11-01"
+    },
+    {
+      "id": "host-secrets",
+      "title": "A member cannot read host secrets",
+      "detail": "Reading host credential files from a member sandbox.",
+      "result": null
+    },
+    {
+      "id": "other-member-home",
+      "title": "A member cannot read another member's files",
+      "detail": "Listing another member's home and project folders.",
+      "result": null
+    }
+  ]
+}
