@@ -15,7 +15,7 @@ const vite = await createServer({ server: { middlewareMode: true }, appType: 'cu
 try {
   const { render } = await vite.ssrLoadModule('/src/prerender.jsx');
   const agent = await vite.ssrLoadModule('/src/agent.js');
-  const { SITE_URL } = await vite.ssrLoadModule('/src/site.js');
+  const { SITE_URL, FRIEND_PATH } = await vite.ssrLoadModule('/src/site.js');
   const { PAGES, DESCRIPTION, mdFooter } = agent;
 
   const shell = readFileSync('dist/index.html', 'utf8');
@@ -44,13 +44,18 @@ try {
     if (!body.includes('Al Jash Trading')) throw new Error(`${page.path} rendered without the operator`);
     const file = page.path === '/' ? 'index.html' : `${page.path.slice(1)}.html`;
     const canonical = `${SITE_URL}${page.path === '/' ? '/' : page.path}`;
-    const title = page.path === '/' ? 'LogicPacks' : `${page.title} · LogicPacks`;
+    const title = page.path === '/' ? 'LogicPacks by TechRealm: people and AI agents in one workspace' : `${page.title} · LogicPacks by TechRealm`;
     const html = shell
       .replace('<div id="root"></div>', `<div id="root">${body}</div>`)
       .replace('<meta charset="UTF-8" />', agent.IS_PREVIEW ? '<meta charset="UTF-8" />\n  <meta name="robots" content="noindex" />' : '<meta charset="UTF-8" />')
       .replace(/<title>[^<]*<\/title>/, `<title>${title}</title>`)
       .replace(/<link rel="canonical" href="[^"]*" \/>/, `<link rel="canonical" href="${canonical}" />\n  <link rel="alternate" type="text/markdown" href="${page.md}" title="${page.title} (markdown)" />`)
       .replace(/<meta property="og:url" content="[^"]*" \/>/, `<meta property="og:url" content="${canonical}" />`)
+      .replace(/<meta name="description" content="[^"]*" \/>/, `<meta name="description" content="${page.description}" />`)
+      .replace(/<meta property="og:description" content="[^"]*" \/>/, `<meta property="og:description" content="${page.description}" />`)
+      .replace(/<meta name="twitter:title" content="[^"]*" \/>/, `<meta name="twitter:title" content="${title}" />`)
+      .replace(/<meta name="twitter:description" content="[^"]*" \/>/, `<meta name="twitter:description" content="${page.description}" />`)
+      .replace(/<meta property="og:title" content="[^"]*" \/>/, `<meta property="og:title" content="${title}" />`)
       .replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>/, ld);
     writeFileSync(`dist/${file}`, html);
 
@@ -77,6 +82,10 @@ try {
   // The research twin is the generated tables (methodology + every result), not the page render.
   writeFileSync('dist/research.md', research);
   writeFileSync('dist/llms.txt', agent.llmsTxt());
+  // A no-install path for two people, ahead of the helper setup steps.
+  if (existsSync('dist/setup.md') && !readFileSync('dist/setup.md', 'utf8').includes('## Code with a friend')) {
+    appendFileSync('dist/setup.md', `\n## Code with a friend (no install)\n\nIf you only want to work with one other person, you can skip the helper:\n\n${FRIEND_PATH.map((step, i) => `${i + 1}. ${step}`).join('\n')}\n`);
+  }
   const setup = existsSync('dist/setup.md') ? readFileSync('dist/setup.md', 'utf8') : '';
   const full = [
     agent.llmsTxt(),

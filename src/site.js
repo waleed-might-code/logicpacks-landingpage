@@ -173,7 +173,7 @@ export const STORY = [
   { when: 'Nov 2025', title: 'Started building', body: 'A shared workspace where people and their agents work on the same project.' },
   { when: 'Jan 2026', title: 'Internal testing', body: 'Opened to our own team after two months, used on our client work every day.' },
   { when: 'Feb to Oct 2026', title: 'Eight months of testing', body: 'Used in labs and by tech agencies on real projects.' },
-  { when: 'Nov 2026', title: 'Public beta', body: 'Open to everyone, free for individuals.' },
+  { when: 'Nov 2026', title: 'Open to everyone', body: 'Version 0.1.8: shared projects, threads, invites, sync and your own agent, free for individuals. App sharing and Request assistance are Beta.' },
 ];
 
 // Launches built with LogicPacks. Facts only from the project notes.
@@ -249,3 +249,12 @@ export const WHERE = [
 // Vetted freelancers (Request assistance, Beta): /new and /about.md.
 export const FREELANCERS =
   'Sometimes it is cheaper to save tokens and bring in a freelancer vetted by LogicPacks. They bring their own Claude and tools and use none of your tokens: you pay for their hours, with their AI included. Every freelancer works under NDA and your keys are never shared with them. Milestones and drift alerts to keep their work on plan come in the next release.';
+
+// The shortest path for two people (checked against the v2 web app, 2026-11-01).
+export const FRIEND_PATH = [
+  `Open ${APP_URL} and sign up with your email (no install needed; the Mac app is optional).`,
+  'Add a project: start empty, from a template, or clone a Git URL (for example your GitHub repository).',
+  'Copy the invite link and send it to your friend; they sign up and join.',
+  'Each of you connects your own agent: "Connect your agent", then "Log in with Claude" (Codex, OpenCode and Gemini work too).',
+  'Each of you works in your own thread with your own agent, and you both see who is working on what.',
+];

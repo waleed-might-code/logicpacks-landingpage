@@ -51,6 +51,7 @@ describe('Landing', () => {
       'Every app, every agent, one machine. People and agents share the host’s apps, from Blender to DaVinci Resolve.',
       'Delegate with guardrails.',
       'Works with your agent.',
+      'How it compares. Built only for people and agents working together.',
       'Where it runs.',
       'Developed by TechRealm. Operated by Al Jash Trading, Abu Dhabi. Since 1994.Try it on your next project.',
     ]);
@@ -178,7 +179,7 @@ describe('Trust details', () => {
   it('renders the terms with the beta disclaimer and UAE law', () => {
     const { container } = renderAt('/terms');
     expect(screen.getByRole('heading', { level: 1, name: 'Terms' })).toBeInTheDocument();
-    for (const text of ['Al Jash Trading (Establishment), Abu Dhabi, UAE', 'CN-1030597', 'LogicPacks is in beta', 'laws of the United Arab Emirates', 'courts of Abu Dhabi']) {
+    for (const text of ['Al Jash Trading (Establishment), Abu Dhabi, UAE', 'CN-1030597', 'Features labelled Beta', 'laws of the United Arab Emirates', 'courts of Abu Dhabi']) {
       expect(container.textContent).toContain(text);
     }
     expect(container.textContent).not.toMatch(/—|Waleed/);

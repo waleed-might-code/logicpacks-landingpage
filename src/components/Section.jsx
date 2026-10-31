@@ -4,10 +4,10 @@ export const display = 'text-[28px] font-normal leading-[1.12] tracking-[-0.025e
 // Hairlines between grid cells: stacked on phones, side by side from sm up.
 export const divided = (i) => (i > 0 ? 'border-t border-line sm:border-l sm:border-t-0' : '');
 
-export function BetaPill() {
+export function BetaPill({ children = 'Beta' }) {
   return (
     <p className="inline-flex h-7 items-center rounded-full border border-line bg-raised px-3 text-[12px] text-muted">
-      Beta
+      {children}
     </p>
   );
 }

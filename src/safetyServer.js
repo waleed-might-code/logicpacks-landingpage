@@ -38,9 +38,17 @@ What teammates cannot do:
 - **From the command line:** \`lp members\` lists who is in the project. Removing people is done in the app; there is no \`lp\` command for it.
 - **Timing:** removal applies to the person's next request (each request checks their current access), and their helper can no longer stream into the project. An agent turn that is already running is not stopped and keeps its access until it ends. Removal does not touch GitHub: LogicPacks does not add teammates as collaborators on your repository, and any copy a person already cloned stays with them.
 
+## 8. Agent logins and code on the LogicPacks cloud
+
+- **Your agent login:** when you use "Log in with Claude" (or Codex, Gemini, OpenCode) in the web app, the login is stored on the LogicPacks cloud for your account only, in files readable only by the server (owner-only file permissions). It is not encrypted at rest, so a server administrator could read it. No API or screen shows one member's login to another member.
+- **Disconnecting:** "Disconnect" in the app deletes the stored Codex, Gemini or OpenCode login file and drops the stored Claude login. You can also revoke the login from your Claude, OpenAI or Google account at any time.
+- **Each member runs separately:** on the LogicPacks cloud, each member's agent runs in its own sandbox.
+- **Your code:** projects imported from or synced to GitHub live in your GitHub repository, so you keep a full copy outside LogicPacks. A project created from scratch on the cloud has no GitHub copy until you sync it, and thread history is stored on the LogicPacks cloud only.
+- **Self-hosted:** if you run LogicPacks on your own machine, logins and code stay on that machine.
+
 ## In the next release (built, not live yet)
 
-These are built and ship with LogicPacks 0.1.9. Until then, sections 5 to 7 describe what is live.
+These are built and ship with LogicPacks 0.1.9. Until then, sections 5 to 8 describe what is live.
 
 - Experts: \`.env\` and key files hidden from them, pasted secrets redacted, and their work scoped by goals and milestones.
 - Session streaming: secrets (API keys and tokens, private keys, passwords in commands, config and connection strings) are redacted on your computer before anything is sent. MCP tool calls stream as the tool name only (opt in per folder with \`lp stream --mcp-details on\`). Reading \`.env\`, key, credential or \`.ssh\` files sends the path only, never the content. \`lp stream --status\` shows exactly what a folder sends.

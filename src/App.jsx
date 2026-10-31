@@ -11,14 +11,14 @@ import Research from './pages/Research';
 import Story from './pages/Story';
 
 const TITLES = {
-  '/': 'LogicPacks',
+  '/': 'LogicPacks by TechRealm: people and AI agents in one workspace',
   '/download': 'Download LogicPacks',
   '/new': 'What\'s new in LogicPacks',
-  '/privacy': 'Privacy · LogicPacks',
-  '/terms': 'Terms · LogicPacks',
-  '/pricing': 'Pricing · LogicPacks',
-  '/research': 'Research · LogicPacks',
-  '/story': 'Our story · LogicPacks',
+  '/privacy': 'Privacy · LogicPacks by TechRealm',
+  '/terms': 'Terms · LogicPacks by TechRealm',
+  '/pricing': 'Pricing · LogicPacks by TechRealm',
+  '/research': 'Research · LogicPacks by TechRealm',
+  '/story': 'Our story · LogicPacks by TechRealm',
 };
 
 // Start each page at the top and give it its own tab title.

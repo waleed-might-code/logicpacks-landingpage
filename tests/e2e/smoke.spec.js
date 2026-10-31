@@ -16,6 +16,7 @@ test.describe('LogicPacks landing: smoke', () => {
       /Every app, every agent, one machine\./,
       'Delegate with guardrails.',
       'Works with your agent.',
+      'How it compares. Built only for people and agents working together.',
       'Where it runs.',
       /Developed by TechRealm\. Operated by Al Jash Trading, Abu Dhabi\. Since 1994\./,
     ]);
@@ -126,7 +127,7 @@ test.describe('LogicPacks landing: smoke', () => {
 
   for (const [path, md, phrase] of [
     ['/', '/index.md', 'Agents and people, one workspace.'],
-    ['/story', '/story.md', 'Public beta'],
+    ['/story', '/story.md', 'Open to everyone'],
     ['/research', '/research.md', '139/139 passed'],
     ['/pricing', '/pricing.md', '$99'],
     ['/new', '/new.md', 'Request assistance'],

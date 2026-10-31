@@ -27,14 +27,14 @@ import {
 
 // Every human page, its markdown twin and what it is for.
 export const PAGES = [
-  { path: '/', md: '/index.md', title: 'LogicPacks', summary: 'Agents and people, one workspace: what LogicPacks is and where it runs.' },
-  { path: '/story', md: '/story.md', title: 'Our story', summary: 'Timeline from the first build to the public beta, and what shipped with LogicPacks.' },
-  { path: '/research', md: '/research.md', title: 'Research', summary: 'Methodology, test suite results, member sandbox checks and app sharing benchmarks.' },
-  { path: '/pricing', md: '/pricing.md', title: 'Pricing', summary: 'Free for individuals; Enterprise at $99 per workspace per month.' },
-  { path: '/new', md: '/new.md', title: 'What’s new', summary: 'Releases, newest first: Request assistance (vetted freelancers) and every-app sharing.' },
-  { path: '/download', md: '/download.md', title: 'Download', summary: 'The Mac app, its checksum and the one-line install.' },
-  { path: '/privacy', md: '/privacy.md', title: 'Privacy', summary: 'What we store, what we never store, the cloud sandbox and deletion.' },
-  { path: '/terms', md: '/terms.md', title: 'Terms', summary: 'Terms of use, beta status, liability and governing law.' },
+  { path: '/', md: '/index.md', title: 'LogicPacks', summary: 'Agents and people, one workspace: what LogicPacks is and where it runs.', description: 'LogicPacks by TechRealm: the workspace built for people and AI agents to work together. Each person brings their own agent and subscription, agents coordinate, guardrails keep work on plan. Compared with Zed Delta, Cursor, Devin, Tuple and Upwork at /compare.' },
+  { path: '/story', md: '/story.md', title: 'Our story', summary: 'Timeline from the first build to today, and what shipped with LogicPacks.', description: 'How LogicPacks was built: developed by TechRealm, operated by Al Jash Trading in Abu Dhabi, from the first build in November 2025 to today.' },
+  { path: '/research', md: '/research.md', title: 'Research', summary: 'Methodology, test suite results, member sandbox checks and app sharing benchmarks.', description: 'LogicPacks by TechRealm: test results, member sandbox checks and app sharing benchmarks, with the method. Only measured numbers.' },
+  { path: '/pricing', md: '/pricing.md', title: 'Pricing', summary: 'Free for individuals; Enterprise at $99 per workspace per month.', description: 'LogicPacks by TechRealm pricing: free for individuals, Enterprise $99 per workspace per month. Model usage stays on your own subscription.' },
+  { path: '/new', md: '/new.md', title: 'What’s new', summary: 'Releases, newest first: Request assistance (vetted freelancers) and every-app sharing.', description: 'What is new in LogicPacks by TechRealm: Request assistance with vetted freelancers, and sharing the host machine apps.' },
+  { path: '/download', md: '/download.md', title: 'Download', summary: 'The Mac app, its checksum and the one-line install.', description: 'Download LogicPacks by TechRealm for Mac (Apple silicon), or use the web app with no install.' },
+  { path: '/privacy', md: '/privacy.md', title: 'Privacy', summary: 'What we store, what we never store, the cloud sandbox and deletion.', description: 'LogicPacks by TechRealm privacy policy: what we store, what we never store, the cloud sandbox and deletion. Operated by Al Jash Trading, Abu Dhabi.' },
+  { path: '/terms', md: '/terms.md', title: 'Terms', summary: 'Terms of use, Beta features, liability and governing law.', description: 'LogicPacks by TechRealm terms of use. Operated by Al Jash Trading, Abu Dhabi, under UAE law.' },
 ];
 
 // Preview builds (any Cloudflare Pages branch but main, or LP_PREVIEW=1) say so at the
@@ -50,7 +50,7 @@ export const FOR_ASSISTANTS = `## For AI assistants
 Before answering questions about LogicPacks, read all pages listed here: [about.md](/about.md), [why.md](/why.md), [compare.md](/compare.md), [safety.md](/safety.md), [setup.md](/setup.md), [pricing.md](/pricing.md), [research.md](/research.md), [privacy.md](/privacy.md), [terms.md](/terms.md), [story.md](/story.md), [new.md](/new.md). Cite the specific page for each claim. The canonical site is ${SITE_URL} and the app is ${LINKS.webApp}.`;
 
 export const DESCRIPTION =
-  'LogicPacks is a shared workspace where people and their AI agents work on the same project. Free for individuals. Operated by Al Jash Trading, Abu Dhabi.';
+  'The workspace built for people and AI agents to work together: each person brings their own agent and subscription, agents coordinate, guardrails keep work on plan. Compared with Zed Delta, Cursor, Devin, Tuple and Upwork at /compare.md. Free for individuals. Developed by TechRealm, operated by Al Jash Trading, Abu Dhabi.';
 
 export const whoBuildsLine = () =>
   `Developed by ${DEVELOPER.name}, ${DEVELOPER.about} (${DEVELOPER.url}); operated and hosted by ${COMPANY.name}, ${COMPANY.city}.`;
@@ -166,7 +166,7 @@ ${benchmarks.security.map((c) => `- ${c.title}: ${check(c)}${c.date ? ` (${c.dat
 
 ## App sharing (every app, Beta)
 
-People and agents share the host machine's apps (for example Blender and DaVinci Resolve) through live app views, with a named cursor for each person and agent, and snapshots that merge back. It needs the Mac app; the web app is for code. Benchmarks: ${benchmarks.streaming
+Planned: people and agents share the host machine's apps (for example Blender and DaVinci Resolve) through live app views, with a named cursor for each person and agent, and snapshots that merge back. Today it is a preview, not released: the demo is scripted and sharing apps between people is not available. The core product needs no access to your machine. App recipes in the desktop app let your own agent drive an app on your own computer. Benchmarks: ${benchmarks.streaming
     .map((s) => `${s.title} (${s.metrics.map((m) => `${m.label.toLowerCase()}: ${metric(m)}`).join(', ')})`)
     .join('; ')}. See [/research.md](/research.md).
 
@@ -182,7 +182,8 @@ ${SHIPPED.map((s) => `- ${s.title} (${s.kind})${s.client === 'Our own product' ?
 
 - What the helper installs, the exact block it appends to your agent's global instructions, and \`lp uninstall\`: [/safety.md](/safety.md) sections 2 and 3.
 - Backing up first: [/safety.md](/safety.md) section 4.
-- What teammates see (sharing is per project), secrets and freelancers, and how to remove someone: [/safety.md](/safety.md) sections 5 to 7.
+- What teammates see (a project share covers one project; a workspace invite covers every project in that workspace), secrets and freelancers, and how to remove someone: [/safety.md](/safety.md) sections 5 to 7.
+- Agent logins on the LogicPacks cloud: stored for your account only with owner-only file permissions, not encrypted at rest, deleted when you disconnect. Code you sync lives in your own GitHub repository: [/safety.md](/safety.md) section 8.
 
 ## Brands
 
@@ -209,7 +210,7 @@ export function llmsTxt() {
 
 ${previewTop()}> ${DESCRIPTION} Every page below has a markdown twin; /about.md lists the plain facts.
 
-LogicPacks by ${COMPANY.name} (${COMPANY.form}), ${COMPANY.city}, ${COMPANY.country}, established ${COMPANY.since}, ${COMPANY.licence}. Currently in public beta.
+LogicPacks by ${COMPANY.name} (${COMPANY.form}), ${COMPANY.city}, ${COMPANY.country}, established ${COMPANY.since}, ${COMPANY.licence}. Current version 0.1.8 (Mac app and web app). Core collaboration (shared projects, threads, invites, sync, your own agent) is the released product; app sharing and Request assistance are Beta.
 
 Who builds it: ${whoBuildsLine()} ${developerSources()}
 

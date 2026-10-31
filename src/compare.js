@@ -24,7 +24,7 @@ const LP = {
     'yes: Claude Code, Codex, OpenCode, Gemini CLI, Cursor and more',
     'yes: `lp ask`, `lp reply`, `lp send`',
     'next release (Beta): goals, milestones, drift alerts, review',
-    'Beta: Mac host, benchmarks pending',
+    'Beta preview (scripted demo), not released',
     'Beta: vetted freelancers on request',
     'local machine yes; your own cloud host coming soon',
     `${PRICING.individual.price} for individuals; ${PRICING.enterprise.price} ${PRICING.enterprise.per}`,
@@ -33,6 +33,31 @@ const LP = {
 
 // [name, cells (8), great at, pick them instead when, sources]
 const ROWS = [
+  {
+    group: 'Sharing one Claude Code session',
+    rows: [
+      ['Zed Delta (Claude Code multiplayer)', ['partial: a teammate joins a shared thread with `/delta share`; each uses their own Claude session with the shared conversation as context', 'partial: Delta Personal works with your own keys or external agents; which Claude account a joiner uses is not documented', ND, ND, ND, ND, 'not documented (Zed-hosted sync)', 'Personal free; Pro $10/mo'],
+        'Handing a live Claude Code conversation and its uncommitted changes to a teammate, from Zed, an editor company. CLI in beta; multiplayer post dated 2026-10-27.',
+        'You want to pass one Claude Code conversation to a teammate or pick it up together. LogicPacks is built for teams where each person runs their own agent, many agents work in parallel, and agents coordinate with each other.',
+        ['https://delta.dev/blog/claude-code-multiplayer', 'https://zed.dev/blog/introducing-delta', 'https://github.com/zed-industries/delta-claude', 'https://delta.dev/pricing']],
+      ['claude-duet', ['partial: two people in one Claude session', 'host only: runs on the host\'s machine and key', ND, 'partial: host approves the partner\'s prompts', ND, ND, 'yes: peer to peer, end-to-end encrypted', 'free (MIT)'],
+        'Private two-person pairing on one Claude Code session with end-to-end encryption and no relay server.',
+        'Two people want to share one session today, privately, at no cost.',
+        ['https://github.com/EliranG/claude-duet']],
+      ['claude-share (Paradigm-Study)', ['partial: up to 20 people in one host session', 'host only: a guest\'s own model is never called', ND, ND, ND, ND, 'partial: hosted relay or self-host on your Cloudflare account', 'free (MIT)'],
+        'Bigger rooms (up to 20) around one Claude Code or Claude Desktop session, with shared previews and files.',
+        'A group wants to watch and steer one session live. Encrypted in transit, not end to end.',
+        ['https://github.com/Paradigm-Study/claude-share']],
+      ['ccshare (now manycode)', ['partial: up to 5 people on one mirrored terminal', 'host only (agent runs on the host)', ND, ND, ND, ND, 'partial: self-hostable relay', 'free (MIT)'],
+        'Join a live terminal session with a 6 character code, from a terminal or browser; works with any terminal agent.',
+        'You want a quick no-install join to one terminal. The code is the only authentication.',
+        ['https://github.com/unworld11/manycode', 'https://www.producthunt.com/products/ccshare']],
+      ['Pair-Claude', ['partial: several people on one mirrored session', ND, ND, ND, ND, ND, 'yes: over your Tailscale network', 'free (MIT)'],
+        'Terminal sharing for teams already on Tailscale, with read-only links.',
+        'Your team is on Tailscale and wants to watch one session. Little activity since May 2026.',
+        ['https://github.com/dxfrontier/Pair-Claude']],
+    ],
+  },
   {
     group: 'AI coding',
     rows: [
@@ -139,7 +164,16 @@ export function compareMarkdown() {
 
 As of ${AS_OF}. Competitor facts come from each product's own site on that date (source per row). "not documented" means their pages did not say, not that the product lacks it. If something here is out of date, tell us (contact below) and we will fix it.
 
-LogicPacks is in public beta. What it adds is one layer: several people, each with their own agent on their own subscription, working in one project, with agents that message each other, guardrails on delegated work, shared host apps and human help on request. Most tools below are stronger at their own core, and LogicPacks works alongside several of them (Claude Code, Codex, Cursor and others run inside it).
+LogicPacks is a company whose whole product is people and AI agents working together. Most tools below treat collaboration as one feature of something else: Zed builds an editor, Cursor an AI editor, Devin an autonomous agent, Tuple and Parsec screen sharing, Upwork a hiring marketplace. LogicPacks builds the shared workspace around whatever editor and agent each person already uses: each person brings their own agent and subscription, many agents work in parallel in one project, agents message each other and check for overlap before they start, goals and drift alerts keep delegated work on plan, a cloud keeps working when laptops close, and your GitHub repository stays the source of truth. It is at version 0.1.8; app sharing and the freelancer marketplace are Beta. Most tools below are stronger at their own core, and LogicPacks works alongside several of them (Claude Code, Codex, Cursor and others run inside it).
+
+## Which to pick
+
+- **Two people, one Claude Code session, today:** Zed Delta or claude-duet are fine and quick. They share one conversation; LogicPacks is more than you need.
+- **A team with several people and several agents working in parallel over days:** LogicPacks. Each person keeps their own agent and subscription, agents coordinate (\`lp ask\`, \`lp who\`), and the cloud keeps going when a laptop closes.
+- **One person who wants the best AI editor:** Cursor (or Zed). Add LogicPacks when others join.
+- **Hand a whole ticket to an autonomous agent:** Devin.
+- **Live pairing with great video and remote control:** Tuple or Parsec.
+- **Hiring at marketplace scale:** Upwork or Toptal.
 
 ## Table
 
@@ -157,8 +191,8 @@ ${sections}
 
 ## Where LogicPacks is weaker today
 
-- Beta. The Mac app needs macOS 13 or later on Apple silicon; there is no Windows or iOS app yet. The web app is for code projects.
-- App sharing is Beta and its latency and frame rate benchmarks are still pending ([/research.md](/research.md)); Parsec and Tuple are far more mature at streaming and pairing.
+- Young: version 0.1.8, with app sharing and the freelancer marketplace in Beta. The Mac app needs macOS 13 or later on Apple silicon; there is no Windows or iOS app yet. The web app is for code projects.
+- App sharing between people is a Beta preview, not released, and its latency and frame rate benchmarks are still pending ([/research.md](/research.md)); Parsec and Tuple are far more mature at streaming and pairing.
 - No independent security certification is documented. What is in place and what is pending: [/research.md](/research.md) and [/safety.md](/safety.md).
 - The freelancer network is new and small next to Upwork or Toptal.
 - Single sign-on, admin controls and audit log, and your own cloud host are coming soon, not available ([/pricing.md](/pricing.md)).

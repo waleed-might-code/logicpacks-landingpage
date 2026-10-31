@@ -69,12 +69,13 @@ function EveryApp() {
           placeholder="Beta demo"
         />
         <Facts items={EVERY_APP} />
+        <p className="mt-3 text-[12px] text-faint">A preview of a coming feature. Everything else on this page works without any access to your machine.</p>
       </Reveal>
     </section>
   );
 }
 
-function Row({ id, title, beta = false, children, action, visual }) {
+function Row({ id, title, beta = false, pill = null, children, action, visual }) {
   return (
     <section
       id={id}
@@ -82,8 +83,8 @@ function Row({ id, title, beta = false, children, action, visual }) {
       className={`${container} grid items-center gap-8 border-t border-line py-12 sm:py-14 lg:grid-cols-[5fr_7fr] lg:gap-14`}
     >
       <Reveal className="min-w-0">
-        {beta && <BetaPill />}
-        <h2 id={`${id}-title`} className={`${rowTitle} ${beta ? 'mt-4' : ''}`}>
+        {(beta || pill) && <BetaPill>{pill ?? 'Beta'}</BetaPill>}
+        <h2 id={`${id}-title`} className={`${rowTitle} ${beta || pill ? 'mt-4' : ''}`}>
           {title}
         </h2>
         {children}
@@ -190,6 +191,38 @@ function ToolStrip() {
 }
 
 // Where the work runs: two plain options, side by side.
+
+// How it compares: visible one-liners, the full table lives at /compare.md.
+const COMPARE = [
+  { vs: 'Zed Delta, claude-duet', line: 'They share one Claude Code session. LogicPacks gives each person their own agent, with many agents in parallel that coordinate.' },
+  { vs: 'Cursor, Devin', line: 'Strong single-user agents. LogicPacks puts several people and their agents in one project, with goals and drift alerts.' },
+  { vs: 'Tuple, Parsec', line: 'Screen sharing without agents. LogicPacks shares the project, the threads and the agents.' },
+  { vs: 'Upwork', line: 'Hiring without the workspace. In LogicPacks a vetted freelancer joins the project with their own AI (Beta).' },
+];
+
+function HowItCompares() {
+  return (
+    <section id="compare" aria-labelledby="compare-title" className={`${container} border-t border-line py-12 sm:py-14`}>
+      <Reveal>
+        <h2 id="compare-title" className={rowTitle}>
+          How it compares.{' '}
+          <span className="text-muted">Built only for people and agents working together.</span>
+        </h2>
+      </Reveal>
+      <Reveal delay={120} as="ul" className="mt-6 grid gap-px overflow-hidden rounded-xl border border-line bg-line sm:grid-cols-2">
+        {COMPARE.map((c) => (
+          <li key={c.vs} data-testid="compare-line" className="bg-panel p-[18px]">
+            <p className="text-[13px] text-ink">vs {c.vs}</p>
+            <p className="mt-1 text-[13px] leading-[1.5] text-muted">{c.line}</p>
+          </li>
+        ))}
+      </Reveal>
+      <a href="/compare.md" className="mt-4 inline-flex items-center gap-2 text-[13px] text-ink hover:underline">
+        Full comparison, with sources <span aria-hidden="true">→</span>
+      </a>
+    </section>
+  );
+}
 
 function WhereItRuns() {
   return (
@@ -326,12 +359,16 @@ export default function Landing() {
           One shared project for the whole team. Everyone works with their own agent in their own thread, you see who is
           working on what, and agents can message each other.
         </p>
+        <p className={`${rowBody} text-faint`}>
+          Code with a friend: sign up in the web app, add a project or a Git URL, send the invite link, and each of you
+          connects your own Claude. No install needed.
+        </p>
       </Row>
       <EveryApp />
       <Row
         id="delegate"
         title="Delegate with guardrails."
-        beta
+        pill="Next release"
         action={
           <a href={LINKS.webApp} className={primary}>
             Plan a goal
@@ -361,6 +398,7 @@ export default function Landing() {
           know-how and any agent works your way, with no fine-tuning.
         </p>
       </Row>
+      <HowItCompares />
       <WhereItRuns />
       <Hints />
       <Brands />

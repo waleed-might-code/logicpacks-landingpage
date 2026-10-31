@@ -111,9 +111,9 @@ export function Terms() {
       <Part title="Your work">
         <p>Your code, projects and packs are yours. We only handle them to run the service for you.</p>
       </Part>
-      <Part title="Beta">
+      <Part title="Beta features">
         <p>
-          LogicPacks is in beta. Features labelled Beta may change or stop, and the service is provided as it is, without
+          LogicPacks is under active development. Features labelled Beta (app sharing and Request assistance) may change or stop, and the service is provided as it is, without
           guarantees of availability or fitness for a purpose. Keep your own backups; synced projects also live in your
           GitHub repository.
         </p>

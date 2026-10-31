@@ -147,7 +147,7 @@ export default function Download() {
   return (
     <section aria-labelledby="download-title" className={`${container} pb-24 pt-16 sm:pb-32 sm:pt-24`}>
       <p className="inline-flex h-7 items-center rounded-full border border-line bg-raised px-3 text-[12px] text-muted">
-        Public beta
+        Mac app and web app
       </p>
       <h1
         id="download-title"
