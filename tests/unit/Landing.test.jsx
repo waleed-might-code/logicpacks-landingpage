@@ -48,10 +48,10 @@ describe('Landing', () => {
     const h2 = screen.getAllByRole('heading', { level: 2 }).map((h) => h.textContent);
     expect(h2).toEqual([
       'Work together.',
+      'How it compares. Built only for people and agents working together.',
       'Every app, every agent, one machine. People and agents share the host’s apps, from Blender to DaVinci Resolve.',
       'Delegate with guardrails.',
       'Works with your agent.',
-      'How it compares. Built only for people and agents working together.',
       'Where it runs.',
       'Developed by TechRealm. Operated by Al Jash Trading, Abu Dhabi. Since 1994.Try it on your next project.',
     ]);

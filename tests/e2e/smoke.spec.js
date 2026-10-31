@@ -13,10 +13,10 @@ test.describe('LogicPacks landing: smoke', () => {
     await expect(page.getByRole('button', { name: 'Play with sound' })).toBeVisible();
     await expect(page.getByRole('heading', { level: 2 })).toHaveText([
       'Work together.',
+      'How it compares. Built only for people and agents working together.',
       /Every app, every agent, one machine\./,
       'Delegate with guardrails.',
       'Works with your agent.',
-      'How it compares. Built only for people and agents working together.',
       'Where it runs.',
       /Developed by TechRealm\. Operated by Al Jash Trading, Abu Dhabi\. Since 1994\./,
     ]);
@@ -136,7 +136,7 @@ test.describe('LogicPacks landing: smoke', () => {
       const html = await (await request.get(path)).text();
       expect(html).toContain(phrase);
       expect(html).toContain('CN-1030597');
-      expect(html).toContain(`type="text/markdown" href="${md}"`);
+      expect(html).toContain(`type="text/markdown" href="https://logicpacks.io${md}"`);
       expect(html).toContain('"foundingDate":"1994"');
       const twin = await (await request.get(md)).text();
       expect(twin).toContain(phrase);
@@ -148,6 +148,15 @@ test.describe('LogicPacks landing: smoke', () => {
       await context.close();
     });
   }
+
+  test('one fetch of the homepage (markdown) carries the facts first', async ({ request }) => {
+    const md = await (await request.get('/index.md')).text();
+    const top = md.split('\n').slice(0, 20).join('\n');
+    for (const text of ['## LogicPacks in brief', 'TechRealm', 'Al Jash Trading', 'CN-1030597', '0.1.8', 'Free for individuals', '$99', 'vs Zed Delta', 'vs Cursor', 'vs Tuple', 'vs Upwork', 'https://logicpacks.io/compare.md', 'https://logicpacks.io/safety.md', 'https://logicpacks.io/llms-full.txt']) {
+      expect(top).toContain(text);
+    }
+    expect(md).not.toMatch(/\]\(\/[^/]/);
+  });
 
   test('llms.txt and about.md give agents the plain facts', async ({ request }) => {
     const llms = await (await request.get('/llms.txt')).text();

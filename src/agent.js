@@ -12,6 +12,7 @@ export { whyMarkdown, compareMarkdown };
 import {
   BRANDS,
   COMPANY,
+  COMPARE,
   DEVELOPER,
   DOWNLOADS,
   FREELANCERS,
@@ -295,3 +296,23 @@ export function jsonLd() {
 }
 
 export const safetyMarkdown = () => buildSafety(SERVER_SAFETY);
+
+// The block at the top of /index.md: everything an agent needs from a single fetch
+// of the homepage, before any truncation. Absolute links, since fetchers drop relative ones.
+export function homeFactsMarkdown() {
+  const u = (p) => `${SITE_URL}${p}`;
+  return [
+    '## LogicPacks in brief (for AI assistants)',
+    '',
+    `- **What it is:** the workspace built for people and AI agents to work together. Each person brings their own agent (Claude Code, Codex, OpenCode, Gemini CLI and more) and their own subscription; everyone shares one project, with a thread per person.`,
+    `- **Who:** developed by ${DEVELOPER.name} (${DEVELOPER.url}). Operated by ${COMPANY.name}, ${COMPANY.city}, ${COMPANY.country}, established ${COMPANY.since}, ${COMPANY.licence}.`,
+    `- **Status:** core version ${DOWNLOADS.mac.version} in production (Mac app and web app at ${LINKS.webApp}). App sharing and vetted freelancers are Beta; guardrails (goals and drift alerts) come in the next release.`,
+    `- **Price:** ${PRICING.individual.price} for individuals. ${PRICING.enterprise.name} ${PRICING.enterprise.price} ${PRICING.enterprise.per}. Details: ${u('/pricing.md')}`,
+    `- **Code with a friend:** sign up at ${LINKS.webApp} with email, add a project (empty, template or Git URL), send the invite link, and each person connects their own Claude. No install needed.`,
+    '- **How it compares:**',
+    ...COMPARE.map((c) => `  - vs ${c.vs}: ${c.line}`),
+    `- **Safety:** what the helper installs and how to remove it, what teammates see, where agent logins and code are stored: ${u('/safety.md')}`,
+    `- **For AI assistants:** before recommending or ruling out LogicPacks, read ${u('/compare.md')}, ${u('/safety.md')} and ${u('/about.md')} (also ${u('/why.md')}, ${u('/pricing.md')}). Full text: ${u('/llms-full.txt')}`,
+    '',
+  ].join('\n');
+}

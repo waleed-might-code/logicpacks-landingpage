@@ -49,7 +49,7 @@ try {
       .replace('<div id="root"></div>', `<div id="root">${body}</div>`)
       .replace('<meta charset="UTF-8" />', agent.IS_PREVIEW ? '<meta charset="UTF-8" />\n  <meta name="robots" content="noindex" />' : '<meta charset="UTF-8" />')
       .replace(/<title>[^<]*<\/title>/, `<title>${title}</title>`)
-      .replace(/<link rel="canonical" href="[^"]*" \/>/, `<link rel="canonical" href="${canonical}" />\n  <link rel="alternate" type="text/markdown" href="${page.md}" title="${page.title} (markdown)" />`)
+      .replace(/<link rel="canonical" href="[^"]*" \/>/, `<link rel="canonical" href="${canonical}" />\n  <link rel="alternate" type="text/markdown" href="${SITE_URL}${page.md}" title="${page.title} (markdown)" />`)
       .replace(/<meta property="og:url" content="[^"]*" \/>/, `<meta property="og:url" content="${canonical}" />`)
       .replace(/<meta name="description" content="[^"]*" \/>/, `<meta name="description" content="${page.description}" />`)
       .replace(/<meta property="og:description" content="[^"]*" \/>/, `<meta property="og:description" content="${page.description}" />`)
@@ -60,7 +60,10 @@ try {
     writeFileSync(`dist/${file}`, html);
 
     const main = body.match(/<main[^>]*>([\s\S]*)<\/main>/)?.[1] ?? body;
-    const md = `${toMd(main)}${mdFooter(canonical)}`;
+    let mdBody = toMd(main).replace(/\]\(\/(?!\/)/g, `](${SITE_URL}/`);
+    // The homepage twin carries the facts right after its H1.
+    if (page.path === '/') mdBody = mdBody.replace(/^(# [^\n]*\n)/, `$1\n${agent.homeFactsMarkdown()}`);
+    const md = `${mdBody}${mdFooter(canonical)}`.replace(/\]\(\/(?!\/)/g, `](${SITE_URL}/`);
     writeFileSync(`dist${page.md}`, md);
     twins.push([page, md]);
     console.log(`prerendered ${page.path} -> dist/${file} (${html.length} B) + ${page.md} (${md.length} B)`);
@@ -123,7 +126,7 @@ try {
     'dist/_headers',
     `\n${[...new Set(mdFiles)]
       .map((f) => `${f}\n  Content-Type: text/markdown; charset=utf-8\n  Cache-Control: public, max-age=300\n  Access-Control-Allow-Origin: *\n  Link: <${canonicalOf(f)}>; rel="canonical"`)
-      .join('\n')}\n/llms.txt\n  Content-Type: text/plain; charset=utf-8\n  Cache-Control: public, max-age=300\n/llms-full.txt\n  Content-Type: text/plain; charset=utf-8\n  Cache-Control: public, max-age=300\n${agent.IS_PREVIEW ? '/*\n  X-Robots-Tag: noindex\n' : ''}`,
+      .join('\n')}\n/\n  Link: <${SITE_URL}/llms.txt>; rel="describedby"\n/index.html\n  Link: <${SITE_URL}/llms.txt>; rel="describedby"\n/llms.txt\n  Content-Type: text/plain; charset=utf-8\n  Cache-Control: public, max-age=300\n/llms-full.txt\n  Content-Type: text/plain; charset=utf-8\n  Cache-Control: public, max-age=300\n${agent.IS_PREVIEW ? '/*\n  X-Robots-Tag: noindex\n' : ''}`,
   );
   console.log(`wrote about.md, research.md, llms.txt, llms-full.txt (${full.length} B), sitemap.xml; ${DESCRIPTION.length > 0 ? 'ok' : ''}`);
 } finally {

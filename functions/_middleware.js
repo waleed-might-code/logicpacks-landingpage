@@ -30,6 +30,7 @@ export async function onRequest({ request, next, env }) {
       'Content-Type': 'text/markdown; charset=utf-8',
       'Cache-Control': 'public, max-age=300',
       Vary: 'Accept',
+      Link: '<https://logicpacks.io/llms.txt>; rel="describedby"',
     },
   });
 }

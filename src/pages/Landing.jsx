@@ -6,7 +6,7 @@ import LaunchMedia from '../components/LaunchMedia';
 import { MotionBg, Reveal } from '../components/Motion';
 import MediaSlot from '../components/MediaSlot';
 import { BetaPill, container, display, Facts } from '../components/Section';
-import { BRANDS, brandLogo, COMPANY, DEVELOPER, SHOW_BRANDS, CONNECT_PROMPT, EVERY_APP_MEDIA, LINKS, TOGETHER_MEDIA, TOOLS, WHERE } from '../site';
+import { BRANDS, COMPANY, COMPARE, CONNECT_PROMPT, DEVELOPER, EVERY_APP_MEDIA, LINKS, SHOW_BRANDS, TOGETHER_MEDIA, TOOLS, WHERE, brandLogo } from '../site';
 
 // A short page in the shape of a product sheet: a hero, three rows (words and a
 // button on the left, one visual on the right), a closing line and the footer.
@@ -35,6 +35,16 @@ function Hero() {
       <p aria-live="polite" className="mt-3 min-h-[18px] text-[13px] text-faint">
         {hint === 'copied' && 'Copied. Paste it into Claude Code, Codex, Cursor or any agent.'}
         {hint === 'failed' && `Could not copy here. Paste this into your agent: ${CONNECT_PROMPT}`}
+      </p>
+      <p data-testid="hero-facts" className="text-[12px] text-faint">
+        Developed by{' '}
+        <a href={DEVELOPER.url} className="underline-offset-2 hover:underline">
+          {DEVELOPER.name}
+        </a>{' '}
+        · Operated by {COMPANY.name} · Free for individuals ·{' '}
+        <a href="#compare" className="underline-offset-2 hover:underline">
+          How it compares
+        </a>
       </p>
     </section>
   );
@@ -191,14 +201,6 @@ function ToolStrip() {
 }
 
 // Where the work runs: two plain options, side by side.
-
-// How it compares: visible one-liners, the full table lives at /compare.md.
-const COMPARE = [
-  { vs: 'Zed Delta, claude-duet', line: 'They share one Claude Code session. LogicPacks gives each person their own agent, with many agents in parallel that coordinate.' },
-  { vs: 'Cursor, Devin', line: 'Strong single-user agents. LogicPacks puts several people and their agents in one project, with goals and drift alerts.' },
-  { vs: 'Tuple, Parsec', line: 'Screen sharing without agents. LogicPacks shares the project, the threads and the agents.' },
-  { vs: 'Upwork', line: 'Hiring without the workspace. In LogicPacks a vetted freelancer joins the project with their own AI (Beta).' },
-];
 
 function HowItCompares() {
   return (
@@ -364,6 +366,7 @@ export default function Landing() {
           connects your own Claude. No install needed.
         </p>
       </Row>
+      <HowItCompares />
       <EveryApp />
       <Row
         id="delegate"
@@ -398,7 +401,6 @@ export default function Landing() {
           know-how and any agent works your way, with no fine-tuning.
         </p>
       </Row>
-      <HowItCompares />
       <WhereItRuns />
       <Hints />
       <Brands />

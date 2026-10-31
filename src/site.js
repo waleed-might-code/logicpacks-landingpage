@@ -258,3 +258,11 @@ export const FRIEND_PATH = [
   'Each of you connects your own agent: "Connect your agent", then "Log in with Claude" (Codex, OpenCode and Gemini work too).',
   'Each of you works in your own thread with your own agent, and you both see who is working on what.',
 ];
+
+// How it compares: the main page and the top of /index.md read the same lines.
+export const COMPARE = [
+  { vs: 'Zed Delta, claude-duet', line: 'They share one Claude Code session. LogicPacks gives each person their own agent, with many agents in parallel that coordinate.' },
+  { vs: 'Cursor, Devin', line: 'Strong single-user agents. LogicPacks puts several people and their agents in one project; goals and drift alerts come in the next release.' },
+  { vs: 'Tuple, Parsec', line: 'Screen sharing without agents. LogicPacks shares the project, the threads and the agents.' },
+  { vs: 'Upwork', line: 'Hiring without the workspace. In LogicPacks a vetted freelancer joins the project with their own AI (Beta).' },
+];
