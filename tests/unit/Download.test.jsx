@@ -40,7 +40,7 @@ describe('Download page', () => {
     expect(screen.getByText('curl -fsSL https://logicpacks.io/install.sh | bash')).toBeInTheDocument();
   });
 
-  it('lists Windows and iOS as coming soon and links the web app', async () => {
+  it('lists Windows and iOS as coming soon (the only Coming soon left) and links the web app', async () => {
     await renderDownload({});
     expect(screen.getByRole('heading', { name: 'Windows' })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'iPhone and iPad' })).toBeInTheDocument();

@@ -53,10 +53,31 @@ export const LAUNCH_MEDIA = {
   alt: 'The LogicPacks launch film: two people and their agents working side by side in one synced project.',
 };
 
-// Demo footage for the coming-soon "every app" section: the app's own
-// coming-soon demo route (/demo/machine), recorded and sped up 2x.
+// Demo footage for the Beta "every app" section: the app's own demo route
+// (/demo/machine), recorded and sped up 2x.
 export const EVERY_APP_MEDIA = {
   video: '/every-app.mp4',
   poster: '/every-app.jpg',
-  alt: 'The coming-soon any-app preview: a live Blender view with named cursors for each person and agent, their turns and an action log.',
+  alt: 'The Beta any-app preview: a live Blender view with named cursors for each person and agent, their turns and an action log.',
 };
+
+// Footage for the Beta sections, recorded from the app's own routes. A section
+// shows its poster until the video loads.
+export const PACKS_MEDIA = {
+  video: '/packs.mp4',
+  poster: '/packs.jpg',
+  alt: 'The packs preview: one pack built from real work, plugged into Claude, Codex, OpenCode and Gemini, with its versions and a before and after answer.',
+};
+
+export const ASSIST_MEDIA = {
+  image: '/assist.jpg',
+  alt: 'Request assistance in LogicPacks: a panel of experts with their faces, and one being added to the project.',
+};
+
+export const CONTEXT_MEDIA = {
+  image: '/context.jpg',
+  alt: 'A pack carrying a project\'s context from Blender to DaVinci Resolve to code, with Use in on each app.',
+};
+
+// The agents people log in with. Plain wordmarks, no vendor logos.
+export const AGENTS = ['Claude Code', 'Codex', 'OpenCode', 'Gemini CLI'];

@@ -3,7 +3,7 @@ import { AgentButton, DownloadButton, InstallCommand } from '../components/Butto
 import { AppsIcon, CodeIcon, LinkIcon } from '../components/Icons';
 import LaunchMedia from '../components/LaunchMedia';
 import MediaSlot from '../components/MediaSlot';
-import { EVERY_APP_MEDIA } from '../site';
+import { AGENTS, ASSIST_MEDIA, CONTEXT_MEDIA, EVERY_APP_MEDIA, PACKS_MEDIA } from '../site';
 
 const container = 'mx-auto w-full max-w-site px-4 sm:px-8';
 const display = 'text-[28px] font-normal leading-[1.12] tracking-[-0.025em] sm:text-[38px]';
@@ -21,7 +21,7 @@ const CARDS = [
   {
     icon: AppsIcon,
     title: 'Any app, with recipes',
-    status: 'Coming soon',
+    status: 'Beta',
     body: 'Recipes teach agents an app. Code is the first one. Blender, DaVinci Resolve, the browser and your IDE come next.',
     meta: 'Mac app',
   },
@@ -185,12 +185,124 @@ function Together() {
   );
 }
 
+function BetaPill() {
+  return (
+    <p className="inline-flex h-7 items-center rounded-full border border-line bg-raised px-3 text-[12px] text-muted">
+      Beta
+    </p>
+  );
+}
+
+// Three short facts under a section's media, hairline-divided like the sync facts.
+function Facts({ items }) {
+  return (
+    <div className="grid border-t border-line sm:grid-cols-3">
+      {items.map((item, i) => (
+        <div key={item.title} className={`p-[18px] ${divided(i)}`}>
+          <p className="text-[13px] text-ink">{item.title}</p>
+          <p className="mt-1 text-[12px] leading-[1.45] text-faint">{item.body}</p>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function Agents() {
+  return (
+    <section id="agents" aria-labelledby="agents-title" className={`${container} pt-28 sm:pt-36`}>
+      <h2 id="agents-title" className={display}>
+        Works with your agents.{' '}
+        <span className="text-muted">Log in with Claude Code, Codex, OpenCode or Gemini CLI.</span>
+      </h2>
+      <ul className="mt-8 grid overflow-hidden rounded-xl border border-line bg-panel grid-cols-2 sm:grid-cols-4">
+        {AGENTS.map((name, i) => (
+          <li
+            key={name}
+            className={`flex h-24 items-center justify-center font-mono text-[15px] tracking-[-0.01em] text-ink sm:h-28 ${i % 2 ? 'border-l border-line' : ''} ${i > 1 ? 'border-t border-line sm:border-t-0' : ''} ${i === 2 ? 'sm:border-l' : ''}`}
+          >
+            {name}
+          </li>
+        ))}
+      </ul>
+      <p className="mt-3 text-[13px] text-muted">Bring your own subscription. Share it with your team.</p>
+    </section>
+  );
+}
+
+const ASSIST = [
+  { title: 'A curated panel', body: 'Real people with real faces, each with what they are good at. Pick one and add them to the project.' },
+  { title: 'Your own subscription', body: 'The expert works through your Claude or Codex login, inside your project, where you can watch.' },
+  { title: 'Delegate to a human', body: 'Hand a thread to an expert straight from LogicPacks, the way you hand one to an agent.' },
+];
+
+function Assist() {
+  return (
+    <section id="assist" aria-labelledby="assist-title" className={`${container} pt-28 sm:pt-36`}>
+      <BetaPill />
+      <h2 id="assist-title" className={`${display} mt-6`}>
+        Request assistance.{' '}
+        <span className="text-muted">When an agent is not enough, add an expert who gets it done for you.</span>
+      </h2>
+      <div className="mt-8 overflow-hidden rounded-xl border border-line bg-panel">
+        <MediaSlot image={ASSIST_MEDIA.image} alt={ASSIST_MEDIA.alt} width={1600} height={900} label="Request assistance" placeholder="Beta" />
+        <Facts items={ASSIST} />
+      </div>
+    </section>
+  );
+}
+
+const CONTEXT = [
+  { title: 'One pack format', body: 'Threads, files, decisions and workflows travel together as one pack.' },
+  { title: 'Use in another app', body: 'Use in… opens the same context in Blender, DaVinci Resolve or your code.' },
+  { title: 'Across threads', body: 'A new thread or workflow starts with what the last one learned.' },
+];
+
+function Context() {
+  return (
+    <section id="context" aria-labelledby="context-title" className={`${container} pt-28 sm:pt-36`}>
+      <BetaPill />
+      <h2 id="context-title" className={`${display} mt-6`}>
+        Pack context across apps.{' '}
+        <span className="text-muted">The work moves from Blender to Resolve to code, and the context moves with it.</span>
+      </h2>
+      <div className="mt-8 overflow-hidden rounded-xl border border-line bg-panel">
+        <MediaSlot image={CONTEXT_MEDIA.image} alt={CONTEXT_MEDIA.alt} width={1600} height={900} label="Pack context across apps" placeholder="Beta" />
+        <Facts items={CONTEXT} />
+      </div>
+    </section>
+  );
+}
+
+function Packs() {
+  return (
+    <section id="packs" aria-labelledby="packs-title" className={`${container} pt-28 sm:pt-36`}>
+      <BetaPill />
+      <h2 id="packs-title" className={`${display} mt-6`}>
+        Never fine-tune a model. <span className="text-muted">Use a pack instead.</span>
+      </h2>
+      <div className="mt-8 overflow-hidden rounded-xl border border-line bg-panel">
+        <MediaSlot
+          video={PACKS_MEDIA.video}
+          poster={PACKS_MEDIA.poster}
+          alt={PACKS_MEDIA.alt}
+          width={1600}
+          height={900}
+          label="Demo footage of packs"
+          placeholder="Beta demo"
+        />
+      </div>
+      <p className="mt-3 text-[13px] text-muted">
+        A pack built from your real work makes Claude, Codex, OpenCode and Gemini behave tuned to you, with memory and
+        versions, and no training run.
+      </p>
+    </section>
+  );
+}
+
 function EveryApp() {
   return (
     <section id="every-app" aria-labelledby="every-app-title" className={`${container} pt-28 sm:pt-36`}>
-      <p className="inline-flex h-7 items-center rounded-full border border-line bg-raised px-3 text-[12px] text-muted">
-        Coming soon
-      </p>
+      <BetaPill />
       <h2 id="every-app-title" className={`${display} mt-6`}>
         Every app, every agent, one machine.{' '}
         <span className="text-muted">
@@ -205,7 +317,7 @@ function EveryApp() {
           width={1600}
           height={900}
           label="Demo footage of shared apps"
-          placeholder="Demo coming soon"
+          placeholder="Beta demo"
         />
         <div className="grid border-t border-line sm:grid-cols-4">
           {EVERY_APP.map((item, i) => (
@@ -244,7 +356,11 @@ export default function Landing() {
       <Pillars />
       <Sync />
       <Together />
+      <Agents />
+      <Assist />
       <EveryApp />
+      <Context />
+      <Packs />
       <FinalCta />
     </>
   );

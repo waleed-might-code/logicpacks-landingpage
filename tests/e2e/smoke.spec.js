@@ -8,6 +8,10 @@ test.describe('LogicPacks landing: smoke', () => {
     await expect(page.getByRole('heading', { name: /Sync to the cloud\./ })).toBeVisible();
     await expect(page.getByRole('heading', { name: /Every app, every agent, one machine\./ })).toBeAttached();
     await expect(page.getByRole('heading', { name: /See exactly what everyone is doing\./ })).toBeAttached();
+    for (const name of [/Works with your agents\./, /Request assistance\./, /Pack context across apps\./, /Never fine-tune a model\./]) {
+      await expect(page.getByRole('heading', { name })).toBeAttached();
+    }
+    await expect(page.getByText(/coming soon/i)).toHaveCount(0);
     // The launch film loads over its poster and offers its voiceover.
     await expect(page.getByTestId('media-video').first()).toHaveCSS('opacity', '1', { timeout: 15_000 });
     await expect(page.getByRole('button', { name: 'Play with sound' })).toBeVisible();
