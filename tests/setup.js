@@ -10,3 +10,9 @@ afterEach(() => {
   sessionStorage.clear();
   localStorage.clear();
 });
+
+// jsdom has no media playback; the motion backgrounds call play() and pause().
+window.HTMLMediaElement.prototype.play = function play() {
+  return Promise.resolve();
+};
+window.HTMLMediaElement.prototype.pause = function pause() {};

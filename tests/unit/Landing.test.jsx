@@ -2,7 +2,8 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent, waitFor, within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import App from '../../src/App';
-import { CONNECT_PROMPT, EXPERT_PORTRAITS_READY, TOOLS } from '../../src/site';
+import { RunningAt } from '../../src/pages/Landing';
+import { CONNECT_PROMPT, EXPERT_PORTRAITS_READY, HAS_SETUP, TOOLS } from '../../src/site';
 
 function renderAt(path = '/') {
   return render(
@@ -13,13 +14,23 @@ function renderAt(path = '/') {
 }
 
 describe('Landing', () => {
-  it('leads with the name, one line and the two buttons', () => {
+  it('leads with the positioning line, the two buttons, the install line and the launch film', () => {
     renderAt('/');
-    expect(screen.getByText('LogicPacks', { selector: 'p' })).toBeInTheDocument();
-    expect(screen.getByRole('heading', { level: 1, name: 'Agents and people, one workspace.' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { level: 1, name: /The best place for agents and humans to work together\./ }),
+    ).toBeInTheDocument();
     const downloads = screen.getAllByRole('link', { name: /Download for Mac/ });
+    expect(downloads.length).toBeGreaterThanOrEqual(2);
     downloads.forEach((link) => expect(link).toHaveAttribute('href', '/download'));
     expect(screen.getAllByRole('button', { name: 'Connect your agent' }).length).toBeGreaterThanOrEqual(1);
+    expect(screen.getByText(/curl -fsSL https:\/\/logicpacks\.io\/install\.sh/)).toBeInTheDocument();
+    expect(screen.getByRole('tab', { name: 'In LogicPacks' })).toHaveAttribute('aria-selected', 'true');
+  });
+
+  it('shows the paste-in install prompt under the "In your agent" tab', () => {
+    renderAt('/');
+    fireEvent.click(screen.getByRole('tab', { name: 'In your agent' }));
+    expect(screen.getByRole('tabpanel')).toHaveTextContent('Install LogicPacks on this Mac');
   });
 
   it('has the nav in order: What’s new, Docs, Download, Sign in', () => {
@@ -27,16 +38,20 @@ describe('Landing', () => {
     const nav = within(screen.getByRole('navigation', { name: 'Main' }));
     const names = nav.getAllByRole('link').map((a) => a.textContent);
     expect(names).toEqual(['LogicPacks', 'What’s new', 'Docs', 'Download', 'Sign in']);
+    // Motion backgrounds: the launch band and the closing line.
+    expect(document.querySelectorAll('[data-testid="motion-bg"]')).toHaveLength(2);
     expect(nav.getByRole('link', { name: 'What’s new' })).toHaveAttribute('href', '/new');
   });
 
-  it('has exactly three rows and a closing line, nothing else', () => {
+  it('has the every-app demo, three rows and a closing line, nothing else', () => {
     renderAt('/');
     const h2 = screen.getAllByRole('heading', { level: 2 }).map((h) => h.textContent);
     expect(h2).toEqual([
+      'Every app, every agent, one machine. People and agents share the host’s apps, from Blender to DaVinci Resolve.',
       'Work together.',
       'Delegate with guardrails.',
       'Works with your agent.',
+      'Where it runs.',
       'We are a small team.Try it on your next project.',
     ]);
     expect(screen.getByRole('link', { name: 'Start a shared project' })).toHaveAttribute('href', 'https://app.logicpacks.io');
@@ -48,7 +63,10 @@ describe('Landing', () => {
 
   it('keeps Request assistance, every-app and expert cards off the main page', () => {
     const { container } = renderAt('/');
-    expect(container.textContent).not.toMatch(/Request assistance|Every app, every agent|Pack context/);
+    expect(container.textContent).not.toMatch(/Request assistance|Pack context/);
+    for (const title of ['The same machine', 'A cursor for everyone', 'Snapshots that merge back']) {
+      expect(screen.getByText(title)).toBeInTheDocument();
+    }
     expect(screen.queryAllByTestId('expert-card')).toHaveLength(0);
     expect(container.textContent).not.toMatch(/coming soon|enterprise|ledger|orchestrat|context budget/i);
   });
@@ -66,14 +84,16 @@ describe('Landing', () => {
     }
   });
 
-  it('copies the connect prompt from the hero and from the copy line, without linking setup.md yet', async () => {
+  it('copies the connect prompt from the hero and from the copy line; Docs is setup.md once it ships', async () => {
     const writeText = vi.fn().mockResolvedValue();
     Object.assign(navigator, { clipboard: { writeText } });
     const { container } = renderAt('/');
     expect(CONNECT_PROMPT).toContain('https://logicpacks.io/setup.md');
     // The prompt is several lines; the copy line shows it as one (truncated) code line.
     expect(screen.getByText((_, element) => element?.tagName === 'CODE' && element.textContent === CONNECT_PROMPT)).toBeInTheDocument();
-    expect(container.querySelector('a[href*="setup.md"]')).toBeNull();
+    const docs = within(screen.getByRole('navigation', { name: 'Main' })).getByRole('link', { name: 'Docs' });
+    expect(docs).toHaveAttribute('href', HAS_SETUP ? '/setup.md' : 'https://github.com/Majboor/t3code/tree/main/docs');
+    if (!HAS_SETUP) expect(container.querySelector('a[href*="setup.md"]')).toBeNull();
     fireEvent.click(screen.getAllByRole('button', { name: 'Connect your agent' })[0]);
     await waitFor(() => expect(writeText).toHaveBeenCalledWith(CONNECT_PROMPT));
     expect(await screen.findByText(/Paste it into Claude Code/)).toBeInTheDocument();
@@ -92,7 +112,7 @@ describe('Landing', () => {
 
   it('sends unknown routes home', () => {
     renderAt('/store');
-    expect(screen.getByRole('heading', { level: 1, name: 'Agents and people, one workspace.' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 1, name: /work together/ })).toBeInTheDocument();
   });
 });
 
@@ -123,5 +143,52 @@ describe("What's new", () => {
   it('redirects /releases to /new', () => {
     renderAt('/releases');
     expect(screen.getByRole('heading', { name: /Request assistance\./ })).toBeInTheDocument();
+  });
+});
+
+describe('Trust details', () => {
+  it('names the operator in the footer, with privacy, terms and WhatsApp', () => {
+    renderAt('/');
+    const footer = screen.getByRole('contentinfo');
+    expect(footer).toHaveTextContent('LogicPacks by Aljash Trading, UAE');
+    expect(footer).toHaveTextContent(/© \d{4} Aljash Trading/);
+    expect(within(footer).getByRole('link', { name: 'Privacy' })).toHaveAttribute('href', '/privacy');
+    expect(within(footer).getByRole('link', { name: 'Terms' })).toHaveAttribute('href', '/terms');
+    expect(within(footer).getByRole('link', { name: 'WhatsApp' })).toHaveAttribute('href', 'https://wa.me/17136322262');
+    expect(footer.textContent).not.toMatch(/Waleed/i);
+  });
+
+  it('explains where it runs: your machine or our sandbox cloud', () => {
+    renderAt('/');
+    const where = screen.getByRole('heading', { name: 'Where it runs.' }).closest('section');
+    expect(where).toHaveTextContent('Your machine');
+    expect(where).toHaveTextContent('your login stays on your machine');
+    expect(where).toHaveTextContent('Our sandbox cloud');
+    expect(where).toHaveTextContent('isolated sandbox user, with no access to the host or to other members');
+  });
+
+  it('renders the privacy policy with what we store, what we never store, deletion and the operator', () => {
+    const { container } = renderAt('/privacy');
+    expect(screen.getByRole('heading', { level: 1, name: 'Privacy' })).toBeInTheDocument();
+    for (const text of ['Aljash Trading, UAE', 'What we store', 'never store or proxy model API keys', 'isolated sandbox user', 'delete your account', 'Effective 1 November 2026']) {
+      expect(container.textContent).toContain(text);
+    }
+    expect(container.textContent).not.toMatch(/—|Waleed/);
+  });
+
+  it('renders the terms with the beta disclaimer and UAE law', () => {
+    const { container } = renderAt('/terms');
+    expect(screen.getByRole('heading', { level: 1, name: 'Terms' })).toBeInTheDocument();
+    for (const text of ['Aljash Trading, UAE', 'LogicPacks is in beta', 'laws of the United Arab Emirates']) {
+      expect(container.textContent).toContain(text);
+    }
+    expect(container.textContent).not.toMatch(/—|Waleed/);
+  });
+
+  it('hides the Running at strip until names are confirmed', () => {
+    renderAt('/');
+    expect(screen.queryByRole('region', { name: 'Running at' })).toBeNull();
+    render(<RunningAt names={['Aljash Trading']} />);
+    expect(screen.getByRole('region', { name: 'Running at' })).toHaveTextContent('Aljash Trading');
   });
 });

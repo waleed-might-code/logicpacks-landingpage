@@ -94,6 +94,7 @@ export default function WhatsNew() {
         <div className="mt-8 overflow-hidden rounded-xl border border-line bg-panel">
           <MediaSlot
             video={EVERY_APP_MEDIA.video}
+          webm={EVERY_APP_MEDIA.webm}
             poster={EVERY_APP_MEDIA.poster}
             alt={EVERY_APP_MEDIA.alt}
             width={1600}

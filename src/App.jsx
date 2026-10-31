@@ -5,11 +5,14 @@ import Nav from './components/Nav';
 import Download from './pages/Download';
 import Landing from './pages/Landing';
 import WhatsNew from './pages/WhatsNew';
+import { Privacy, Terms } from './pages/Legal';
 
 const TITLES = {
   '/': 'LogicPacks',
   '/download': 'Download LogicPacks',
   '/new': 'What\'s new in LogicPacks',
+  '/privacy': 'Privacy · LogicPacks',
+  '/terms': 'Terms · LogicPacks',
 };
 
 // Start each page at the top and give it its own tab title.
@@ -32,11 +35,13 @@ export default function App() {
         Skip to content
       </a>
       <Nav />
-      <main id="main">
+      <main id="main" className="pt-16">
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/download" element={<Download />} />
           <Route path="/new" element={<WhatsNew />} />
+          <Route path="/privacy" element={<Privacy />} />
+          <Route path="/terms" element={<Terms />} />
           <Route path="/releases" element={<Navigate to="/new" replace />} />
           {/* The old marketplace routes are gone; send any deep link home. */}
           <Route path="*" element={<Navigate to="/" replace />} />

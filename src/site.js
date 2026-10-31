@@ -15,6 +15,8 @@ export const LINKS = {
   webApp: APP_URL,
   download: '/download',
   whatsNew: '/new',
+  privacy: '/privacy',
+  terms: '/terms',
 };
 
 // Release files. The ship step fills these in; while a field is null the
@@ -60,9 +62,10 @@ export const LAUNCH_MEDIA = {
 };
 
 // Demo footage for the Beta "every app" section: the app's own demo route
-// (/demo/machine), recorded and sped up 2x.
+// (/demo/machine), the whole 72 s timeline recorded and sped up 2x.
 export const EVERY_APP_MEDIA = {
   video: '/every-app.mp4',
+  webm: '/every-app.webm',
   poster: '/every-app.jpg',
   alt: 'The Beta any-app preview: a live Blender view with named cursors for each person and agent, their turns and an action log.',
 };
@@ -124,3 +127,22 @@ export const expertPortrait = (id) => `/experts/${id}.webp`;
 
 // The expert cards show once their portraits are in public/experts.
 export const EXPERT_PORTRAITS_READY = false;
+
+// The operator, named in the footer and on /privacy and /terms.
+// TODO(company): registered address and trade licence number of Aljash Trading
+// (UAE) are pending. Add them here as `address` and `licence` once confirmed;
+// the footer and legal pages show them when set. Do not guess them.
+export const COMPANY = {
+  name: 'Aljash Trading',
+  country: 'UAE',
+  address: null,
+  licence: null,
+  whatsapp: '+1 713 632 2262',
+  whatsappUrl: 'https://wa.me/17136322262',
+};
+
+export const LEGAL_EFFECTIVE = '1 November 2026';
+
+// "Running at": companies using LogicPacks. Only names confirmed by the team go
+// here; while the list is empty the strip does not render.
+export const RUNNING_AT = [];

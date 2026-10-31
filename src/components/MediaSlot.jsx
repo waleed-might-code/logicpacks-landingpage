@@ -6,6 +6,7 @@ import { useRef, useState } from 'react';
 // HTML, just errors quietly and the still stays.
 export default function MediaSlot({
   video,
+  webm,
   poster,
   image,
   imageWebp,
@@ -76,6 +77,7 @@ export default function MediaSlot({
           onCanPlay={() => setVideoReady(true)}
           onError={() => setVideoReady(false)}
         >
+          {webm && <source src={webm} type="video/webm" />}
           <source src={video} type="video/mp4" onError={() => setVideoReady(false)} />
         </video>
       )}

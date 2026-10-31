@@ -5,16 +5,18 @@ const PORTRAITS = false;
 const EXPERT_IDS = ['ingrid-solberg', 'tomas-reyes', 'anika-rao', 'jonas-weber', 'kofi-mensah', 'lea-moreau', 'yuna-park', 'karim-haddad'];
 
 test.describe('LogicPacks landing: smoke', () => {
-  test('home is the hero film, three rows and a closing line', async ({ page }) => {
+  test('home is the hero, the launch film, every-app, three rows and a closing line', async ({ page }) => {
     await page.goto('/');
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Agents and people, one workspace.');
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('The best place for agents and humans to work together.');
     // The launch film loads over its poster and offers its voiceover.
     await expect(page.getByTestId('media-video').first()).toHaveCSS('opacity', '1', { timeout: 15_000 });
     await expect(page.getByRole('button', { name: 'Play with sound' })).toBeVisible();
     await expect(page.getByRole('heading', { level: 2 })).toHaveText([
+      /Every app, every agent, one machine\./,
       'Work together.',
       'Delegate with guardrails.',
       'Works with your agent.',
+      'Where it runs.',
       /We are a small team\./,
     ]);
     // Row 1 clip plays too.
@@ -36,6 +38,12 @@ test.describe('LogicPacks landing: smoke', () => {
       ['/together.jpg', 'image/jpeg'],
       ['/every-app.mp4', 'video/mp4'],
       ['/every-app.jpg', 'image/jpeg'],
+      ['/bg/fluted.webm', 'video/webm'],
+      ['/bg/fluted.mp4', 'video/mp4'],
+      ['/bg/fluted.jpg', 'image/jpeg'],
+      ['/bg/wave.webm', 'video/webm'],
+      ['/bg/wave.mp4', 'video/mp4'],
+      ['/bg/wave.jpg', 'image/jpeg'],
       ...(PORTRAITS ? EXPERT_IDS.map((id) => [`/experts/${id}.webp`, 'image/webp']) : []),
     ];
     for (const [path, type] of files) {
@@ -80,6 +88,50 @@ test.describe('LogicPacks landing: smoke', () => {
     await expect(page.getByText('Sample experts. Portraits are illustrative.')).toBeVisible();
   });
 
+  test('reduced motion shows everything without animation and keeps backgrounds still', async ({ browser }) => {
+    const context = await browser.newContext({ reducedMotion: 'reduce' });
+    const page = await context.newPage();
+    await page.goto('/');
+    await page.locator('#closing-title').scrollIntoViewIfNeeded();
+    await expect(page.locator('#closing-title')).toHaveCSS('opacity', '1');
+    const playing = await page.$$eval('[data-testid="motion-bg"]', (vs) => vs.filter((v) => !v.paused).length);
+    expect(playing).toBe(0);
+    await context.close();
+  });
+
+  test('the header hides on the way down and returns on the way up', async ({ page }) => {
+    await page.goto('/');
+    const header = page.locator('header.lp-header');
+    await page.mouse.wheel(0, 1600);
+    await expect(header).toHaveAttribute('data-hidden', 'true');
+    await page.mouse.wheel(0, -400);
+    await expect(header).toHaveAttribute('data-hidden', 'false');
+  });
+
+  for (const [path, heading] of [['/privacy', 'What we store'], ['/terms', 'Law']]) {
+    test(`${path} is real HTML that reads without JavaScript`, async ({ request, browser }) => {
+      const response = await request.get(path);
+      expect(response.status()).toBe(200);
+      const html = await response.text();
+      expect(html).toContain('Aljash Trading, UAE');
+      expect(html).toContain(heading);
+      const context = await browser.newContext({ javaScriptEnabled: false });
+      const page = await context.newPage();
+      await page.goto(path);
+      await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+      await context.close();
+    });
+  }
+
+  test('the footer names the operator and links privacy and terms', async ({ page }) => {
+    await page.goto('/');
+    const footer = page.getByRole('contentinfo');
+    await expect(footer).toContainText('LogicPacks by Aljash Trading, UAE');
+    await footer.getByRole('link', { name: 'Privacy' }).click();
+    await expect(page).toHaveURL(/\/privacy$/);
+    await expect(page.getByRole('heading', { level: 1, name: 'Privacy' })).toBeVisible();
+  });
+
   test('Download for Mac opens the download page', async ({ page }) => {
     await page.goto('/');
     await page.getByRole('link', { name: 'Download for Mac' }).first().click();
@@ -95,7 +147,7 @@ test.describe('LogicPacks landing: smoke', () => {
     });
   }
 
-  for (const path of ['/', '/download', '/new']) {
+  for (const path of ['/', '/download', '/new', '/privacy', '/terms']) {
     test(`no horizontal scroll at phone width on ${path}`, async ({ page }) => {
       await page.setViewportSize({ width: 375, height: 812 });
       await page.goto(path);
