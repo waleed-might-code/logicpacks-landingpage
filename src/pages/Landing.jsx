@@ -39,13 +39,13 @@ const SYNC_PANELS = [
     title: 'A new project says Not synced.',
     sub: 'It stays on your laptop until you press Sync, or say "sync this to the cloud" in its chat.',
     img: '/shots/sync.jpg',
-    alt: 'The LogicPacks Cloud menu on a local project: only on this machine, with the choice to move it to the cloud or keep both in sync.',
+    alt: 'A local LogicPacks project after a Claude turn, with the Not synced badge and the reminder to sync it.',
   },
   {
     title: 'A synced project keeps going.',
     sub: 'It lives on the cloud host, backed by GitHub. Everyone you add sees it, laptop open or not.',
     img: '/shots/together.jpg',
-    alt: 'The LogicPacks Collaboration panel: activity, people, approvals, branches and provider accounts for a shared project.',
+    alt: 'A teammate\'s agent finishing a change in a synced project on the cloud host, with the Synced badge and its background git sync running.',
   },
 ];
 
@@ -57,7 +57,7 @@ const SYNC_FACTS = [
 
 const EVERY_APP = [
   { title: 'The same machine', body: 'Open the host’s apps with the same profiles. No VM.' },
-  { title: 'Who is doing what', body: 'Swipe up to see the shared machine and every human and agent on it.' },
+  { title: 'The app is the workspace', body: 'An app project shows the live app where a code project shows files.' },
   { title: 'A cursor for everyone', body: 'Live app views with a named cursor for each person and agent.' },
   { title: 'Snapshots that merge back', body: 'Work on a copy, then replay it as steps and settle conflicts.' },
 ];
@@ -152,6 +152,39 @@ function Sync() {
   );
 }
 
+const TOGETHER = [
+  {
+    title: 'Follow any thread',
+    body: 'Open a teammate\'s thread and see their prompts and everything their agent did, live.',
+  },
+  {
+    title: 'Save it as a recipe',
+    body: 'A thread, a prompt chain or a workflow someone ran becomes a recipe the whole team can run again.',
+  },
+  {
+    title: 'Share your subscription',
+    body: 'Share your Claude or Codex access with the workspace. People ask to use it, and you approve or revoke it in one place.',
+  },
+];
+
+function Together() {
+  return (
+    <section id="together" aria-labelledby="together-title" className={`${container} pt-28 sm:pt-36`}>
+      <h2 id="together-title" className={display}>
+        See exactly what everyone is doing. <span className="text-muted">Then reuse what worked.</span>
+      </h2>
+      <div className="mt-8 grid overflow-hidden rounded-xl border border-line bg-panel sm:grid-cols-3">
+        {TOGETHER.map((item, i) => (
+          <div key={item.title} className={`p-[22px] ${divided(i)}`}>
+            <p className="text-[15px] text-ink">{item.title}</p>
+            <p className="mt-2 text-[13px] leading-[1.45] text-muted">{item.body}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function EveryApp() {
   return (
     <section id="every-app" aria-labelledby="every-app-title" className={`${container} pt-28 sm:pt-36`}>
@@ -168,6 +201,9 @@ function EveryApp() {
         <MediaSlot
           video={EVERY_APP_MEDIA.video}
           poster={EVERY_APP_MEDIA.poster}
+          alt={EVERY_APP_MEDIA.alt}
+          width={1600}
+          height={900}
           label="Demo footage of shared apps"
           placeholder="Demo coming soon"
         />
@@ -207,6 +243,7 @@ export default function Landing() {
       <LaunchMedia />
       <Pillars />
       <Sync />
+      <Together />
       <EveryApp />
       <FinalCta />
     </>

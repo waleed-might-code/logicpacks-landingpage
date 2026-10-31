@@ -36,6 +36,16 @@ describe('Landing', () => {
     expect(screen.getByRole('heading', { name: /Every app, every agent, one machine\./ })).toBeInTheDocument();
   });
 
+  it('tells the work-together story without calling it enterprise', () => {
+    const { container } = renderAt('/');
+    expect(screen.getByRole('heading', { name: /See exactly what everyone is doing\./ })).toBeInTheDocument();
+    for (const title of ['Follow any thread', 'Save it as a recipe', 'Share your subscription']) {
+      expect(screen.getByText(title)).toBeInTheDocument();
+    }
+    expect(container.textContent).not.toMatch(/enterprise/i);
+    expect(container.textContent).not.toMatch(/swipe up/i);
+  });
+
   it('copies the agent prompt and says so', async () => {
     const writeText = vi.fn().mockResolvedValue();
     Object.assign(navigator, { clipboard: { writeText } });
