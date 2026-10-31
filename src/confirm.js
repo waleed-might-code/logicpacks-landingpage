@@ -9,6 +9,16 @@ export const COMPANY_ADDRESS = 'Office 5, Bani Yas West 4, Bani Yas, Abu Dhabi, 
 export const COMPANY_LICENCE = 'Economic licence CN-1030597, Abu Dhabi Registration Authority';
 export const COMPANY_WEBSITE = 'https://aljashtrading.com';
 
+// Who builds it: TechRealm develops LogicPacks; Al Jash Trading operates and hosts it.
+// Profiles listed only when they resolve and clearly belong to TechRealm (checked 2026-11-01:
+// LinkedIn names techrealm.online as its website; techrealm.online links the Facebook page).
+export const DEVELOPER = {
+  name: 'TechRealm',
+  url: 'https://techrealm.online',
+  about: 'a software and AI development team',
+  profiles: ['https://www.linkedin.com/company/techrealm/', 'https://www.facebook.com/TechRealm.Pakistan'],
+};
+
 // Brands we have worked with, directly or through third-party agencies (confirmed
 // by Waleed). Listed for agents in /about.md and /llms.txt. The visual strip on
 // the main page is off (SHOW_BRANDS); logos stay in public/brands for later.

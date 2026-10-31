@@ -8,6 +8,7 @@ import {
   COMPANY_NAME,
   COMPANY_SINCE,
   COMPANY_WEBSITE,
+  DEVELOPER,
   ENTERPRISE_PER,
 } from './confirm';
 // Every outbound link, download and the paste-in agent prompt live here, so
@@ -158,6 +159,8 @@ export const COMPANY = {
   whatsappUrl: 'https://wa.me/17136322262',
 };
 
+export { DEVELOPER };
+
 export const LEGAL_EFFECTIVE = '1 November 2026';
 
 // Brands we've built for, from src/confirm.js.
@@ -169,7 +172,7 @@ export const brandLogo = (file) => `/brands/${file}.png`;
 export const STORY = [
   { when: 'Nov 2025', title: 'Started building', body: 'A shared workspace where people and their agents work on the same project.' },
   { when: 'Jan 2026', title: 'Internal testing', body: 'Opened to our own team after two months, used on our client work every day.' },
-  { when: 'Feb to Oct 2026', title: 'Eight months of testing', body: 'Used in labs and by tech agencies, TechRealm and others, on real projects.' },
+  { when: 'Feb to Oct 2026', title: 'Eight months of testing', body: 'Used in labs and by tech agencies on real projects.' },
   { when: 'Nov 2026', title: 'Public beta', body: 'Open to everyone, free for individuals.' },
 ];
 

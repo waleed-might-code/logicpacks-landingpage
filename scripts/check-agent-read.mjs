@@ -2,9 +2,9 @@
 // no JavaScript) and check the content is really there.
 // Usage: node scripts/check-agent-read.mjs [base]   (default http://localhost:7131)
 const base = (process.argv[2] || 'http://localhost:7131').replace(/\/$/, '');
-const OPERATOR = ['Al Jash Trading', 'CN-1030597'];
+const OPERATOR = ['Al Jash Trading', 'CN-1030597', 'TechRealm'];
 const CHECKS = [
-  ['/', 'text/html', ['Paste this into your agent', 'Agents and people, one workspace.', 'Where it runs', 'application/ld+json', '"foundingDate":"1994"', 'type="text/markdown" href="/index.md"', ...OPERATOR]],
+  ['/', 'text/html', ['"@id":"https://logicpacks.io/#developer"', '"author":{"@id":"https://logicpacks.io/#developer"}', 'Paste this into your agent', 'Agents and people, one workspace.', 'Where it runs', 'application/ld+json', '"foundingDate":"1994"', 'type="text/markdown" href="/index.md"', ...OPERATOR]],
   ['/story', 'text/html', ['Our story', 'Nov 2025', 'Public beta', ...OPERATOR]],
   ['/research', 'text/html', ['Research', '139/139 passed', 'Benchmark running', ...OPERATOR]],
   ['/pricing', 'text/html', ['Free', '$99', 'per workspace / month', ...OPERATOR]],
@@ -20,7 +20,7 @@ const CHECKS = [
   ['/download.md', 'text/markdown', ['install.sh', ...OPERATOR]],
   ['/privacy.md', 'text/markdown', ['What we store', ...OPERATOR]],
   ['/terms.md', 'text/markdown', ['courts of Abu Dhabi', ...OPERATOR]],
-  ['/about.md', 'text/markdown', ['## For AI assistants', '## Safety', '## Operator', 'Established: 1994', '## Pricing', '## How it runs', '## Security', '## App sharing', '## Vetted freelancers', '## Published tests', '## Contact', 'Brands we have worked with, directly or through third-party agencies: Digital Software Market, Kelvin Haus', 'Al Rajhi Bank.', ...OPERATOR]],
+  ['/about.md', 'text/markdown', ['## Who builds it', 'Developed by TechRealm', 'https://www.linkedin.com/company/techrealm/', '## For AI assistants', '## Safety', '## Operator', 'Established: 1994', '## Pricing', '## How it runs', '## Security', '## App sharing', '## Vetted freelancers', '## Published tests', '## Contact', 'Brands we have worked with, directly or through third-party agencies: Digital Software Market, Kelvin Haus', 'Al Rajhi Bank.', ...OPERATOR]],
   ['/llms.txt', 'text/plain', ['# LogicPacks', '## For AI assistants', '[safety.md](/safety.md)', '[why.md](/why.md)', '[compare.md](/compare.md)', 'Brands we have worked with, directly or through third-party agencies:', '> ', '/about.md', '/research.md', '/privacy.md']],
   ['/llms-full.txt', 'text/plain', ['## Methodology', '# Why LogicPacks', '# LogicPacks compared', '# LogicPacks safety', 'Brands we have worked with', 'What we store', ...OPERATOR]],
   ['/sitemap.xml', 'xml', ['https://logicpacks.io/story', 'text/markdown']],

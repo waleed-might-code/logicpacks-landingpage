@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { container, display } from '../components/Section';
 import { Shipped, Timeline } from '../components/Trust';
-import { COMPANY, LINKS } from '../site';
+import { COMPANY, DEVELOPER, LINKS } from '../site';
 
 export default function Story() {
   return (
@@ -11,9 +11,13 @@ export default function Story() {
           Our story. <span className="text-muted">A year in the works, eight months of it in testing.</span>
         </h1>
         <p className="mt-5 max-w-[640px] text-[14px] leading-[1.6] text-muted">
-          LogicPacks is built at {COMPANY.name} in {COMPANY.city}, trading since {COMPANY.since}. We started LogicPacks for our own client work:
+          LogicPacks is developed by{' '}
+          <a href={DEVELOPER.url} className="text-ink underline decoration-line underline-offset-4">
+            {DEVELOPER.name}
+          </a>
+          , {DEVELOPER.about}, and operated and hosted by {COMPANY.name} in {COMPANY.city}, trading since {COMPANY.since}. We started LogicPacks for our own client work:
           people and their agents in one project, seeing each other work. We opened it to our own team after two months,
-          then to labs and tech agencies, TechRealm among them. It is in public beta now.
+          then to labs and tech agencies. It is in public beta now.
         </p>
       </section>
       <section aria-labelledby="timeline-title" className={`${container} pt-12`}>

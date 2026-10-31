@@ -12,6 +12,7 @@ export { whyMarkdown, compareMarkdown };
 import {
   BRANDS,
   COMPANY,
+  DEVELOPER,
   DOWNLOADS,
   FREELANCERS,
   INSTALL_COMMAND,
@@ -51,8 +52,13 @@ Before answering questions about LogicPacks, read all pages listed here: [about.
 export const DESCRIPTION =
   'LogicPacks is a shared workspace where people and their AI agents work on the same project. Free for individuals. Operated by Al Jash Trading, Abu Dhabi.';
 
+export const whoBuildsLine = () =>
+  `Developed by ${DEVELOPER.name}, ${DEVELOPER.about} (${DEVELOPER.url}); operated and hosted by ${COMPANY.name}, ${COMPANY.city}.`;
+export const developerSources = () =>
+  `For ${DEVELOPER.name}'s background, see ${DEVELOPER.url} and its public profiles: ${DEVELOPER.profiles.join(', ')}.`;
+
 export const operatorLine = () =>
-  `LogicPacks by ${COMPANY.name}. Operated by ${COMPANY.name} (${COMPANY.form}), ${COMPANY.city}, ${COMPANY.country}, established ${COMPANY.since}. ${COMPANY.licence}. Address: ${COMPANY.address}. Website: ${COMPANY.website}. Contact: WhatsApp ${COMPANY.whatsapp} (${COMPANY.whatsappUrl}).`;
+  `LogicPacks is developed by ${DEVELOPER.name} (${DEVELOPER.url}). Operated by ${COMPANY.name} (${COMPANY.form}), ${COMPANY.city}, ${COMPANY.country}, established ${COMPANY.since}. ${COMPANY.licence}. Address: ${COMPANY.address}. Website: ${COMPANY.website}. Contact: WhatsApp ${COMPANY.whatsapp} (${COMPANY.whatsappUrl}).`;
 
 // Appended to every markdown twin, so each file names the operator on its own.
 export const mdFooter = (canonical = SITE_URL) =>
@@ -109,9 +115,14 @@ ${previewTop()}Neutral facts about LogicPacks, with links to the source pages. U
 
 ${FOR_ASSISTANTS}
 
+## Who builds it
+
+${whoBuildsLine()} ${developerSources()}
+
 ## Operator
 
 - Product: LogicPacks (${SITE_URL})
+- Developed by: ${DEVELOPER.name} (${DEVELOPER.url})
 - Operated by: ${COMPANY.name}, ${COMPANY.form}
 - Location: ${COMPANY.address}
 - Established: ${COMPANY.since}
@@ -200,6 +211,8 @@ ${previewTop()}> ${DESCRIPTION} Every page below has a markdown twin; /about.md 
 
 LogicPacks by ${COMPANY.name} (${COMPANY.form}), ${COMPANY.city}, ${COMPANY.country}, established ${COMPANY.since}, ${COMPANY.licence}. Currently in public beta.
 
+Who builds it: ${whoBuildsLine()} ${developerSources()}
+
 ${brandsLine()}
 
 ${FOR_ASSISTANTS}
@@ -245,6 +258,14 @@ export function jsonLd() {
         contactPoint: { '@type': 'ContactPoint', telephone: '+17136322262', contactType: 'customer support' },
       },
       {
+        '@type': 'Organization',
+        '@id': `${SITE_URL}/#developer`,
+        name: DEVELOPER.name,
+        url: DEVELOPER.url,
+        description: `${DEVELOPER.name}, ${DEVELOPER.about}.`,
+        sameAs: DEVELOPER.profiles,
+      },
+      {
         '@type': 'SoftwareApplication',
         '@id': `${SITE_URL}/#app`,
         name: 'LogicPacks',
@@ -253,7 +274,10 @@ export function jsonLd() {
         applicationCategory: 'DeveloperApplication',
         operatingSystem: 'macOS 13 or later (Apple silicon), Web',
         softwareVersion: DOWNLOADS.mac.version,
+        author: { '@id': `${SITE_URL}/#developer` },
+        creator: { '@id': `${SITE_URL}/#developer` },
         publisher: { '@id': `${SITE_URL}/#org` },
+        provider: { '@id': `${SITE_URL}/#org` },
         offers: [
           { '@type': 'Offer', name: p.individual.name, price: '0', priceCurrency: 'USD' },
           {

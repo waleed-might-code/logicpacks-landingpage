@@ -52,7 +52,7 @@ describe('Landing', () => {
       'Delegate with guardrails.',
       'Works with your agent.',
       'Where it runs.',
-      'Built by Al Jash Trading, Abu Dhabi. Since 1994.Try it on your next project.',
+      'Developed by TechRealm. Operated by Al Jash Trading, Abu Dhabi. Since 1994.Try it on your next project.',
     ]);
     expect(screen.getByRole('link', { name: 'Start a shared project' })).toHaveAttribute('href', 'https://app.logicpacks.io');
     expect(screen.getByRole('link', { name: 'Plan a goal' })).toBeInTheDocument();

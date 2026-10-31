@@ -6,7 +6,7 @@ import LaunchMedia from '../components/LaunchMedia';
 import { MotionBg, Reveal } from '../components/Motion';
 import MediaSlot from '../components/MediaSlot';
 import { BetaPill, container, display, Facts } from '../components/Section';
-import { BRANDS, brandLogo, COMPANY, SHOW_BRANDS, CONNECT_PROMPT, EVERY_APP_MEDIA, LINKS, TOGETHER_MEDIA, TOOLS, WHERE } from '../site';
+import { BRANDS, brandLogo, COMPANY, DEVELOPER, SHOW_BRANDS, CONNECT_PROMPT, EVERY_APP_MEDIA, LINKS, TOGETHER_MEDIA, TOOLS, WHERE } from '../site';
 
 // A short page in the shape of a product sheet: a hero, three rows (words and a
 // button on the left, one visual on the right), a closing line and the footer.
@@ -277,7 +277,11 @@ function Closing() {
       <MotionBg name="wave" shade="bg-gradient-to-b from-page/85 via-page/70 to-page/90" />
       <Reveal className={`${container} grid gap-6 py-20 sm:py-28 lg:grid-cols-[5fr_7fr] lg:items-end lg:gap-14`}>
         <h2 id="closing-title" className={rowTitle}>
-          Built by {COMPANY.name}, {COMPANY.city}. Since {COMPANY.since}.
+          Developed by{' '}
+          <a href={DEVELOPER.url} className="underline decoration-line underline-offset-4 hover:decoration-ink">
+            {DEVELOPER.name}
+          </a>
+          . Operated by {COMPANY.name}, {COMPANY.city}. Since {COMPANY.since}.
           <span className="block text-muted">Try it on your next project.</span>
         </h2>
         <div>

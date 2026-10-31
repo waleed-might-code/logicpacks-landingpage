@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { container } from '../components/Section';
-import { COMPANY, LEGAL_EFFECTIVE, LINKS } from '../site';
+import { COMPANY, DEVELOPER, LEGAL_EFFECTIVE, LINKS } from '../site';
 
 // Plain, short privacy policy and terms. Both name the operator and are also
 // prerendered to static HTML at build time (scripts/prerender.mjs), so they read
@@ -22,7 +22,11 @@ function Contact() {
 function Operator() {
   return (
     <p>
-      LogicPacks by {COMPANY.name} is operated by {operator}, {COMPANY.licence}. Address: {COMPANY.address}. Contact:{' '}
+      LogicPacks by {COMPANY.name} is operated by {operator}, {COMPANY.licence}. Address: {COMPANY.address}. Software developed by{' '}
+      <a href={DEVELOPER.url} className="text-ink underline decoration-line underline-offset-4">
+        {DEVELOPER.name}
+      </a>
+      . Contact:{' '}
       <Contact />.
     </p>
   );

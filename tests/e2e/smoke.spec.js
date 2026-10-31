@@ -17,7 +17,7 @@ test.describe('LogicPacks landing: smoke', () => {
       'Delegate with guardrails.',
       'Works with your agent.',
       'Where it runs.',
-      /Built by Al Jash Trading, Abu Dhabi\. Since 1994\./,
+      /Developed by TechRealm\. Operated by Al Jash Trading, Abu Dhabi\. Since 1994\./,
     ]);
     // Row 1 clip plays too.
     const together = page.locator('#together [data-testid="media-video"]');

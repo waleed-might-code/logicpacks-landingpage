@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { COMPANY, LINKS } from '../site';
+import { COMPANY, DEVELOPER, LINKS } from '../site';
 import Logo from './Logo';
 
 const COLUMNS = [
@@ -56,10 +56,15 @@ export default function Footer() {
             Agents and people in one shared project.
           </p>
           <p className="mt-4 max-w-[300px] text-[12px] leading-[1.5] text-faint">
+            Developed by{' '}
+            <a href={DEVELOPER.url} className="text-muted transition-colors hover:text-ink">
+              {DEVELOPER.name}
+            </a>
+            . Operated by{' '}
             <a href={COMPANY.website} className="text-muted transition-colors hover:text-ink">
               {COMPANY.name}
-            </a>{' '}
-            ({COMPANY.form}), since {COMPANY.since}
+            </a>
+            , {COMPANY.city}. Since {COMPANY.since}.
             <span className="block">{COMPANY.address}</span>
             <span className="block">{COMPANY.licence}</span>
           </p>
