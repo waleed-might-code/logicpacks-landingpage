@@ -35,7 +35,17 @@ if ($env:LP_HELPER_URL) {
 $Tmp = Join-Path ([System.IO.Path]::GetTempPath()) ('lp-' + [guid]::NewGuid().ToString('N') + '.exe')
 try {
   if ($Source -match '^https?://') {
-    Invoke-WebRequest -UseBasicParsing -Uri $Source -OutFile $Tmp
+    # curl.exe (built into Windows 10 1803 and later) is much faster than Invoke-WebRequest in
+    # Windows PowerShell 5.1 and shows progress; its progress on stderr is not a PowerShell error.
+    $Curl = Get-Command curl.exe -CommandType Application -ErrorAction SilentlyContinue | Select-Object -First 1
+    if ($Curl) {
+      $ErrorActionPreference = 'Continue'
+      & $Curl.Source -fL --retry 3 --progress-bar -o $Tmp $Source
+      $ErrorActionPreference = 'Stop'
+      if ($LASTEXITCODE -ne 0) { Fail "could not download $Source (curl exit code $LASTEXITCODE)." }
+    } else {
+      Invoke-WebRequest -UseBasicParsing -Uri $Source -OutFile $Tmp
+    }
   } else {
     Copy-Item -LiteralPath ($Source -replace '^file:///?', '') -Destination $Tmp
   }

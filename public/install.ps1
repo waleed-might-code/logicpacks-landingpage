@@ -26,7 +26,18 @@ New-Item -ItemType Directory -Force -Path $Work | Out-Null
 $Setup = Join-Path $Work "LogicPacks-$($Release.version)-x64.exe"
 try {
   Say "Downloading LogicPacks $($Release.version) ($([math]::Round($Release.size / 1MB)) MB)..."
-  Invoke-WebRequest -UseBasicParsing -Uri $Release.url -OutFile $Setup
+  # curl.exe (built into Windows 10 1803 and later) shows progress and is much faster than
+  # Invoke-WebRequest in Windows PowerShell 5.1; fall back to Invoke-WebRequest without it.
+  $Curl = Get-Command curl.exe -CommandType Application -ErrorAction SilentlyContinue | Select-Object -First 1
+  if ($Curl) {
+    # curl writes its progress to stderr: keep that from counting as a PowerShell error.
+    $ErrorActionPreference = 'Continue'
+    & $Curl.Source -fL --retry 3 --progress-bar -o $Setup $Release.url
+    $ErrorActionPreference = 'Stop'
+    if ($LASTEXITCODE -ne 0) { Fail "the download failed (curl exit code $LASTEXITCODE)." }
+  } else {
+    Invoke-WebRequest -UseBasicParsing -Uri $Release.url -OutFile $Setup
+  }
   $Actual = (Get-FileHash -Algorithm SHA256 -LiteralPath $Setup).Hash.ToLower()
   if ($Actual -ne $Release.sha256.ToLower()) { Fail "checksum mismatch (expected $($Release.sha256), got $Actual). Nothing was installed." }
   Say 'Checksum OK.'
