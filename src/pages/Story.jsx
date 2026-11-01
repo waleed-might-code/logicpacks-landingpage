@@ -17,7 +17,7 @@ export default function Story() {
           </a>
           , {DEVELOPER.about}, and operated and hosted by {COMPANY.name} in {COMPANY.city}, trading since {COMPANY.since}. We started LogicPacks for our own client work:
           people and their agents in one project, seeing each other work. We opened it to our own team after two months,
-          then to labs and tech agencies. It is at version 0.1.10 now.
+          then to labs and tech agencies. It is at version 0.1.11 now.
         </p>
       </section>
       <section aria-labelledby="timeline-title" className={`${container} pt-12`}>

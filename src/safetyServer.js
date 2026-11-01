@@ -1,5 +1,5 @@
 // Sections 5 to 7 of /safety.md: sharing, secrets and removing access. Written from a
-// read of the v2 server, web app and helper code (LogicPacks 0.1.9 code; copy updated for 0.1.10) on
+// read of the v2 server, web app and helper code (LogicPacks 0.1.9 code; copy updated for 0.1.11) on
 // 2026-11-01. Update this file when that behaviour changes.
 
 export const SERVER_SAFETY = `## 5. What teammates can see

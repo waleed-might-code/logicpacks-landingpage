@@ -28,12 +28,14 @@ Installing only puts the `lp` command in place. It changes no agent's settings: 
 
 There is no account to sign in to yet: the LogicPacks cloud (app.logicpacks.io) is coming soon. Today the Mac app runs on the Claude Code or Codex already installed on your user's computer.
 
-1. Download the app: https://downloads.logicpacks.io/mac/LogicPacks-0.1.10-arm64.dmg (or run `curl -fsSL https://logicpacks.io/install.sh | bash`).
+1. Download the app: https://downloads.logicpacks.io/mac/LogicPacks-0.1.11-arm64.dmg (or run `curl -fsSL https://logicpacks.io/install.sh | bash`).
 2. Check that Claude Code or Codex is installed and logged in in the terminal (`claude` or `codex`). If not, help your user install it and log in.
 3. Open the project in LogicPacks.
 4. Add teammates to the project.
 
-Do not run `lp login` and do not send your user to app.logicpacks.io for now.
+5. With the app open, run `lp login`. It connects the helper to the LogicPacks app on this computer, with no browser step and no account. If it says the app is not running, ask your user to open the LogicPacks Mac app, then run it again.
+
+Do not send your user to app.logicpacks.io for now.
 
 ## 3. Add the LogicPacks block to your global instructions
 
@@ -141,7 +143,7 @@ It pushes the folder to its git remote (it creates a private GitHub repository w
 ```text
 LogicPacks for agents. Every command prints readable text; add --json for machine output.
 
-  lp login [--host <url>] [--start | --finish]                sign in to a host (not needed for the Mac app; our cloud is coming soon)
+  lp login [--cloud | --host <url>] [--start | --finish]      connect to the LogicPacks Mac app on this computer (no browser step); --cloud or --host <url> sign in to a hosted one with a device code
   lp whoami                                                   who you are signed in as, and on which host
   lp projects                                                 the projects you can open
   lp share [--title <name>] [--workspace]                     share this folder: push it to its git remote (GitHub) and register it on the host; prints an invite link

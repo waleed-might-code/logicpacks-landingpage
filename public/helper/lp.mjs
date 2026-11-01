@@ -557,7 +557,7 @@ const globalBlockBody = (projectTitle = null) => [
 /** What a person pastes into any agent. */
 const setupPrompt = (variant = "new") => variant === "new" ? [
 	`Set up LogicPacks for me: read ${SETUP_URL} and follow it.`,
-	"Install the helper, log me in, and add the LogicPacks block to your global instructions.",
+	"Install the helper, connect it to the LogicPacks app on this computer, and add the LogicPacks block to your global instructions.",
 	"Show me what you'll change first and wait for my OK before you write anything.",
 	"Then share this project and give me an invite link."
 ].join("\n") : [
@@ -568,8 +568,8 @@ const setupPrompt = (variant = "new") => variant === "new" ? [
 /** Every command an agent may run, in the order setup.md and `lp help agents` list them. */
 const AGENT_COMMANDS = [
 	{
-		usage: "lp login [--host <url>] [--start | --finish]",
-		does: "sign in with a device code (default host app.logicpacks.io)"
+		usage: "lp login [--cloud | --host <url>] [--start | --finish]",
+		does: "connect to the LogicPacks Mac app on this computer (no browser step); --cloud or --host <url> sign in to a hosted one with a device code"
 	},
 	{
 		usage: "lp whoami",
@@ -1254,6 +1254,57 @@ const writeAgentsBlock = (folder, body) => {
 	commitFile(file, after === "" && body === null ? null : after);
 	return file;
 };
+// src/localHost.ts
+/** The key file the app's server writes next to server-runtime.json (see helperHttp.ts). */
+const LOCAL_HELPER_KEY_FILE = "helper-local.key";
+const OPEN_THE_APP = "Open the LogicPacks Mac app (download: https://logicpacks.io/download), then run lp login again. LogicPacks cloud is coming soon.";
+const NOT_CONNECTED = `LogicPacks is not connected on this computer. Run lp login. ${OPEN_THE_APP}`;
+const alive = (pid) => {
+	if (!Number.isInteger(pid) || pid <= 0) return false;
+	try {
+		process.kill(pid, 0);
+		return true;
+	} catch (error) {
+		return error.code === "EPERM";
+	}
+};
+/** Data folders the app may run from: LOGICPACKS_HOME, ~/.logicpacks, then the older ~/.t3. */
+const stateDirs = (env, home) => {
+	const homes = [
+		env.LOGICPACKS_HOME,
+		NodePath.join(home, ".logicpacks"),
+		NodePath.join(home, ".t3")
+	];
+	const dirs = [];
+	for (const base of homes) {
+		if (!base) continue;
+		for (const name of ["userdata", "dev"]) dirs.push(NodePath.join(base, name));
+	}
+	return dirs;
+};
+/** The LogicPacks app server running on this machine, found from its runtime file. */
+const discoverLocalHost = (env = process.env, home = NodeOS.homedir()) => {
+	for (const stateDir of stateDirs(env, home)) try {
+		const runtime = JSON.parse(NodeFS.readFileSync(NodePath.join(stateDir, "server-runtime.json"), "utf8"));
+		const origin = typeof runtime.origin === "string" ? runtime.origin : typeof runtime.port === "number" ? `http://127.0.0.1:${runtime.port}` : null;
+		if (origin === null || !alive(Number(runtime.pid))) continue;
+		if (!/^http:\/\/(127\.0\.0\.1|localhost|\[::1\])(:\d+)?$/.test(origin)) continue;
+		return {
+			origin,
+			stateDir
+		};
+	} catch {}
+	return null;
+};
+const readLocalKey = (host) => {
+	try {
+		const key = NodeFS.readFileSync(NodePath.join(host.stateDir, LOCAL_HELPER_KEY_FILE), "utf8").trim();
+		return key.length > 0 ? key : null;
+	} catch {
+		return null;
+	}
+};
+const isLocalOrigin = (server) => server !== null && /^http:\/\/(127\.0\.0\.1|localhost|\[::1\])(:\d+)?\/?$/.test(server);
 // src/client.ts
 var OfflineError = class extends Error {};
 var RejectedError = class extends Error {
@@ -1265,7 +1316,28 @@ var RejectedError = class extends Error {
 };
 /** POST or GET a host route with the helper's token. Network trouble is OfflineError; a refusal is RejectedError. */
 const callHost = async (config, path, options = {}) => {
-	if (!config.server) throw new RejectedError(0, "Not signed in. Run lp login --server <url>.");
+	try {
+		return await callHostOnce(config, path, options);
+	} catch (error) {
+		if (!(error instanceof OfflineError) || !isLocalOrigin(config.server)) throw error;
+		const found = discoverLocalHost();
+		if (found === null || found.origin === config.server?.replace(/\/+$/, "")) throw error;
+		const result = await callHostOnce({
+			...config,
+			server: found.origin
+		}, path, options);
+		try {
+			const stored = loadConfig();
+			if (isLocalOrigin(stored.server)) saveConfig({
+				...stored,
+				server: found.origin
+			});
+		} catch {}
+		return result;
+	}
+};
+const callHostOnce = async (config, path, options = {}) => {
+	if (!config.server) throw new RejectedError(0, NOT_CONNECTED);
 	const headers = { accept: "application/json" };
 	if (options.body !== void 0) headers["content-type"] = "application/json";
 	if (options.auth !== false && config.token) headers.authorization = `Bearer ${config.token}`;
@@ -2714,6 +2786,7 @@ const BOOLEAN_FLAGS = /* @__PURE__ */ new Set([
 	"workspace",
 	"installed",
 	"no-open",
+	"cloud",
 	"no-mcp",
 	"list",
 	"once",
@@ -2795,7 +2868,7 @@ const refuse = (text, json = {}) => ({
 });
 const signedIn = (ctx) => {
 	const config = ctx.loadConfig();
-	if (!config.server || !config.token) throw new RejectedError(401, "Not signed in. Run lp login (lp login --host <url> for your team's host).");
+	if (!config.server || !config.token) throw new RejectedError(401, `LogicPacks is not connected on this computer. Run lp login (lp login --host <url> for your team's host). ${OPEN_THE_APP}`);
 	return config;
 };
 const location = (ctx) => {
@@ -2850,11 +2923,62 @@ const output = (text, json) => ({
 	text,
 	json
 });
+/** Pair with the app server on this machine using its key file. Null when no app is running. */
+const loginLocal = async (ctx, config) => {
+	const host = discoverLocalHost(ctx.env, ctx.home);
+	if (host === null) return null;
+	try {
+		await ctx.call({
+			server: host.origin,
+			token: null
+		}, "/api/lp/helper/pair/local", {
+			auth: false,
+			timeoutMs: 4e3
+		});
+		const key = readLocalKey(host);
+		if (key === null) return null;
+		const paired = await ctx.call({
+			server: host.origin,
+			token: null
+		}, "/api/lp/helper/pair/local", {
+			body: {
+				key,
+				device: config.device
+			},
+			auth: false,
+			timeoutMs: 8e3
+		});
+		ctx.saveConfig({
+			...ctx.loadConfig(),
+			server: host.origin,
+			token: paired.token,
+			who: paired.who,
+			pending: null
+		});
+		return output(`Connected to the LogicPacks app on this computer as ${paired.who}.`, {
+			ok: true,
+			server: host.origin,
+			who: paired.who,
+			local: true
+		});
+	} catch {
+		return null;
+	}
+};
 const loginCommand = async (ctx, args) => {
 	const config = ctx.loadConfig();
 	const finishOnly = hasFlag(args, "finish");
-	const server = (flagValue(args, "host") ?? flagValue(args, "server") ?? ctx.env.LP_SERVER ?? null ?? (finishOnly ? config.pending?.server : void 0) ?? config.server ?? "https://app.logicpacks.io").replace(/\/+$/, "");
-	const token = flagValue(args, "token") ?? ctx.env.LP_TOKEN ?? null;
+	const named = flagValue(args, "host") ?? flagValue(args, "server") ?? ctx.env.LP_SERVER ?? (hasFlag(args, "cloud") ? "https://app.logicpacks.io" : null);
+	const tokenGiven = flagValue(args, "token") ?? ctx.env.LP_TOKEN ?? null;
+	if (named === null && tokenGiven === null && !finishOnly && !config.pending) {
+		if (config.server === null || isLocalOrigin(config.server)) {
+			const local = await loginLocal(ctx, config);
+			if (local) return local;
+			return refuse(OPEN_THE_APP, { reason: "app_not_running" });
+		}
+	}
+	const server = (named ?? (finishOnly ? config.pending?.server : void 0) ?? config.server ?? "https://app.logicpacks.io").replace(/\/+$/, "");
+	const token = tokenGiven;
 	if (token) {
 		const me = await ctx.call({
 			server,
@@ -4005,7 +4129,7 @@ const JOBS_TOOL_NAMES = new Set(JOBS_TOOLS.map((tool) => tool.name));
 const callJobsTool = (config, tool, args) => {
 	const text = (value) => typeof value === "string" ? value : null;
 	if (!config.server || !config.token) return Promise.resolve({
-		text: "LogicPacks is not signed in on this computer. Run lp login.",
+		text: NOT_CONNECTED,
 		isError: true
 	});
 	switch (tool) {
@@ -4315,7 +4439,7 @@ const guessSession = (source, root) => {
 const callLedgerTool = async (options, tool, args) => {
 	const config = (options.loadConfig ?? loadConfig)();
 	if (!config.server || !config.token) return {
-		text: "LogicPacks is not signed in on this computer. Run lp login.",
+		text: NOT_CONNECTED,
 		isError: true
 	};
 	const git = gitInfo(options.cwd);
@@ -4358,7 +4482,7 @@ const callLedgerTool = async (options, tool, args) => {
 const readInbox = async (options) => {
 	const config = (options.loadConfig ?? loadConfig)();
 	if (!config.server || !config.token) return {
-		text: "LogicPacks is not signed in on this computer. Run lp login.",
+		text: NOT_CONNECTED,
 		isError: true
 	};
 	try {
@@ -4498,7 +4622,7 @@ const runMcpServer = async (options) => {
 // src/cli.ts
 const HELP = `LogicPacks helper (lp): use LogicPacks from any agent harness, no app needed.
 
-  lp login [--host <url>]                    sign in with a device code (default https://app.logicpacks.io)
+  lp login [--host <url>]                    connect to the LogicPacks app on this computer (--cloud or --host <url> for a hosted one)
   lp whoami | lp projects                    who you are, the projects you can open
   lp share | lp invite <email|name>          share this folder, add a teammate or print the invite link
   lp members | lp who [x] | lp agents        who is in the project, working on what, which agents are active
@@ -4594,7 +4718,7 @@ const syncAgentsFile = async (folder, timeoutMs = 3e3) => {
 };
 const status = async () => {
 	const config = loadConfig();
-	say(`Host:      ${config.server ?? "not connected (run lp login)"}`);
+	say(`Host:      ${config.server ?? "not connected (open the LogicPacks Mac app, then run lp login)"}`);
 	if (config.server && config.token) try {
 		const me = await callHost(config, "/api/lp/helper/whoami", { timeoutMs: 3e3 });
 		say(`Signed in: ${me.who}`);
@@ -4724,7 +4848,7 @@ const main = async () => {
 			}
 			const config = loadConfig();
 			if (!config.server || !config.token) {
-				say("Connect this computer first: lp login");
+				say("Connect this computer first: open the LogicPacks Mac app, then run lp login.");
 				process.exitCode = 1;
 				return;
 			}

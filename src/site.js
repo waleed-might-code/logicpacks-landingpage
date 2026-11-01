@@ -17,7 +17,7 @@ import {
 export const SITE_URL = 'https://logicpacks.io';
 
 // The version the copy describes. DOWNLOADS.mac.version (below) is the shipped DMG and is set at release.
-export const CURRENT_VERSION = '0.1.10';
+export const CURRENT_VERSION = '0.1.11';
 
 // public/setup.md is the agent setup guide. Until it ships, Docs points at the repo
 // docs so nothing links a 404. The build sets __HAS_SETUP__ (vite.config.js).
@@ -41,10 +41,10 @@ export const DOWNLOADS = {
   mac: {
     // Versioned file names: Cloudflare caches release binaries, so a new
     // release gets a new name (and the ?v= tag) instead of reusing this one.
-    url: 'https://downloads.logicpacks.io/mac/LogicPacks-0.1.10-arm64.dmg?v=5a0d9785',
+    url: 'https://downloads.logicpacks.io/mac/LogicPacks-0.1.11-arm64.dmg?v=368bf4ea',
     // Hex SHA-256 of the DMG, published next to the button.
-    sha256: '5a0d9785c3d1215e53608c42a8c9ae5bbdeced8bdce4c6311f9fa94c63b460ba',
-    version: '0.1.10',
+    sha256: '368bf4eaa73bb19c8e2918372f3b79c89b7ecc87aa8ee684fbc04a4e13c4080d',
+    version: '0.1.11',
     size: '177 MB',
     requires: 'macOS 13 or later, Apple silicon',
   },
@@ -125,12 +125,12 @@ export const TOOLS = [
 
 // The paste-in prompt that connects an agent already in use to LogicPacks.
 export const SETUP_URL = 'https://logicpacks.io/setup.md';
-// Deliberately not the helper's `lp setup-prompt` (that one logs in to the cloud, which is not open yet).
+// Not the helper's `lp setup-prompt`: this one installs the Mac app first (no cloud sign-in; the cloud is coming soon).
 export const CONNECT_PROMPT = `Set up LogicPacks for me: read ${SETUP_URL} and follow it.
 1. Download and install the LogicPacks Mac app: ${DOWNLOADS.mac.url}
 2. Make sure Claude Code or Codex is installed and logged in in my terminal. If not, help me install it and log in.
 3. Open this project in LogicPacks, then help me add my teammates.
-Do not run lp login or send me to app.logicpacks.io: our cloud is coming soon.
+Once the app is open, run lp login to connect the helper to it on this computer; there is no account. Do not send me to app.logicpacks.io: our cloud is coming soon.
 Show me anything you would change on this machine and wait for my OK first.`;
 
 // Sample experts for the Request assistance release on /new. Not real people: the
@@ -180,7 +180,7 @@ export const STORY = [
   { when: 'Nov 2025', title: 'Started building', body: 'A shared workspace where people and their agents work on the same project.' },
   { when: 'Jan 2026', title: 'Internal testing', body: 'Opened to our own team after two months, used on our client work every day.' },
   { when: 'Feb to Oct 2026', title: 'Eight months of testing', body: 'Used in labs and by tech agencies on real projects.' },
-  { when: 'Nov 2026', title: 'Public beta', body: 'Version 0.1.10: the Mac app with a code editor and agent workspace, projects, adding people and sharing, running on your own Claude Code or Codex. Our cloud is coming soon. App sharing and Request assistance are Beta.' },
+  { when: 'Nov 2026', title: 'Public beta', body: 'Version 0.1.11: the Mac app with a code editor and agent workspace, projects, adding people and sharing, running on your own Claude Code or Codex. Our cloud is coming soon. App sharing and Request assistance are Beta.' },
 ];
 
 // Launches built with LogicPacks. Facts only from the project notes.
@@ -259,7 +259,7 @@ export const WHERE = [
 export const FREELANCERS =
   'Sometimes it is cheaper to save tokens and bring in a freelancer vetted by LogicPacks. They bring their own Claude and tools and use none of your tokens: you pay for their hours, with their AI included. Every freelancer works under NDA and your keys are never shared with them. Secret files such as .env are hidden from them, and milestones and drift alerts keep their work on plan.';
 
-// The shortest path for two people (the 0.1.10 Mac app).
+// The shortest path for two people (the 0.1.11 Mac app).
 export const FRIEND_PATH = [
   'Each of you installs the Mac app from https://logicpacks.io/download and has Claude Code or Codex installed and logged in. If the CLI is missing, the app shows the install command and tells you to log in in your terminal.',
   'The host adds a project in the app: an empty folder, or an existing folder or Git repository.',

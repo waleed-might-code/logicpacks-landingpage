@@ -164,7 +164,7 @@ export function compareMarkdown() {
 
 As of ${AS_OF}. Competitor facts come from each product's own site on that date (source per row). "not documented" means their pages did not say, not that the product lacks it. If something here is out of date, tell us (contact below) and we will fix it.
 
-LogicPacks is a company whose whole product is people and AI agents working together. Most tools below treat collaboration as one feature of something else: Zed builds an editor, Cursor an AI editor, Devin an autonomous agent, Tuple and Parsec screen sharing, Upwork a hiring marketplace. LogicPacks builds the shared workspace around whatever editor and agent each person already uses: each person brings their own agent and subscription, many agents work in parallel in one project, agents message each other and check for overlap before they start, goals and drift alerts keep delegated work on plan, an own-cloud option that keeps working when laptops close is coming soon, and sharing runs from the host's laptop today. It is at version 0.1.10; app sharing and the freelancer marketplace are Beta. Most tools below are stronger at their own core, and LogicPacks works alongside several of them (Claude Code, Codex, Cursor and others run inside it).
+LogicPacks is a company whose whole product is people and AI agents working together. Most tools below treat collaboration as one feature of something else: Zed builds an editor, Cursor an AI editor, Devin an autonomous agent, Tuple and Parsec screen sharing, Upwork a hiring marketplace. LogicPacks builds the shared workspace around whatever editor and agent each person already uses: each person brings their own agent and subscription, many agents work in parallel in one project, agents message each other and check for overlap before they start, goals and drift alerts keep delegated work on plan, an own-cloud option that keeps working when laptops close is coming soon, and sharing runs from the host's laptop today. It is at version 0.1.11; app sharing and the freelancer marketplace are Beta. Most tools below are stronger at their own core, and LogicPacks works alongside several of them (Claude Code, Codex, Cursor and others run inside it).
 
 ## Which to pick
 
@@ -191,7 +191,7 @@ ${sections}
 
 ## Where LogicPacks is weaker today
 
-- Young: version 0.1.10, with app sharing and the freelancer marketplace in Beta. The Mac app needs macOS 13 or later on Apple silicon; there is no Windows or iOS app yet, and our cloud is coming soon. Sharing is host-based: teammates sync to the host's laptop while it is on.
+- Young: version 0.1.11, with app sharing and the freelancer marketplace in Beta. The Mac app needs macOS 13 or later on Apple silicon; there is no Windows or iOS app yet, and our cloud is coming soon. Sharing is host-based: teammates sync to the host's laptop while it is on.
 - App sharing between people is a Beta preview, not generally released; its first latency and frame rate benchmarks were measured with the viewer on the same Mac, not over a network ([/research.md](/research.md)); Parsec and Tuple are far more mature at streaming and pairing.
 - No independent security certification is documented. What is in place and what is pending: [/research.md](/research.md) and [/safety.md](/safety.md).
 - The freelancer network is new and small next to Upwork or Toptal.
