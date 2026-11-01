@@ -98,3 +98,9 @@ body {
   .lp-marquee { animation: none; }
   .lp-header { transition: none; }
 }
+
+/* /v2: until the scroll film takes over (desktop, motion allowed), keep the box hidden
+   so the boxed layout does not flash before it jumps to full screen. */
+@media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
+  .v2-track[data-fx='pending'] .v2-box { opacity: 0; }
+}

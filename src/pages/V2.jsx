@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { BrandMark } from '../components/BrandIcons';
 import { CopyLine } from '../components/Buttons';
@@ -57,7 +57,9 @@ function Panel({ tab }) {
   if (tab === 'windows')
     return (
       <>
-        <p className="text-[12px] text-muted">Install the helper in PowerShell, to use LogicPacks from your agent (tested on Windows 11 with Claude Code):</p>
+        <p className="text-[12px] text-muted">
+          Install the helper in PowerShell, to use LogicPacks from your agent (tested on Windows 11 with Claude Code):
+        </p>
         <CopyLine text={HELPER_INSTALL_WINDOWS} prefix=">" label="the PowerShell install command" className="mt-2" />
         <Note>Windows app coming soon.</Note>
         <WebAppLine />
@@ -128,41 +130,160 @@ const QUIET = [
   ['Terms', '/terms'],
 ];
 
-export default function V2() {
+const clamp = (x) => Math.min(1, Math.max(0, x));
+const ease = (x) => (x < 0.5 ? 2 * x * x : 1 - (-2 * x + 2) ** 2 / 2);
+
+// Desktop: the film starts full screen and settles into its box under the pitch as
+// you scroll (sticky stage, transforms only, one rAF per scroll frame). Mobile and
+// reduced motion get the boxed layout, which is also what the prerendered HTML is.
+function useFilmScroll({ track, box, pitch, sound, shade }) {
+  const [fx, setFx] = useState(false);
+  useEffect(() => {
+    const wide = window.matchMedia('(min-width: 768px) and (prefers-reduced-motion: no-preference)');
+    const sync = () => setFx(wide.matches);
+    sync();
+    wide.addEventListener('change', sync);
+    return () => wide.removeEventListener('change', sync);
+  }, []);
+  useEffect(() => {
+    const el = box.current;
+    const tr = track.current;
+    if (!el || !tr) return undefined;
+    if (!fx) {
+      for (const node of [el, pitch.current, sound.current]) if (node) node.style.transform = '';
+      el.style.borderRadius = '';
+      el.style.borderWidth = '';
+      if (pitch.current) pitch.current.style.opacity = '';
+      tr.dataset.fx = 'off';
+      return undefined;
+    }
+    let rect = null;
+    let frame = 0;
+    const paint = () => {
+      frame = 0;
+      if (!rect) return;
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      const p = clamp(-tr.getBoundingClientRect().top / (vh * 0.9));
+      const e = ease(p);
+      const s0 = Math.max(vw / rect.w, vh / rect.h);
+      const tx = (vw / 2 - (rect.x + rect.w / 2)) * (1 - e);
+      const ty = (vh / 2 - (rect.y + rect.h / 2)) * (1 - e);
+      const s = s0 + (1 - s0) * e;
+      el.style.transform = `translate3d(${tx}px, ${ty}px, 0) scale(${s})`;
+      el.style.borderRadius = `${(12 * e) / s}px`;
+      el.style.borderWidth = `${e / s}px`;
+      const f = clamp((p - 0.45) / 0.5);
+      pitch.current.style.opacity = String(f);
+      pitch.current.style.transform = `translate3d(0, ${(1 - f) * 12}px, 0)`;
+      shade.current.style.opacity = String(1 - e);
+      // The sound button sits at the bottom right of the visible film, inside the viewport.
+      const right = Math.min(vw, rect.x + rect.w / 2 + tx + (rect.w * s) / 2);
+      const bottom = Math.min(vh, rect.y + rect.h / 2 + ty + (rect.h * s) / 2);
+      sound.current.style.transform = `translate3d(${right - 16}px, ${bottom - 16}px, 0) translate(-100%, -100%)`;
+      tr.dataset.fx = 'on';
+    };
+    const measure = () => {
+      el.style.transform = 'none';
+      const r = el.getBoundingClientRect();
+      const t = tr.getBoundingClientRect();
+      rect = { x: r.left - t.left, y: r.top - t.top, w: r.width, h: r.height };
+      paint();
+    };
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(paint);
+    };
+    measure();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', measure);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', measure);
+    };
+  }, [fx, track, box, pitch, sound, shade]);
+  return fx;
+}
+
+function SoundButton({ box, innerRef, className = '' }) {
+  const [on, setOn] = useState(false);
+  const toggle = () => {
+    const el = box.current?.querySelector('video');
+    if (!el) return;
+    const next = !on;
+    el.muted = !next;
+    if (next) {
+      el.currentTime = 0;
+      el.play().catch(() => {});
+    }
+    setOn(next);
+  };
   return (
-    <div className="min-h-screen bg-page text-ink">
-      <header className={`${wrap} flex h-16 items-center justify-between`}>
-        <Link to="/v2" aria-label="LogicPacks">
-          <Logo className="text-[15px]" />
-        </Link>
-        <Link to="/" className="text-[13px] text-muted hover:text-ink">
-          View more
-        </Link>
-      </header>
+    <button
+      ref={innerRef}
+      type="button"
+      data-testid="media-sound"
+      onClick={toggle}
+      aria-pressed={on}
+      className={`rounded-full border border-[#3a3a3a] bg-page/85 px-3 py-1.5 text-[12px] text-ink backdrop-blur hover:bg-raised ${className}`}
+    >
+      {on ? 'Mute' : 'Play with sound'}
+    </button>
+  );
+}
+
+export default function V2() {
+  const refs = { track: useRef(null), box: useRef(null), pitch: useRef(null), sound: useRef(null), shade: useRef(null) };
+  const fx = useFilmScroll(refs);
+  return (
+    <div className="min-h-screen overflow-x-clip bg-page text-ink">
       <main id="main">
-        <section className={`${wrap} pt-12 sm:pt-20`}>
-          <h1 className="text-[22px] font-medium leading-[1.3] tracking-[-0.02em] sm:text-[26px]">
-            Your team and your agents, one workspace.
-            <span className="block text-muted">A shared workspace for people and AI agents.</span>
-          </h1>
-          <p className="mt-4 max-w-[520px] text-[14px] leading-[1.6] text-faint">
-            Bring your own Claude Code or Codex, add your team, and see what everyone is doing.
-          </p>
-          <div className="mt-10">
-            <MediaSlot
-              className="rounded-[10px] border border-line"
-              image={LAUNCH_MEDIA.image}
-              imageWebp={LAUNCH_MEDIA.imageWebp}
-              video={LAUNCH_MEDIA.video}
-              alt={LAUNCH_MEDIA.alt}
-              label="LogicPacks launch video"
-              width={1920}
-              height={1080}
-              soundToggle
-              priority
+        <div ref={refs.track} data-fx="pending" className="v2-track" style={fx ? { height: '190svh' } : undefined}>
+          <div className={fx ? 'sticky top-0 h-[100svh] overflow-hidden' : 'relative'}>
+            <div
+              ref={refs.shade}
+              aria-hidden="true"
+              className={`pointer-events-none absolute inset-x-0 top-0 z-20 h-28 bg-gradient-to-b from-black/70 to-transparent ${fx ? '' : 'hidden'}`}
             />
+            <header className={`${wrap} relative z-30 flex h-16 items-center justify-between`}>
+              <Link to="/v2" aria-label="LogicPacks">
+                <Logo className="text-[15px]" />
+              </Link>
+              <Link to="/" className="text-[13px] text-muted hover:text-ink">
+                View more
+              </Link>
+            </header>
+            <section className={`${wrap} pt-10 sm:pt-12`}>
+              <div ref={refs.pitch}>
+                <h1 className="text-[22px] font-medium leading-[1.3] tracking-[-0.02em] sm:text-[26px]">
+                  The best way for teams and AI agents to work together.
+                  <span className="block text-muted">One workspace. Everyone brings their own agent.</span>
+                </h1>
+                <p className="mt-4 max-w-[560px] text-[14px] leading-[1.6] text-faint">
+                  Use your own Claude Code or Codex, add your team, and see what every person and agent is doing.
+                </p>
+              </div>
+              <div
+                ref={refs.box}
+                className="v2-box relative z-10 mt-8 origin-center overflow-hidden rounded-[12px] border border-line will-change-transform"
+                style={fx ? { width: 'min(100%, calc((100svh - 330px) * 16 / 9))' } : undefined}
+              >
+                <MediaSlot
+                  image={LAUNCH_MEDIA.image}
+                  imageWebp={LAUNCH_MEDIA.imageWebp}
+                  video={LAUNCH_MEDIA.video}
+                  alt={LAUNCH_MEDIA.alt}
+                  label="LogicPacks launch video"
+                  width={1920}
+                  height={1080}
+                  priority
+                />
+                {!fx && <SoundButton box={refs.box} className="absolute bottom-3 right-3" />}
+              </div>
+            </section>
+            {fx && <SoundButton box={refs.box} innerRef={refs.sound} className="absolute left-0 top-0 z-30" />}
           </div>
-        </section>
+        </div>
         <GetIt />
         <section className={`${wrap} pb-20`}>
           <Link to="/" className="inline-flex items-center gap-2 text-[13px] text-ink hover:underline">

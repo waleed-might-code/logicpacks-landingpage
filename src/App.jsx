@@ -20,7 +20,7 @@ const TITLES = {
   '/pricing': 'Pricing · LogicPacks by TechRealm',
   '/research': 'Research · LogicPacks by TechRealm',
   '/story': 'Our story · LogicPacks by TechRealm',
-  '/v2': 'LogicPacks by TechRealm: your team and your agents, one workspace',
+  '/v2': 'The best way for teams and AI agents to work together · LogicPacks by TechRealm',
 };
 
 // Start each page at the top and give it its own tab title.
