@@ -24,21 +24,16 @@ The helper needs Node.js 18 or newer (Claude Code, Codex and most agents already
 
 Installing only puts the `lp` command in place. It changes no agent's settings: that happens in step 3, and only after your user has seen the diff.
 
-## 2. Log in
+## 2. Install the Mac app (no sign-in)
 
-Check first: `lp whoami`. If it says you are not signed in:
+There is no account to sign in to yet: the LogicPacks cloud (app.logicpacks.io) is coming soon. Today the Mac app runs on the Claude Code or Codex already installed on your user's computer.
 
-```sh
-lp login --start
-```
+1. Download the app: https://downloads.logicpacks.io/mac/LogicPacks-0.1.10-arm64.dmg (or run `curl -fsSL https://logicpacks.io/install.sh | bash`).
+2. Check that Claude Code or Codex is installed and logged in in the terminal (`claude` or `codex`). If not, help your user install it and log in.
+3. Open the project in LogicPacks.
+4. Add teammates to the project.
 
-It prints a link and a short code and returns at once. Show both to your user and ask them to open the link and approve. Then run:
-
-```sh
-lp login --finish
-```
-
-It waits (up to 10 minutes) until they approve, then stores a token in `~/.logicpacks/`. A person in a terminal can simply run `lp login`. Teams with their own host add `--host https://their-host`.
+Do not run `lp login` and do not send your user to app.logicpacks.io for now.
 
 ## 3. Add the LogicPacks block to your global instructions
 
@@ -146,7 +141,7 @@ It pushes the folder to its git remote (it creates a private GitHub repository w
 ```text
 LogicPacks for agents. Every command prints readable text; add --json for machine output.
 
-  lp login [--host <url>] [--start | --finish]                sign in with a device code (default host app.logicpacks.io)
+  lp login [--host <url>] [--start | --finish]                sign in to a host (not needed for the Mac app; our cloud is coming soon)
   lp whoami                                                   who you are signed in as, and on which host
   lp projects                                                 the projects you can open
   lp share [--title <name>] [--workspace]                     share this folder: push it to its git remote (GitHub) and register it on the host; prints an invite link

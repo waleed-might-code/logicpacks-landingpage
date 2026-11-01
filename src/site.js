@@ -81,8 +81,8 @@ export const LAUNCH_MEDIA = {
   alt: 'The LogicPacks launch film: two people and their agents working side by side in one synced project.',
 };
 
-// Demo footage for the Beta "every app" section: the app's own demo route
-// (/demo/machine), the whole 72 s timeline recorded and sped up 2x.
+// Demo footage for the Beta "every app" section: a recording of the app's demo
+// (72 s timeline, recorded and sped up 2x).
 export const EVERY_APP_MEDIA = {
   video: '/every-app.mp4',
   webm: '/every-app.webm',
@@ -125,11 +125,13 @@ export const TOOLS = [
 
 // The paste-in prompt that connects an agent already in use to LogicPacks.
 export const SETUP_URL = 'https://logicpacks.io/setup.md';
-// The same three lines as `lp setup-prompt` and the app's "Use your own agent" (helper connectText.ts).
+// Deliberately not the helper's `lp setup-prompt` (that one logs in to the cloud, which is not open yet).
 export const CONNECT_PROMPT = `Set up LogicPacks for me: read ${SETUP_URL} and follow it.
-Install the helper, log me in, and add the LogicPacks block to your global instructions.
-Show me what you'll change first and wait for my OK before you write anything.
-Then share this project and give me an invite link.`;
+1. Download and install the LogicPacks Mac app: ${DOWNLOADS.mac.url}
+2. Make sure Claude Code or Codex is installed and logged in in my terminal. If not, help me install it and log in.
+3. Open this project in LogicPacks, then help me add my teammates.
+Do not run lp login or send me to app.logicpacks.io: our cloud is coming soon.
+Show me anything you would change on this machine and wait for my OK first.`;
 
 // Sample experts for the Request assistance release on /new. Not real people: the
 // portraits are generated and the page says so. The app seeds the same eight.
