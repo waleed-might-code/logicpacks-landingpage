@@ -5,7 +5,7 @@ import { CopyLine } from '../components/Buttons';
 import { AppleIcon } from '../components/Icons';
 import Logo from '../components/Logo';
 import MediaSlot from '../components/MediaSlot';
-import { COMPANY, CONNECT_PROMPT, DEVELOPER, DOWNLOADS, HELPER_INSTALL, HELPER_INSTALL_WINDOWS, INSTALL_COMMAND, LAUNCH_MEDIA, LINKS, TOOLS } from '../site';
+import { COMPANY, CONNECT_PROMPT, DEVELOPER, DOWNLOADS, HELPER_INSTALL, HELPER_INSTALL_WINDOWS, INSTALL_COMMAND, LAUNCH_MEDIA, TOOLS } from '../site';
 
 // A quieter landing to compare with /: the film, three lines, and how to get it.
 // Everything else stays one click away ("View more") and in the markdown pages.
@@ -23,14 +23,7 @@ function Note({ children }) {
 }
 
 function WebAppLine() {
-  return (
-    <Note>
-      Or use the web app, no install:{' '}
-      <a href={LINKS.webApp} className="text-muted underline-offset-2 hover:underline">
-        app.logicpacks.io
-      </a>
-    </Note>
-  );
+  return <Note>Our cloud is coming soon.</Note>;
 }
 
 function Panel({ tab }) {

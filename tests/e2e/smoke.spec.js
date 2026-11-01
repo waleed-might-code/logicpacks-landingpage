@@ -152,7 +152,7 @@ test.describe('LogicPacks landing: smoke', () => {
   test('/v2: film, three lines, platform tabs, view more', async ({ page }) => {
     await page.goto('/v2');
     await expect(page.getByRole('heading', { level: 1 })).toContainText('The best way for teams and AI agents to work together.');
-    await expect(page.getByRole('link', { name: 'Download for Mac' })).toHaveAttribute('href', /LogicPacks-0\.1\.9-arm64\.dmg/);
+    await expect(page.getByRole('link', { name: 'Download for Mac' })).toHaveAttribute('href', /LogicPacks-0\.1\.10-arm64\.dmg/);
     await page.getByRole('tab', { name: 'Windows' }).click();
     await expect(page.getByText('irm https://logicpacks.io/helper.ps1 | iex')).toBeVisible();
     await expect(page.getByText('Windows app coming soon.')).toBeVisible();
