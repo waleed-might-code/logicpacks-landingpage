@@ -2,7 +2,9 @@
 # LogicPacks helper installer: curl -fsSL https://logicpacks.io/helper.sh | bash
 # Optional: LP_SERVER=https://your-host LP_TOKEN=... to sign in during install,
 # LP_HELPER_URL to install from another copy, LP_HELPER_SHA256 to pin it,
-# LP_HELPER_NO_WATCHER=1 / LP_HELPER_NO_HOOKS=1 to skip those steps.
+# LP_HELPER_INSTALL=1 to also run `lp install --yes` (Claude Code hooks, background watcher, MCP),
+# with LP_HELPER_NO_WATCHER=1 / LP_HELPER_NO_HOOKS=1 to skip parts of it.
+# By default this only puts the lp command in place: it changes no agent's settings.
 set -euo pipefail
 
 HOME_DIR="${LP_HELPER_HOME:-$HOME/.logicpacks/helper}"
@@ -40,10 +42,13 @@ WRAPPER
 chmod 755 "$HOME_DIR/bin/lp"
 ln -sf "$HOME_DIR/bin/lp" "$BIN_DIR/lp"
 
-INSTALL_ARGS=()
-[ -n "${LP_HELPER_NO_HOOKS:-}" ] && INSTALL_ARGS+=(--no-hooks)
-[ -n "${LP_HELPER_NO_WATCHER:-}" ] && INSTALL_ARGS+=(--no-watcher)
-"$HOME_DIR/bin/lp" install ${INSTALL_ARGS[@]+"${INSTALL_ARGS[@]}"}
+if [ -n "${LP_HELPER_INSTALL:-}" ]; then
+  INSTALL_ARGS=(--yes)
+  [ -n "${LP_HELPER_NO_HOOKS:-}" ] && INSTALL_ARGS+=(--no-hooks)
+  [ -n "${LP_HELPER_NO_WATCHER:-}" ] && INSTALL_ARGS+=(--no-watcher)
+  "$HOME_DIR/bin/lp" install "${INSTALL_ARGS[@]}"
+fi
+printf 'Installed %s (the lp command) and %s. No agent settings were changed.\n' "$BIN_DIR/lp" "$HOME_DIR"
 
 # macOS and many Linux systems ship a printer command named lp; say which one runs.
 LP_CMD=lp

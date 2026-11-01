@@ -363,7 +363,7 @@ export default function Landing() {
         </p>
         <p className={`${rowBody} text-faint`}>
           Code with a friend: sign up in the web app, add a project or a Git URL, send the invite link, and each of you
-          connects your own Claude. No install needed.
+          connects your own computer with the Mac app, so turns run on your own Claude.
         </p>
       </Row>
       <HowItCompares />
@@ -371,7 +371,7 @@ export default function Landing() {
       <Row
         id="delegate"
         title="Delegate with guardrails."
-        pill="Next release"
+        pill="Beta"
         action={
           <a href={LINKS.webApp} className={primary}>
             Plan a goal

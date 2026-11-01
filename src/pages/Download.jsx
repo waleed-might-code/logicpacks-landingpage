@@ -123,7 +123,7 @@ const OTHERS = [
   {
     id: 'windows',
     title: 'Windows',
-    body: 'A Windows build is in the works. Use the web app until then.',
+    body: 'A Windows build is in the works.',
     url: DOWNLOADS.windows.url,
     cta: 'Download for Windows',
   },
@@ -137,7 +137,7 @@ const OTHERS = [
   {
     id: 'web',
     title: 'Web app',
-    body: 'Code projects in any browser. Other recipes need the Mac app.',
+    body: 'Code projects in any browser, with your agents running on the computer you connect. Other recipes need the Mac app.',
     url: LINKS.webApp,
     cta: 'Open the web app',
   },

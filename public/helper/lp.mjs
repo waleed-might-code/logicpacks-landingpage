@@ -542,7 +542,7 @@ const globalBlockBody = (projectTitle = null) => [
 	`Team work runs through the \`lp\` command (add \`--json\` to parse its output). If \`lp\` is the printer command (macOS, Linux), call \`~/.local/bin/lp\`; in Windows PowerShell type \`lp.cmd\`. If it is missing, follow ${SETUP_URL}.`,
 	"- At the start of a session and after long tasks, run `lp inbox` and tell the user what is new (messages, questions from other agents, conflicts, drift, review requests).",
 	"- \"share this project\" / \"create a shared session\" -> `lp share`, then give the user the invite link.",
-	"- \"add my friend X\" / \"invite X\" -> `lp invite <email or name>`.",
+	"- \"add my friend X\" / \"invite X\" -> `lp invite <email or name>` (this project only; `--workspace` for every project); \"remove X\" -> `lp remove <person>`; \"turn off the invite link\" -> `lp revoke-invite`.",
 	"- \"what is X working on\" -> `lp who X`; \"who is working right now\" -> `lp agents` (`--workspace` for every project).",
 	"- \"tell X ...\" -> `lp send X \"<message>\"`.",
 	"- To coordinate with a teammate's agent, use `lp ask <person> \"<question>\"` and `lp reply <id> \"<answer>\"`; check `lp inbox` for questions from other agents and answer them.",
@@ -558,6 +558,7 @@ const globalBlockBody = (projectTitle = null) => [
 const setupPrompt = (variant = "new") => variant === "new" ? [
 	`Set up LogicPacks for me: read ${SETUP_URL} and follow it.`,
 	"Install the helper, log me in, and add the LogicPacks block to your global instructions.",
+	"Show me what you'll change first and wait for my OK before you write anything.",
 	"Then share this project and give me an invite link."
 ].join("\n") : [
 	"LogicPacks is already set up here (the lp command is installed).",
@@ -579,11 +580,11 @@ const AGENT_COMMANDS = [
 		does: "the projects you can open"
 	},
 	{
-		usage: "lp share [--title <name>]",
+		usage: "lp share [--title <name>] [--workspace]",
 		does: "share this folder: push it to its git remote (GitHub) and register it on the host; prints an invite link"
 	},
 	{
-		usage: "lp invite <email|name>",
+		usage: "lp invite [<email|name>] [--workspace]",
 		does: "add someone to this project, or print the invite link to send them"
 	},
 	{
@@ -659,36 +660,355 @@ const AGENT_COMMANDS = [
 		does: "drift and review requests waiting for your user, and their decision"
 	},
 	{
-		usage: "lp setup --agent <id> [--file <path>] [--project]",
-		does: "write the LogicPacks block into an agent's instructions"
+		usage: "lp remove <person> [--project-only] [--dry-run]",
+		does: "take someone's access away (this project and its workspace)"
+	},
+	{
+		usage: "lp revoke-invite [<email>] [--off] [--workspace]",
+		does: "turn off this project's invite link (and print a new one), or cancel one person's invite"
+	},
+	{
+		usage: "lp stream --status | --mcp-details on|off",
+		does: "what this folder's sessions send to the project; MCP details are off by default"
+	},
+	{
+		usage: "lp setup --agent <id> [--file <path>] [--project] [--yes]",
+		does: "show the diff for the LogicPacks block; --yes writes it (with a backup)"
 	},
 	{
 		usage: "lp setup-prompt [--installed]",
 		does: "print the prompt to paste into any agent"
 	},
 	{
-		usage: "lp status | lp watch | lp link | lp unlink",
-		does: "stream Claude Code and Codex sessions into the project"
+		usage: "lp install [--dry-run | --yes]",
+		does: "optional: Claude Code hooks, background watcher, MCP for Claude Code and Codex"
+	},
+	{
+		usage: "lp pause | lp resume | lp unlink | lp link",
+		does: "stop streaming sessions (everything, or just this folder) and turn it back on"
+	},
+	{
+		usage: "lp status | lp watch",
+		does: "connection and queue; the background session streamer"
 	},
 	{
 		usage: "lp mcp",
 		does: "the optional MCP server (stdio)"
 	},
 	{
-		usage: "lp uninstall",
+		usage: "lp uninstall [--dry-run] [--agent <id>]",
 		does: "remove every LogicPacks block, rules file, hook and MCP registration"
 	}
 ];
-const pad = (text, width) => text.padEnd(width);
+const pad$1 = (text, width) => text.padEnd(width);
 const agentsHelp = () => {
 	const width = Math.max(...AGENT_COMMANDS.map((command) => command.usage.length)) + 2;
 	return [
 		"LogicPacks for agents. Every command prints readable text; add --json for machine output.",
 		"",
-		...AGENT_COMMANDS.map((command) => `  ${pad(command.usage, width)}${command.does}`),
+		...AGENT_COMMANDS.map((command) => `  ${pad$1(command.usage, width)}${command.does}`),
 		"",
 		`Setup guide: ${SETUP_URL}`
 	].join("\n");
+};
+// src/fileOps.ts
+const pad = (value) => String(value).padStart(2, "0");
+const backupStamp = (at) => `${at.getFullYear()}${pad(at.getMonth() + 1)}${pad(at.getDate())}-${pad(at.getHours())}${pad(at.getMinutes())}${pad(at.getSeconds())}`;
+let current = null;
+/** Starts collecting changes; with `dryRun`, nothing is written until the session ends. */
+const beginFileSession = (dryRun, at = /* @__PURE__ */ new Date()) => {
+	current = {
+		dryRun,
+		stamp: backupStamp(at),
+		changes: [],
+		backups: [],
+		commands: []
+	};
+	return current;
+};
+const endFileSession = () => {
+	const session = current;
+	current = null;
+	return session;
+};
+const isDryRun = () => current?.dryRun === true;
+const readOrNull = (file) => {
+	try {
+		return NodeFS.readFileSync(file, "utf8");
+	} catch {
+		return null;
+	}
+};
+/** In a dry run, what a file holds after the changes planned so far. */
+const readPlanned = (file) => {
+	if (current?.dryRun) for (let index = current.changes.length - 1; index >= 0; index -= 1) {
+		const change = current.changes[index];
+		if (change.file === file) return change.after;
+	}
+	return readOrNull(file);
+};
+const backedUp = /* @__PURE__ */ new Set();
+/** Copies `file` next to itself once per session; returns the copy's path. */
+const backup = (file, stamp) => {
+	const key = `${stamp}\0${file}`;
+	if (backedUp.has(key)) return null;
+	backedUp.add(key);
+	let target = `${file}.lp-backup-${stamp}`;
+	for (let n = 2; NodeFS.existsSync(target); n += 1) target = `${file}.lp-backup-${stamp}-${n}`;
+	NodeFS.copyFileSync(file, target);
+	return target;
+};
+/**
+* Writes `after` to `file` (null deletes it). Unchanged content is not written. Outside a
+* session the write still backs up an existing file first.
+*/
+const commitFile = (file, after, mode) => {
+	const before = current?.dryRun ? readPlanned(file) : readOrNull(file);
+	if (before === after) return false;
+	current?.changes.push({
+		file,
+		before,
+		after
+	});
+	if (current?.dryRun) return true;
+	if (before !== null) {
+		const copy = backup(file, current?.stamp ?? backupStamp(/* @__PURE__ */ new Date()));
+		if (copy !== null) current?.backups.push(copy);
+	}
+	if (after === null) {
+		NodeFS.rmSync(file, { force: true });
+		return true;
+	}
+	NodeFS.mkdirSync(NodePath.dirname(file), { recursive: true });
+	const fileMode = before !== null ? NodeFS.statSync(file).mode & 511 : mode ?? 420;
+	const temp = `${file}.lp-${process.pid}.tmp`;
+	NodeFS.writeFileSync(temp, after, { mode: fileMode });
+	NodeFS.renameSync(temp, file);
+	return true;
+};
+/** Runs a side effect, or in a dry run lists it. */
+const runOrList = (description, run, dryValue) => {
+	if (current?.dryRun) {
+		current.commands.push(description);
+		return dryValue;
+	}
+	return run();
+};
+const splitLines = (text) => {
+	if (text === null || text.length === 0) return [];
+	const lines = text.split("\n");
+	if (lines[lines.length - 1] === "") lines.pop();
+	return lines;
+};
+const lineOps = (a, b) => {
+	let start = 0;
+	while (start < a.length && start < b.length && a[start] === b[start]) start += 1;
+	let endA = a.length;
+	let endB = b.length;
+	while (endA > start && endB > start && a[endA - 1] === b[endB - 1]) {
+		endA -= 1;
+		endB -= 1;
+	}
+	const midA = a.slice(start, endA);
+	const midB = b.slice(start, endB);
+	const ops = a.slice(0, start).map((line) => ({
+		kind: " ",
+		line
+	}));
+	if (midA.length * midB.length > 4e6) {
+		ops.push(...midA.map((line) => ({
+			kind: "-",
+			line
+		})));
+		ops.push(...midB.map((line) => ({
+			kind: "+",
+			line
+		})));
+	} else {
+		const rows = midA.length + 1;
+		const cols = midB.length + 1;
+		const table = new Uint32Array(rows * cols);
+		for (let i = midA.length - 1; i >= 0; i -= 1) for (let j = midB.length - 1; j >= 0; j -= 1) table[i * cols + j] = midA[i] === midB[j] ? table[(i + 1) * cols + j + 1] + 1 : Math.max(table[(i + 1) * cols + j], table[i * cols + j + 1]);
+		let i = 0;
+		let j = 0;
+		while (i < midA.length && j < midB.length) if (midA[i] === midB[j]) {
+			ops.push({
+				kind: " ",
+				line: midA[i]
+			});
+			i += 1;
+			j += 1;
+		} else if (table[(i + 1) * cols + j] >= table[i * cols + j + 1]) {
+			ops.push({
+				kind: "-",
+				line: midA[i]
+			});
+			i += 1;
+		} else {
+			ops.push({
+				kind: "+",
+				line: midB[j]
+			});
+			j += 1;
+		}
+		while (i < midA.length) ops.push({
+			kind: "-",
+			line: midA[i++]
+		});
+		while (j < midB.length) ops.push({
+			kind: "+",
+			line: midB[j++]
+		});
+	}
+	ops.push(...a.slice(endA).map((line) => ({
+		kind: " ",
+		line
+	})));
+	return ops;
+};
+/** A unified diff (3 lines of context), as `diff -u` prints it. */
+const unifiedDiff = (change, context = 3) => {
+	const a = splitLines(change.before);
+	const b = splitLines(change.after);
+	const ops = lineOps(a, b);
+	const header = [`--- ${change.before === null ? "/dev/null" : change.file}`, `+++ ${change.after === null ? "/dev/null" : change.file}`];
+	const hunks = [];
+	let index = 0;
+	while (index < ops.length) {
+		if (ops[index].kind === " ") {
+			index += 1;
+			continue;
+		}
+		let from = Math.max(0, index - context);
+		let to = index;
+		for (let cursor = index; cursor < ops.length; cursor += 1) if (ops[cursor].kind !== " ") to = cursor;
+		else if (cursor - to > context * 2) break;
+		const end = Math.min(ops.length, to + context + 1);
+		let lineA = 1;
+		let lineB = 1;
+		for (let cursor = 0; cursor < from; cursor += 1) {
+			if (ops[cursor].kind !== "+") lineA += 1;
+			if (ops[cursor].kind !== "-") lineB += 1;
+		}
+		const slice = ops.slice(from, end);
+		const countA = slice.filter((op) => op.kind !== "+").length;
+		const countB = slice.filter((op) => op.kind !== "-").length;
+		hunks.push(`@@ -${countA === 0 ? lineA - 1 : lineA},${countA} +${countB === 0 ? lineB - 1 : lineB},${countB} @@`, ...slice.map((op) => `${op.kind}${op.line}`));
+		index = end;
+		from = end;
+	}
+	return [...header, ...hunks].join("\n");
+};
+/** What a dry run prints: one diff per file, then the commands it would run. */
+const describeSession = (session) => {
+	const parts = [];
+	if (session.changes.length === 0 && session.commands.length === 0) return "Nothing would change.";
+	for (const change of session.changes) parts.push(unifiedDiff(change));
+	if (session.commands.length > 0) parts.push(["It would also run:", ...session.commands.map((command) => `  ${command}`)].join("\n"));
+	return parts.join("\n\n");
+};
+const describeBackups = (session) => session.backups.length === 0 ? "" : ["Backups of the files changed:", ...session.backups.map((file) => `  ${file}`)].join("\n");
+// src/globalBlock.ts
+const MARKDOWN_MARKERS = {
+	start: "<!-- logicpacks:start -->",
+	end: "<!-- logicpacks:end -->"
+};
+const YAML_MARKERS = {
+	start: "# logicpacks:start",
+	end: "# logicpacks:end"
+};
+/**
+* Adds, replaces (`body`) or removes (`null`) the marked block. Appending always adds exactly
+* one newline before the block, and removal takes exactly that one back, so the original
+* comes back byte for byte whether or not it ended with a newline.
+*/
+const withMarkedBlock = (text, body, markers) => {
+	assertBalanced(text, markers);
+	const start = text.indexOf(markers.start);
+	const end = start < 0 ? -1 : text.indexOf(markers.end, start);
+	if (start >= 0 && end >= 0) {
+		const tail = end + markers.end.length;
+		if (body !== null) return `${text.slice(0, start)}${markers.start}\n${body}\n${text.slice(end)}`;
+		let from = start;
+		let to = tail;
+		if (text[to] === "\n") to += 1;
+		if (from >= 1 && text[from - 1] === "\n") from -= 1;
+		return `${text.slice(0, from)}${text.slice(to)}`;
+	}
+	if (body === null) return text;
+	const block = `${markers.start}\n${body}\n${markers.end}\n`;
+	if (text.length === 0) return block;
+	return `${text}\n${block}`;
+};
+const count = (text, needle) => text.split(needle).length - 1;
+/** Markers we cannot pair safely; the caller refuses to write. */
+var UnbalancedMarkersError = class extends Error {};
+/**
+* One start marker followed by one end marker, or neither. Anything else (a lone marker, two
+* blocks, end before start) means someone edited by hand: we refuse rather than guess.
+*/
+const assertBalanced = (text, markers, file = "The file") => {
+	const starts = count(text, markers.start);
+	const ends = count(text, markers.end);
+	if (starts === 0 && ends === 0) return;
+	if (starts !== 1 || ends !== 1 || text.indexOf(markers.end) < text.indexOf(markers.start)) throw new UnbalancedMarkersError(`${file} has unbalanced LogicPacks markers (${starts} start, ${ends} end). Fix or remove them by hand; nothing was changed.`);
+};
+const hasMarkedBlock = (text, markers) => {
+	const start = text.indexOf(markers.start);
+	return start >= 0 && text.indexOf(markers.end, start) >= 0;
+};
+/** Puts (`body`) or takes out (`null`) the block in `file`. */
+const writeBlockFile = (file, body, markers, created) => {
+	const before = readPlanned(file);
+	if (before === null) {
+		if (body === null) return "absent";
+		commitFile(file, withMarkedBlock("", body, markers));
+		created.add(file);
+		return "added";
+	}
+	assertBalanced(before, markers, file);
+	const had = hasMarkedBlock(before, markers);
+	const after = withMarkedBlock(before, body, markers);
+	if (after === before) return body === null ? "absent" : "unchanged";
+	if (body === null && after === "" && created.has(file)) {
+		commitFile(file, null);
+		created.remove(file);
+		return "removed";
+	}
+	commitFile(file, after);
+	if (body === null) return "removed";
+	return had ? "updated" : "added";
+};
+/** The first line of a file LogicPacks owns outright; we never delete a file without it. */
+const OWN_FILE_MARK = "<!-- logicpacks: this file is managed by `lp setup`; lp uninstall removes it -->";
+const ownFileText = (body, frontmatter = "") => `${frontmatter}${OWN_FILE_MARK}\n${body}\n`;
+/** Writes or removes a rules file of our own (Cline, Roo, Kiro, Cursor .mdc). */
+const writeOwnFile = (file, text) => {
+	const current = readPlanned(file);
+	if (text === null) {
+		if (current === null) return "absent";
+		if (!current.includes("<!-- logicpacks: this file is managed by `lp setup`; lp uninstall removes it -->")) throw new Error(`${file} was not written by LogicPacks; left it unchanged.`);
+		commitFile(file, null);
+		return "removed";
+	}
+	if (current !== null) {
+		if (!current.includes("<!-- logicpacks: this file is managed by `lp setup`; lp uninstall removes it -->")) throw new Error(`${file} already exists and is not LogicPacks'; left it unchanged.`);
+		if (current === text) return "unchanged";
+		commitFile(file, text);
+		return "updated";
+	}
+	commitFile(file, text);
+	return "added";
+};
+/**
+* Aider: a marked `read:` entry in ~/.aider.conf.yml. When the file already has a top-level
+* `read:` key we cannot add a second one, so we refuse and say what to add by hand.
+*/
+const withYamlRead = (text, rulesFile) => {
+	if (rulesFile === null) return withMarkedBlock(text, null, YAML_MARKERS);
+	const withoutOurs = withMarkedBlock(text, null, YAML_MARKERS);
+	if (/^read\s*:/m.test(withoutOurs)) throw new Error(`It already has a read: list. Add ${JSON.stringify(rulesFile)} to it yourself.`);
+	return withMarkedBlock(text, `read: [${JSON.stringify(rulesFile)}]`, YAML_MARKERS);
 };
 // src/store.ts
 /** Everything the helper keeps lives here; LP_HELPER_HOME moves it (tests, several accounts). */
@@ -843,16 +1163,12 @@ const codexConfigFile = () => NodePath.join(codexHome(), "config.toml");
 /** Edits Codex's config.toml in place (write-then-rename). Returns the file, or null when nothing changed. */
 const writeCodexMcp = (launch) => {
 	const file = codexConfigFile();
-	const exists = NodeFS.existsSync(file);
-	if (!exists && launch === null) return null;
-	const before = exists ? NodeFS.readFileSync(file, "utf8") : "";
+	const current = readPlanned(file);
+	if (current === null && launch === null) return null;
+	const before = current ?? "";
 	const after = withCodexMcp(before, launch);
 	if (after === before) return null;
-	NodeFS.mkdirSync(NodePath.dirname(file), { recursive: true });
-	const temp = `${file}.lp-${process.pid}.tmp`;
-	const mode = exists ? NodeFS.statSync(file).mode & 511 : 384;
-	NodeFS.writeFileSync(temp, after, { mode });
-	NodeFS.renameSync(temp, file);
+	commitFile(file, after, 384);
 	return file;
 };
 const codexMcpInstalled = () => {
@@ -881,17 +1197,18 @@ const withClaudeMcp = (settings, launch) => {
 /** Adds or removes the user-scope `logicpacks` MCP server. Refuses a file it cannot parse. */
 const writeClaudeMcp = (launch) => {
 	const file = claudeUserConfigFile();
-	if (!NodeFS.existsSync(file)) {
+	const before = readPlanned(file);
+	if (before === null) {
 		if (launch === null) return null;
-		writeJson(file, withClaudeMcp({}, launch), 384);
+		commitFile(file, `${JSON.stringify(withClaudeMcp({}, launch), null, 2)}\n`, 384);
 		return file;
 	}
-	const parsed = asRecord(JSON.parse(NodeFS.readFileSync(file, "utf8")));
+	const parsed = asRecord(JSON.parse(before));
 	if (parsed === null) throw new Error(`${file} is not a JSON object; left it unchanged.`);
 	const had = asRecord(parsed.mcpServers)?.[MCP_NAME] !== void 0;
 	if (launch === null && !had) return null;
-	writeJson(file, withClaudeMcp(parsed, launch), NodeFS.statSync(file).mode & 511);
-	return file;
+	const after = `${JSON.stringify(withClaudeMcp(parsed, launch), null, 2)}\n`;
+	return commitFile(file, after) ? file : null;
 };
 const AGENTS_START = "<!-- logicpacks:start -->";
 const AGENTS_END = "<!-- logicpacks:end -->";
@@ -908,6 +1225,7 @@ const agentsBlockBody = (projectTitle) => [
 ].join("\n");
 /** Writes (`body`) or removes (`null`) the marked block, leaving the rest of the file untouched. */
 const withAgentsBlock = (text, body) => {
+	assertBalanced(text, MARKDOWN_MARKERS, "AGENTS.md");
 	const start = text.indexOf(AGENTS_START);
 	const end = start < 0 ? -1 : text.indexOf(AGENTS_END, start);
 	if (start >= 0 && end >= 0) {
@@ -928,16 +1246,12 @@ const withAgentsBlock = (text, body) => {
 /** Keeps `<folder>/AGENTS.md` in step. Returns the file when it changed. */
 const writeAgentsBlock = (folder, body) => {
 	const file = NodePath.join(folder, "AGENTS.md");
-	const exists = NodeFS.existsSync(file);
-	if (!exists && body === null) return null;
-	const before = exists ? NodeFS.readFileSync(file, "utf8") : "";
+	const current = readPlanned(file);
+	if (current === null && body === null) return null;
+	const before = current ?? "";
 	const after = withAgentsBlock(before, body);
 	if (after === before) return null;
-	if (after === "" && body === null) {
-		NodeFS.rmSync(file);
-		return file;
-	}
-	NodeFS.writeFileSync(file, after);
+	commitFile(file, after === "" && body === null ? null : after);
 	return file;
 };
 // src/client.ts
@@ -1023,6 +1337,150 @@ const gitInfo = (cwd) => {
 	gitCache.set(cwd, info);
 	return info;
 };
+// src/app.ts
+/**
+* `lp app`: semantic ops on the apps the host shares (Blender, DaVinci Resolve,
+* any macOS app). Every op lands in the project's action log under your agent's
+* name. Ops that change something need the host, or control granted by the host.
+*/
+const say$1 = (line) => {
+	process.stdout.write(`${line}\n`);
+};
+const APP_HELP = `lp app: work in the apps shared on the host (Blender, DaVinci Resolve, any app).
+
+  lp app ops                         every op, and what is shared right now
+  lp app run <op> [args...]          run one, e.g. lp app run blender.move Vase z 1.24
+  lp app log                         the project's action log
+  options: --project <id> (default: this folder's project), --agent <name>, --json, --no-snapshot
+`;
+const takeFlag = (args, name, hasValue = true) => {
+	const index = args.indexOf(`--${name}`);
+	if (index < 0) return null;
+	const value = hasValue ? args[index + 1] ?? null : true;
+	args.splice(index, hasValue ? 2 : 1);
+	return value;
+};
+async function appCommand(input) {
+	const args = [...input];
+	const sub = args.shift() ?? "help";
+	const projectId = takeFlag(args, "project");
+	const agent = takeFlag(args, "agent");
+	const asJson = takeFlag(args, "json", false) === true;
+	const noSnapshot = takeFlag(args, "no-snapshot", false) === true;
+	const config = loadConfig();
+	const cwd = process.cwd();
+	const git = gitInfo(cwd);
+	const target = typeof projectId === "string" ? { projectId } : { location: {
+		cwd,
+		gitRoot: git.root,
+		gitRemote: git.remote
+	} };
+	const query = typeof projectId === "string" ? `projectId=${encodeURIComponent(projectId)}` : `cwd=${encodeURIComponent(git.root ?? cwd)}`;
+	switch (sub) {
+		case "ops": {
+			const out = await callHost(config, `/api/lp/apps/ops?${query}`);
+			if (asJson) return say$1(JSON.stringify(out, null, 2));
+			if (out.guide) say$1(`${out.guide}\n`);
+			say$1(out.shared ? `Shared now: ${out.shared.appName} (${out.shared.title})${out.shared.recipeId ? `, recipe ${out.shared.recipeId}` : ""}` : "Nothing is shared right now. The host picks an app with Share an app.");
+			say$1(out.canControl ? "You can run every op." : "You can run read-only ops. Ops marked * need control from the host.");
+			let group = "";
+			for (const op of out.ops) {
+				if (op.app !== group) {
+					group = op.app;
+					say$1(`\n${group === "any" ? "Any app" : group === "blender" ? "Blender" : "DaVinci Resolve"}`);
+				}
+				say$1(`  ${op.mutates ? "*" : " "} ${op.usage.padEnd(52)} ${op.summary}`);
+			}
+			return;
+		}
+		case "run": {
+			const op = args.shift();
+			if (!op) return say$1("Usage: lp app run <op> [args...]. See lp app ops.");
+			const out = await callHost(config, "/api/lp/apps/run", {
+				body: {
+					...target,
+					op,
+					args,
+					...typeof agent === "string" ? { agent } : {},
+					...noSnapshot ? { noSnapshot: true } : {}
+				},
+				timeoutMs: 18e4
+			});
+			if (asJson) return say$1(JSON.stringify(out, null, 2));
+			if (out.autoSnapshot) say$1(`Snapshot first: ${out.autoSnapshot}`);
+			say$1(`${out.entry.actor}: ${out.entry.op} ${out.entry.detail}`.trim());
+			if (out.result !== void 0) say$1(JSON.stringify(out.result, null, 2));
+			return;
+		}
+		case "log":
+			if (typeof projectId !== "string") return printLog(config, (await callHost(config, `/api/lp/apps/ops?${query}`)).projectId, asJson);
+			return printLog(config, projectId, asJson);
+		default: return say$1(APP_HELP);
+	}
+}
+async function printLog(config, projectId, asJson) {
+	const out = await callHost(config, `/api/lp/apps/log?projectId=${encodeURIComponent(projectId)}`);
+	if (asJson) return say$1(JSON.stringify(out, null, 2));
+	if (out.entries.length === 0) return say$1("No actions yet.");
+	for (const entry of out.entries) say$1(`${new Date(entry.atMs).toLocaleTimeString()}  ${entry.actor}: ${entry.op} ${entry.detail}${entry.ok ? "" : "  (failed)"}`);
+}
+// src/clone.ts
+/** Finds the project someone named: its id, `owner/name`, or its title (any case). */
+const pickProject = (projects, wanted) => {
+	const needle = wanted.trim().toLowerCase();
+	const exact = projects.filter((project) => project.projectId.toLowerCase() === needle || project.githubRepo?.toLowerCase() === needle || project.title.trim().toLowerCase() === needle);
+	if (exact.length === 1) return exact[0];
+	if (exact.length > 1) return { error: `More than one project is called "${wanted}". Use its id: ${exact.map((project) => project.projectId).join(", ")}` };
+	const names = projects.map((project) => `  ${project.title}  (${project.projectId})`).join("\n");
+	return { error: `No project "${wanted}" here.${names ? ` Your projects:\n${names}` : " No projects are shared with you yet."}` };
+};
+/** The folder a clone lands in: the repository name, else the title, made path-safe. */
+const cloneFolderName = (project) => {
+	return (project.githubRepo?.split("/")[1] ?? project.title).trim().replace(/[^A-Za-z0-9._-]+/g, "-").replace(/^[-.]+|-+$/g, "").slice(0, 80) || "project";
+};
+/** "within 2 minutes", "within 20 seconds". */
+const syncDelayText = (seconds) => {
+	if (!seconds || seconds <= 0) return "after the next sync";
+	const minutes = Math.ceil(seconds / 60);
+	return seconds < 60 ? `within ${seconds} seconds` : `within ${minutes} minute${minutes === 1 ? "" : "s"}`;
+};
+/**
+* `lp clone <project> [folder]`: clones the project's repository (GitHub, or whatever remote
+* the host syncs with) and returns the folder. The helper then links it like `lp link`.
+* A project with no repository yet cannot be cloned: it is synced from the app first.
+*/
+const cloneProject = async (input) => {
+	const list = await callHost(input.config, "/api/lp/helper/projects");
+	const picked = pickProject(list.projects, input.wanted);
+	if ("error" in picked) {
+		input.say(picked.error);
+		return null;
+	}
+	if (picked.cloneUrl === null) {
+		input.say(`"${picked.title}" is only on the host so far. Press Sync on it in LogicPacks to put it on GitHub, then run lp clone again. Or download a zip from the web app.`);
+		return null;
+	}
+	const folder = NodePath.resolve(input.cwd, input.folder ?? cloneFolderName(picked));
+	if (NodeFS.existsSync(folder) && NodeFS.readdirSync(folder).length > 0) {
+		input.say(`${folder} already exists and is not empty. Name another folder: lp clone ${input.wanted} <folder>`);
+		return null;
+	}
+	input.say(`Cloning ${picked.githubRepo ?? picked.cloneUrl} into ${folder}`);
+	if (NodeChildProcess.spawnSync("git", [
+		"clone",
+		...picked.branch ? ["--branch", picked.branch] : [],
+		picked.cloneUrl,
+		folder
+	], { stdio: "inherit" }).status !== 0) {
+		input.say(picked.githubRepo ? `git clone failed. Ask the project owner to add your GitHub account to ${picked.githubRepo}, and check gh auth status.` : "git clone failed.");
+		return null;
+	}
+	return {
+		folder,
+		project: picked,
+		...list.syncSeconds ? { syncSeconds: list.syncSeconds } : {}
+	};
+};
 // src/daemon.ts
 const LABEL = "io.logicpacks.helper";
 const run = (command, args) => NodeChildProcess.spawnSync(command, args, {
@@ -1047,9 +1505,8 @@ const installWatcher = (script) => {
 	const env = process.env.LP_HELPER_HOME ? { LP_HELPER_HOME: process.env.LP_HELPER_HOME } : {};
 	if (process.platform === "darwin") {
 		const file = launchAgentFile();
-		NodeFS.mkdirSync(NodePath.dirname(file), { recursive: true });
 		const envXml = Object.entries(env).map(([key, value]) => `<key>${xml(key)}</key><string>${xml(value)}</string>`).join("");
-		NodeFS.writeFileSync(file, `<?xml version="1.0" encoding="UTF-8"?>
+		commitFile(file, `<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0"><dict>
 <key>Label</key><string>${LABEL}</string>
@@ -1063,37 +1520,48 @@ const installWatcher = (script) => {
 </dict></plist>
 `);
 		const domain = `gui/${process.getuid?.() ?? 501}`;
-		run("launchctl", ["bootout", `${domain}/${LABEL}`]);
-		const loaded = run("launchctl", [
-			"bootstrap",
-			domain,
-			file
-		]);
+		const loaded = runOrList(`launchctl bootout ${domain}/${LABEL}; launchctl bootstrap ${domain} ${file}`, () => {
+			run("launchctl", ["bootout", `${domain}/${LABEL}`]);
+			return run("launchctl", [
+				"bootstrap",
+				domain,
+				file
+			]);
+		}, {
+			status: 0,
+			stderr: ""
+		});
 		if (loaded.status !== 0) throw new Error(`launchctl: ${loaded.stderr.trim()}`);
 		return `launchd agent ${LABEL}`;
 	}
 	if (process.platform === "linux" && run("systemctl", ["--user", "--version"]).status === 0) {
 		const file = systemdUnitFile();
-		NodeFS.mkdirSync(NodePath.dirname(file), { recursive: true });
 		const envLines = Object.entries(env).map(([key, value]) => `Environment=${key}=${value}\n`).join("");
-		NodeFS.writeFileSync(file, `[Unit]\nDescription=LogicPacks helper\n\n[Service]\nExecStart="${process.execPath}" "${script}" watch\n${envLines}Restart=always\nRestartSec=5\n\n[Install]\nWantedBy=default.target\n`);
-		run("systemctl", ["--user", "daemon-reload"]);
-		const enabled = run("systemctl", [
-			"--user",
-			"enable",
-			"--now",
-			"logicpacks-helper.service"
-		]);
+		commitFile(file, `[Unit]\nDescription=LogicPacks helper\n\n[Service]\nExecStart="${process.execPath}" "${script}" watch\n${envLines}Restart=always\nRestartSec=5\n\n[Install]\nWantedBy=default.target\n`);
+		const enabled = runOrList("systemctl --user daemon-reload; systemctl --user enable --now logicpacks-helper.service", () => {
+			run("systemctl", ["--user", "daemon-reload"]);
+			return run("systemctl", [
+				"--user",
+				"enable",
+				"--now",
+				"logicpacks-helper.service"
+			]);
+		}, {
+			status: 0,
+			stderr: ""
+		});
 		if (enabled.status !== 0) throw new Error(`systemctl: ${enabled.stderr.trim()}`);
 		return "systemd user service logicpacks-helper";
 	}
 	if (process.platform === "win32") {
 		const file = startupFile();
-		NodeFS.mkdirSync(NodePath.dirname(file), { recursive: true });
 		const quote = (value) => `""${value}""`;
 		const envSet = Object.entries(env).map(([key, value]) => `env("${key}") = "${value}"\r\n`).join("");
-		NodeFS.writeFileSync(file, `Set shell = CreateObject("WScript.Shell")\r\nSet env = shell.Environment("Process")\r\n${envSet}shell.Run "${quote(process.execPath)} ${quote(script)} watch", 0, False\r\n`);
-		const started = run("wscript.exe", [file]);
+		commitFile(file, `Set shell = CreateObject("WScript.Shell")\r\nSet env = shell.Environment("Process")\r\n${envSet}shell.Run "${quote(process.execPath)} ${quote(script)} watch", 0, False\r\n`);
+		const started = runOrList(`wscript.exe "${file}"`, () => run("wscript.exe", [file]), {
+			status: 0,
+			stderr: ""
+		});
 		if (started.status !== 0) throw new Error(`wscript: ${started.stderr.trim()}`);
 		return `Startup launcher ${file}`;
 	}
@@ -1101,18 +1569,20 @@ const installWatcher = (script) => {
 };
 const uninstallWatcher = () => {
 	if (process.platform === "darwin") {
-		run("launchctl", ["bootout", `gui/${process.getuid?.() ?? 501}/${LABEL}`]);
-		NodeFS.rmSync(launchAgentFile(), { force: true });
+		const label = `gui/${process.getuid?.() ?? 501}/${LABEL}`;
+		runOrList(`launchctl bootout ${label}`, () => run("launchctl", ["bootout", label]), null);
+		commitFile(launchAgentFile(), null);
 	} else if (process.platform === "linux") {
-		run("systemctl", [
+		runOrList("systemctl --user disable --now logicpacks-helper.service", () => run("systemctl", [
 			"--user",
 			"disable",
 			"--now",
 			"logicpacks-helper.service"
-		]);
-		NodeFS.rmSync(systemdUnitFile(), { force: true });
+		]), null);
+		commitFile(systemdUnitFile(), null);
 	} else if (process.platform === "win32") {
-		NodeFS.rmSync(startupFile(), { force: true });
+		commitFile(startupFile(), null);
+		if (isDryRun()) return;
 		run("powershell.exe", [
 			"-NoProfile",
 			"-Command",
@@ -1366,7 +1836,7 @@ const modernItem = (item, at) => {
 			};
 		}
 		case "McpToolCall": {
-			const name = [asString(item.server), asString(item.tool)].filter(Boolean).join(".");
+			const name = `mcp__${asString(item.server) ?? "mcp"}__${asString(item.tool) ?? "tool"}`;
 			const result = asRecord(item.result);
 			const output = summarize(contentText(result?.content, ["text"]));
 			return {
@@ -1374,7 +1844,7 @@ const modernItem = (item, at) => {
 				at,
 				type: "tool",
 				tool: {
-					name: name || "mcp",
+					name,
 					kind: "other",
 					input: oneLine(JSON.stringify(item.arguments ?? {})),
 					status: item.status === "failed" ? "failed" : "completed",
@@ -1487,6 +1957,81 @@ const parseCodexLines = (lines, state) => {
 	}
 	return events;
 };
+// src/privacy.ts
+const REDACTED = "[redacted]";
+const SECRET_KEY = /(?:pass(?:word|wd|phrase)?|pwd|secret|token|api[_-]?key|apikey|access[_-]?key|private[_-]?key|client[_-]?secret|auth|credential|session[_-]?key|signing[_-]?key|bearer)/i;
+/** Token shapes that are secrets wherever they appear. */
+const TOKEN_PATTERNS = [
+	/-----BEGIN [A-Z0-9 ]*PRIVATE KEY-----[\s\S]*?(?:-----END [A-Z0-9 ]*PRIVATE KEY-----|$)/g,
+	/\bsk-(?:ant-|proj-|live-|test-)?[A-Za-z0-9_-]{16,}/g,
+	/\b(?:ghp|gho|ghu|ghs|ghr)_[A-Za-z0-9]{20,}/g,
+	/\bgithub_pat_[A-Za-z0-9_]{20,}/g,
+	/\bxox[abposr]-[A-Za-z0-9-]{10,}/g,
+	/\b(?:AKIA|ASIA)[A-Z0-9]{16}\b/g,
+	/\bAIza[0-9A-Za-z_-]{35}\b/g,
+	/\b(?:sk|rk|pk)_(?:live|test)_[A-Za-z0-9]{16,}/g,
+	/\bglpat-[A-Za-z0-9_-]{20,}/g,
+	/\bnpm_[A-Za-z0-9]{30,}/g,
+	/\bhf_[A-Za-z0-9]{30,}/g,
+	/\beyJ[A-Za-z0-9_-]{8,}\.eyJ[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}/g
+];
+/**
+* Redacts secrets in free text: known token shapes, credentials in connection strings,
+* `Authorization:` headers, and KEY=VALUE / key: value / "key": "value" pairs whose key
+* looks secret.
+*/
+const redactSecrets = (text) => {
+	let out = text;
+	for (const pattern of TOKEN_PATTERNS) out = out.replace(pattern, REDACTED);
+	out = out.replace(/\b([a-z][a-z0-9+.-]*:\/\/[^\s:/@]+):([^\s@/]+)@/gi, `$1:${REDACTED}@`);
+	out = out.replace(/\b(authorization\s*[:=]\s*)(?:(bearer|basic|token)\s+)?[^\s"']+/gi, (_, lead, scheme) => `${lead}${scheme ? `${scheme} ` : ""}${REDACTED}`);
+	out = out.replace(/(["']?)([A-Za-z_][A-Za-z0-9_.-]*)\1(\s*[:=]\s*)(["']?)([^\s"'`,;]+)\4/g, (match, quote, key, sep, valueQuote, value) => SECRET_KEY.test(key) && value !== "[redacted]" && !/^(?:bearer|basic|token)$/i.test(value) && !/^\$\{?[A-Za-z_]/.test(value) ? `${quote}${key}${quote}${sep}${valueQuote}${REDACTED}${valueQuote}` : match);
+	out = out.replace(/(--?(?:password|passwd|token|api-key|apikey|secret|client-secret)(?:=|\s+))([^\s"']+)/gi, `$1${REDACTED}`);
+	return out;
+};
+const SENSITIVE_FILE = /(?:^|[\\/])(?:\.env(?:\.[^\\/]*)?|[^\\/]+\.(?:pem|key|p12|pfx|keystore|jks)|id_[a-z0-9_]+(?:\.pub)?|\.netrc|\.pgpass|\.npmrc|credentials(?:\.json)?)$|(?:^|[\\/])\.ssh[\\/]|(?:^|[\\/])\.aws[\\/]credentials$/i;
+/** .env*, *.pem, *.key, id_* and anything under .ssh: their content is never streamed. */
+const isSensitivePath = (path) => SENSITIVE_FILE.test(path.trim());
+/** Claude Code names MCP tools mcp__<server>__<tool>; the Codex parser does the same. */
+const mcpToolName = (name) => {
+	const match = /^mcp__(.+?)__(.+)$/.exec(name);
+	return match ? `${match[1]}.${match[2]}` : null;
+};
+const scrubTool = (tool, options) => {
+	const mcp = mcpToolName(tool.name);
+	if (mcp !== null && !options.mcpDetails) return {
+		name: `mcp: ${mcp}`,
+		kind: "other",
+		input: "",
+		status: tool.status
+	};
+	if ([...tool.files ?? [], ...tool.input.split(/\s+/).map((word) => word.replace(/^["']|["']$/g, ""))].some(isSensitivePath)) {
+		const { output: _output, ...rest } = tool;
+		return {
+			...rest,
+			name: mcp === null ? tool.name : `mcp: ${mcp}`,
+			input: `${tool.input.split(/\s/)[0] ?? ""} (secret file, content not shared)`.trim()
+		};
+	}
+	return {
+		...tool,
+		name: mcp === null ? tool.name : `mcp: ${mcp}`,
+		input: redactSecrets(tool.input),
+		...tool.output === void 0 ? {} : { output: redactSecrets(tool.output) }
+	};
+};
+/** The event as it may leave this computer. */
+const scrubEvent = (event, options) => {
+	if (event.tool !== void 0) return {
+		...event,
+		tool: scrubTool(event.tool, options)
+	};
+	if (event.text !== void 0) return {
+		...event,
+		text: redactSecrets(event.text)
+	};
+	return event;
+};
 // src/sync.ts
 const BATCH_SIZE = 200;
 const MAX_READ_BYTES = 8388608;
@@ -1597,7 +2142,7 @@ const syncTranscript = async (file, source, config, now = Date.now()) => {
 			branch: parser.meta.branch ?? git.branch,
 			model: parser.meta.model,
 			device: config.device,
-			events: chunk
+			events: chunk.map((event) => scrubEvent(event, { mcpDetails: (config.mcpDetails ?? []).includes(git.root ?? cwd) }))
 		});
 		const chunks = [];
 		for (let index = 0; index < events.length; index += BATCH_SIZE) chunks.push(events.slice(index, index + BATCH_SIZE));
@@ -1748,14 +2293,14 @@ const settingsFile = () => NodePath.join(claudeHome(), "settings.json");
 const writeClaudeHooks = (lpPath) => {
 	const file = settingsFile();
 	let settings = {};
-	if (NodeFS.existsSync(file)) {
-		const parsed = asRecord(JSON.parse(NodeFS.readFileSync(file, "utf8")));
+	const before = readPlanned(file);
+	if (before !== null) {
+		const parsed = asRecord(JSON.parse(before));
 		if (parsed === null) throw new Error(`${file} is not a JSON object; left it unchanged.`);
 		settings = parsed;
-		const backup = `${file}.before-logicpacks`;
-		if (!NodeFS.existsSync(backup)) NodeFS.copyFileSync(file, backup);
 	}
-	writeJson(file, withHelperHooks(settings, lpPath), 420);
+	if (before === null && lpPath === null) return file;
+	commitFile(file, `${JSON.stringify(withHelperHooks(settings, lpPath), null, 2)}\n`, 420);
 	return file;
 };
 const claudeHooksInstalled = () => {
@@ -1938,101 +2483,6 @@ const formatAgents = (agents, ownThreadId, nowMs) => {
 		return `${who}${agent.threadId === ownThreadId ? " (you)" : ""} via ${agent.harness}${where}, ${agent.status}, ${ago(agent.lastActiveAtMs, nowMs)}${task}${files}\n    thread ${agent.threadId}`;
 	}).join("\n");
 };
-// src/globalBlock.ts
-const MARKDOWN_MARKERS = {
-	start: "<!-- logicpacks:start -->",
-	end: "<!-- logicpacks:end -->"
-};
-const YAML_MARKERS = {
-	start: "# logicpacks:start",
-	end: "# logicpacks:end"
-};
-/**
-* Adds, replaces (`body`) or removes (`null`) the marked block. Appending always adds exactly
-* one newline before the block, and removal takes exactly that one back, so the original
-* comes back byte for byte whether or not it ended with a newline.
-*/
-const withMarkedBlock = (text, body, markers) => {
-	const start = text.indexOf(markers.start);
-	const end = start < 0 ? -1 : text.indexOf(markers.end, start);
-	if (start >= 0 && end >= 0) {
-		const tail = end + markers.end.length;
-		if (body !== null) return `${text.slice(0, start)}${markers.start}\n${body}\n${text.slice(end)}`;
-		let from = start;
-		let to = tail;
-		if (text[to] === "\n") to += 1;
-		if (from >= 1 && text[from - 1] === "\n") from -= 1;
-		return `${text.slice(0, from)}${text.slice(to)}`;
-	}
-	if (body === null) return text;
-	const block = `${markers.start}\n${body}\n${markers.end}\n`;
-	if (text.length === 0) return block;
-	return `${text}\n${block}`;
-};
-const hasMarkedBlock = (text, markers) => {
-	const start = text.indexOf(markers.start);
-	return start >= 0 && text.indexOf(markers.end, start) >= 0;
-};
-const writeAtomically = (file, text) => {
-	NodeFS.mkdirSync(NodePath.dirname(file), { recursive: true });
-	const mode = NodeFS.existsSync(file) ? NodeFS.statSync(file).mode & 511 : 420;
-	const temp = `${file}.lp-${process.pid}.tmp`;
-	NodeFS.writeFileSync(temp, text, { mode });
-	NodeFS.renameSync(temp, file);
-};
-/** Puts (`body`) or takes out (`null`) the block in `file`. */
-const writeBlockFile = (file, body, markers, created) => {
-	if (!NodeFS.existsSync(file)) {
-		if (body === null) return "absent";
-		writeAtomically(file, withMarkedBlock("", body, markers));
-		created.add(file);
-		return "added";
-	}
-	const before = NodeFS.readFileSync(file, "utf8");
-	const had = hasMarkedBlock(before, markers);
-	const after = withMarkedBlock(before, body, markers);
-	if (after === before) return body === null ? "absent" : "unchanged";
-	if (body === null && after === "" && created.has(file)) {
-		NodeFS.rmSync(file);
-		created.remove(file);
-		return "removed";
-	}
-	writeAtomically(file, after);
-	if (body === null) return "removed";
-	return had ? "updated" : "added";
-};
-/** The first line of a file LogicPacks owns outright; we never delete a file without it. */
-const OWN_FILE_MARK = "<!-- logicpacks: this file is managed by `lp setup`; lp uninstall removes it -->";
-const ownFileText = (body, frontmatter = "") => `${frontmatter}${OWN_FILE_MARK}\n${body}\n`;
-/** Writes or removes a rules file of our own (Cline, Roo, Kiro, Cursor .mdc). */
-const writeOwnFile = (file, text) => {
-	const exists = NodeFS.existsSync(file);
-	if (text === null) {
-		if (!exists) return "absent";
-		if (!NodeFS.readFileSync(file, "utf8").includes("<!-- logicpacks: this file is managed by `lp setup`; lp uninstall removes it -->")) throw new Error(`${file} was not written by LogicPacks; left it unchanged.`);
-		NodeFS.rmSync(file);
-		return "removed";
-	}
-	if (exists) {
-		const current = NodeFS.readFileSync(file, "utf8");
-		if (!current.includes("<!-- logicpacks: this file is managed by `lp setup`; lp uninstall removes it -->")) throw new Error(`${file} already exists and is not LogicPacks'; left it unchanged.`);
-		if (current === text) return "unchanged";
-		writeAtomically(file, text);
-		return "updated";
-	}
-	writeAtomically(file, text);
-	return "added";
-};
-/**
-* Aider: a marked `read:` entry in ~/.aider.conf.yml. When the file already has a top-level
-* `read:` key we cannot add a second one, so we refuse and say what to add by hand.
-*/
-const withYamlRead = (text, rulesFile) => {
-	if (rulesFile === null) return withMarkedBlock(text, null, YAML_MARKERS);
-	const withoutOurs = withMarkedBlock(text, null, YAML_MARKERS);
-	if (/^read\s*:/m.test(withoutOurs)) throw new Error(`It already has a read: list. Add ${JSON.stringify(rulesFile)} to it yourself.`);
-	return withMarkedBlock(text, `read: [${JSON.stringify(rulesFile)}]`, YAML_MARKERS);
-};
 // src/setup.ts
 const stateFile = () => NodePath.join(helperHome(), "setup.json");
 const loadSetupState = () => {
@@ -2049,7 +2499,25 @@ const loadSetupState = () => {
 		};
 	}
 };
-const saveSetupState = (state) => writeJson(stateFile(), state);
+const saveSetupState = (state) => {
+	if (!isDryRun()) writeJson(stateFile(), state);
+};
+const isInside = (folder, path) => {
+	const relative = NodePath.relative(folder, path);
+	return relative.length > 0 && !relative.startsWith("..") && !NodePath.isAbsolute(relative);
+};
+/**
+* `--file` must not be an instructions file in a folder above this one (say /Users/me/.claude/
+* CLAUDE.md when the project lives under /Users/me): an agent sees those files as project
+* memory and may pick one by mistake. Only the resolved global path or a file in or under
+* the working folder (or outside its parents) is written.
+*/
+const checkExplicitFile = (file, cwd, allowed) => {
+	if (allowed.includes(file)) return;
+	let folder = NodePath.dirname(file);
+	if (NodePath.basename(folder).startsWith(".")) folder = NodePath.dirname(folder);
+	if (isInside(folder, cwd)) throw new Error(`Refusing to write ${file}: it is an instructions file in a folder above ${cwd}, not this harness's global file${allowed[0] ? ` (${allowed[0]})` : ""}. Run lp setup --agent <id> without --file.`);
+};
 const createdOf = (state) => ({
 	has: (file) => state.created.includes(file),
 	add: (file) => {
@@ -2117,6 +2585,10 @@ const runSetup = (options) => {
 	try {
 		if (options.file) {
 			const file = NodePath.resolve(options.cwd, options.file);
+			const allowed = [];
+			if (harness.global.kind === "block" || harness.global.kind === "file") allowed.push(resolveOsPath(harness.global.path, resolveOptions));
+			if (harness.project !== null) allowed.push(NodePath.join(options.cwd, harness.project.path));
+			checkExplicitFile(file, options.cwd, allowed);
 			changes.push(writeBlock(state, harness.id, file));
 		} else {
 			const target = harness.global;
@@ -2134,8 +2606,9 @@ const runSetup = (options) => {
 						file: rules,
 						outcome: writeOwnFile(rules, ownFileText(globalBlockBody()))
 					});
-					const exists = NodeFS.existsSync(config);
-					const before = exists ? NodeFS.readFileSync(config, "utf8") : "";
+					const current = readPlanned(config);
+					const exists = current !== null;
+					const before = current ?? "";
 					let after;
 					try {
 						after = withYamlRead(before, rules);
@@ -2143,8 +2616,7 @@ const runSetup = (options) => {
 						throw new Error(`${config}: ${error.message}`, { cause: error });
 					}
 					if (after !== before) {
-						NodeFS.mkdirSync(NodePath.dirname(config), { recursive: true });
-						NodeFS.writeFileSync(config, after);
+						commitFile(config, after);
 						if (!exists) createdOf(state).add(config);
 					}
 					remember(state, {
@@ -2200,14 +2672,14 @@ const runUninstall = (agent = null) => {
 						outcome: writeOwnFile(record.file, null)
 					}));
 					break;
-				case "yaml-read":
-					if (NodeFS.existsSync(record.file)) {
-						const before = NodeFS.readFileSync(record.file, "utf8");
+				case "yaml-read": {
+					const before = readPlanned(record.file);
+					if (before !== null) {
 						const after = withYamlRead(before, null);
 						if (after === "" && created.has(record.file)) {
-							NodeFS.rmSync(record.file);
+							commitFile(record.file, null);
 							created.remove(record.file);
-						} else if (after !== before) NodeFS.writeFileSync(record.file, after);
+						} else if (after !== before) commitFile(record.file, after);
 						lines.push(outcomeLine({
 							file: record.file,
 							outcome: after === before ? "absent" : "removed"
@@ -2217,6 +2689,8 @@ const runUninstall = (agent = null) => {
 						file: record.rulesFile,
 						outcome: writeOwnFile(record.rulesFile, null)
 					}));
+					break;
+				}
 			}
 		} catch (error) {
 			lines.push(error.message);
@@ -2231,6 +2705,10 @@ const runUninstall = (agent = null) => {
 /** Flags that never take a value, so `--json foo` keeps `foo` as a positional. */
 const BOOLEAN_FLAGS = /* @__PURE__ */ new Set([
 	"json",
+	"dry-run",
+	"yes",
+	"project-only",
+	"off",
 	"follow",
 	"all",
 	"workspace",
@@ -2481,6 +2959,44 @@ const projectsCommand = async (ctx) => {
 	const { projects } = await ctx.call(config, "/api/lp/projects");
 	return output(projects.length === 0 ? "No projects yet. Run lp share in a folder to share it." : projects.map((project) => `${project.title}  [${project.id}]  ${project.role}${project.synced ? ", synced" : ""}`).join("\n"), { projects });
 };
+const SCOPE_TEXT = {
+	project: "grants access to this project only",
+	workspace: "grants access to every project in the workspace"
+};
+/**
+* The project's own share link (only this project), switched on if it was off. Owners only;
+* null when the host has no project links or the caller does not own the project.
+*/
+const projectLink = async (ctx, config, projectId) => {
+	try {
+		const overview = await ctx.call(config, `/api/lp/shares?projectId=${encodeURIComponent(projectId)}`);
+		if (!overview.canManage) return null;
+		let link = overview.link;
+		if (link === null || !link.enabled) link = (await ctx.call(config, "/api/lp/shares/link", { body: {
+			projectId,
+			enabled: true
+		} })).link;
+		return new URL(link.path, config.server).toString();
+	} catch (error) {
+		if (error instanceof RejectedError && error.status === 401) throw error;
+		return null;
+	}
+};
+/** The link `lp share` and `lp invite` print: this project's by default, --workspace for all. */
+const scopedLink = async (ctx, config, args, project) => {
+	if (hasFlag(args, "workspace")) return {
+		link: await inviteLink(ctx, config, project.workspaceId),
+		scope: "workspace",
+		note: null
+	};
+	const link = await projectLink(ctx, config, project.projectId);
+	return {
+		link,
+		scope: "project",
+		note: link === null ? "Only the project's owner can make its invite link. Ask them, or add people by email: lp invite <email>." : null
+	};
+};
+const linkLine = (label, scoped) => scoped.link === null ? null : `${label} (${SCOPE_TEXT[scoped.scope]}): ${scoped.link}`;
 const inviteLink = async (ctx, config, workspaceId) => {
 	if (workspaceId === null) return null;
 	const { path } = await ctx.call(config, `/api/lp/workspaces/invite?workspaceId=${encodeURIComponent(workspaceId)}`);
@@ -2542,18 +3058,23 @@ const shareCommand = async (ctx, args) => {
 	});
 	steps.push(imported.kind === "imported" ? `Registered "${title}" on ${config.server}.` : `"${title}" was already on ${config.server}.`);
 	const project = await ctx.call(config, `/api/lp/connect/project?projectId=${encodeURIComponent(imported.projectId)}`);
-	const link = await inviteLink(ctx, config, project.workspaceId);
+	const scoped = await scopedLink(ctx, config, args, {
+		projectId: imported.projectId,
+		workspaceId: project.workspaceId
+	});
 	const registration = await register(ctx, args).catch(() => null);
 	return output([
 		...steps,
-		link ? `Invite link: ${link}` : "This project is in no workspace, so it has no invite link yet.",
-		"Send the link to teammates, or add someone directly: lp invite <email or name>."
-	].join("\n"), {
+		linkLine("Invite link", scoped) ?? scoped.note ?? "No invite link.",
+		"Send the link to teammates, or add someone directly: lp invite <email or name>.",
+		scoped.scope === "project" ? "For every project in the workspace instead: lp invite --workspace." : ""
+	].filter(Boolean).join("\n"), {
 		ok: true,
 		projectId: imported.projectId,
 		title: project.title,
 		remote,
-		inviteLink: link,
+		inviteLink: scoped.link,
+		inviteScope: scoped.scope,
 		threadId: registration?.threadId ?? null
 	});
 };
@@ -2564,36 +3085,170 @@ const inviteCommand = async (ctx, args) => {
 	const config = signedIn(ctx);
 	const who = args.positionals.join(" ").trim();
 	const project = await currentProject(ctx, args);
-	const link = await inviteLink(ctx, config, project.workspaceId);
-	if (who.length === 0) return output(link ? `Invite link for ${project.projectTitle}: ${link}` : "No invite link.", {
-		inviteLink: link,
+	const workspace = hasFlag(args, "workspace") && project.workspaceId !== null;
+	const scoped = await scopedLink(ctx, config, args, project);
+	const scopeData = {
+		inviteLink: scoped.link,
+		inviteScope: scoped.scope,
 		projectId: project.projectId
-	});
-	try {
-		const added = await ctx.call(config, "/api/lp/members", { body: {
+	};
+	if (who.length === 0) return output(linkLine(`Invite link for ${project.projectTitle}`, scoped) ?? scoped.note ?? "No invite link.", scopeData);
+	if (!workspace) try {
+		const shared = await ctx.call(config, "/api/lp/shares", { body: {
 			projectId: project.projectId,
 			user: who
 		} });
-		return output(`Added ${added.member.user.displayName} to ${project.projectTitle}.${link ? `\nThey can also open: ${link}` : ""}`, {
+		if (shared.kind === "member" && shared.member) return output(`Added ${shared.member.user.displayName} to ${project.projectTitle} (this project only).`, {
+			ok: true,
+			added: shared.member.user,
+			...scopeData
+		});
+		const link = shared.invite ? new URL(shared.invite.path, config.server).toString() : null;
+		return output([`Invited ${shared.invite?.email ?? who} to ${project.projectTitle} (this project only)${shared.emailSent ? "; they got an email" : ""}.`, link ? `Their personal invite link: ${link}` : ""].filter(Boolean).join("\n"), {
+			ok: true,
+			added: null,
+			invited: shared.invite ?? null,
+			...scopeData
+		});
+	} catch (error) {
+		if (!(error instanceof RejectedError) || error.status !== 404) throw error;
+	}
+	try {
+		const added = await ctx.call(config, workspace ? "/api/lp/workspaces/members" : "/api/lp/members", { body: workspace ? {
+			workspaceId: project.workspaceId,
+			user: who
+		} : {
+			projectId: project.projectId,
+			user: who
+		} });
+		return output(`Added ${added.member.user.displayName} (${workspace ? "every project in the workspace" : "this project only"}).`, {
 			ok: true,
 			added: added.member.user,
-			inviteLink: link,
-			projectId: project.projectId
+			...scopeData
 		});
 	} catch (error) {
 		if (!(error instanceof RejectedError) || error.status === 403) throw error;
-		return output([
-			`${who} has no LogicPacks account yet (or none by that name). Send them this invite link:`,
-			`  ${link ?? "(no link: this project is in no workspace)"}`,
-			"When they open it and sign up, they join this project's workspace."
-		].join("\n"), {
+		return output([`${who} has no LogicPacks account yet (or none by that name).`, linkLine("Send them this invite link", scoped) ?? scoped.note ?? ""].filter(Boolean).join("\n"), {
 			ok: true,
 			added: null,
-			inviteLink: link,
-			projectId: project.projectId,
-			invitee: who
+			invitee: who,
+			...scopeData
 		});
 	}
+};
+const matchPerson = (rows, who) => {
+	const wanted = who.trim().toLowerCase();
+	const exact = rows.filter((row) => row.user.email.toLowerCase() === wanted || row.user.displayName.toLowerCase() === wanted || row.user.userId === who);
+	if (exact.length > 0) return exact;
+	return rows.filter((row) => row.user.displayName.toLowerCase().split(/\s+/)[0] === wanted);
+};
+/**
+* `lp remove <person>`: takes someone's access away. They leave this project, and the
+* workspace too (workspace members can open every project in it) unless --project-only.
+* --dry-run says what would be removed.
+*/
+const removeCommand = async (ctx, args) => {
+	const config = signedIn(ctx);
+	const who = args.positionals.join(" ").trim();
+	if (who.length === 0) return refuse("Usage: lp remove <email or name> [--project-only] [--dry-run]");
+	const project = await currentProject(ctx, args);
+	const { members } = await ctx.call(config, `/api/lp/members?projectId=${encodeURIComponent(project.projectId)}`);
+	let workspaceMembers = [];
+	if (project.workspaceId !== null && !hasFlag(args, "project-only")) workspaceMembers = (await ctx.call(config, `/api/lp/workspaces/members?workspaceId=${encodeURIComponent(project.workspaceId)}`).catch(() => ({ members: [] }))).members;
+	const inProject = matchPerson(members, who);
+	const inWorkspace = matchPerson(workspaceMembers, who);
+	const people = new Map([...inProject, ...inWorkspace].map((row) => [row.user.userId, row.user]));
+	if (people.size === 0) return refuse(`Nobody called ${who} is in ${project.projectTitle}. Run lp members.`);
+	if (people.size > 1) return refuse(`${who} matches ${[...people.values()].map((user) => `${user.displayName} <${user.email}>`).join(", ")}. Use their email.`);
+	const person = [...people.values()][0];
+	const steps = [];
+	const projectRow = inProject.find((row) => row.user.userId === person.userId);
+	const workspaceRow = inWorkspace.find((row) => row.user.userId === person.userId);
+	if (projectRow?.role === "owner" || workspaceRow?.role === "owner") return refuse(`${person.displayName} owns this project or workspace; an owner cannot be removed here.`);
+	if (projectRow) steps.push(`remove ${person.displayName} from the project ${project.projectTitle}`);
+	if (workspaceRow) steps.push(`remove ${person.displayName} from the workspace (every project in it)`);
+	if (hasFlag(args, "dry-run")) return output(`Would ${steps.join(", and ")}. Nothing changed.`, {
+		ok: true,
+		dryRun: true,
+		user: person,
+		steps
+	});
+	if (projectRow) await ctx.call(config, "/api/lp/members/remove", { body: {
+		projectId: project.projectId,
+		userId: person.userId
+	} });
+	if (workspaceRow) await ctx.call(config, "/api/lp/workspaces/members/remove", { body: {
+		workspaceId: project.workspaceId,
+		userId: person.userId
+	} });
+	const stillThere = hasFlag(args, "project-only") && project.workspaceId !== null;
+	return output([`Removed ${person.displayName}: ${steps.map((step) => step.replace(/^remove \S+( \S+)? from /, "")).join("; ")}.`, stillThere ? "If they are also a workspace member they can still open it: run without --project-only." : "Their agents can no longer read or write this project. Run lp revoke-invite if they still have the invite link."].join("\n"), {
+		ok: true,
+		removed: person,
+		steps
+	});
+};
+/**
+* `lp revoke-invite`: turns off this project's invite link and makes a new one (the old one stops
+* working). `--off` leaves it off; `<email>` cancels that person's pending invite;
+* `--workspace` resets the workspace link instead.
+*/
+const revokeInviteCommand = async (ctx, args) => {
+	const config = signedIn(ctx);
+	const project = await currentProject(ctx, args);
+	const email = args.positionals.join(" ").trim();
+	const dry = hasFlag(args, "dry-run");
+	if (hasFlag(args, "workspace")) {
+		if (project.workspaceId === null) return refuse("This project has no workspace invite link.");
+		if (dry) return output("Would turn off the workspace invite link and make a new one. Nothing changed.", {
+			ok: true,
+			dryRun: true
+		});
+		const { path } = await ctx.call(config, "/api/lp/workspaces/invite/reset", { body: { workspaceId: project.workspaceId } });
+		const link = new URL(path, config.server).toString();
+		return output(`The old workspace invite link no longer works. New link (${SCOPE_TEXT.workspace}): ${link}`, {
+			ok: true,
+			inviteLink: link,
+			inviteScope: "workspace"
+		});
+	}
+	if (email.length > 0) {
+		const invite = (await ctx.call(config, `/api/lp/shares?projectId=${encodeURIComponent(project.projectId)}`)).invites.find((entry) => entry.email.toLowerCase() === email.toLowerCase());
+		if (invite === void 0) return refuse(`No pending invite for ${email}.`);
+		if (dry) return output(`Would cancel the pending invite for ${invite.email}. Nothing changed.`, {
+			ok: true,
+			dryRun: true
+		});
+		await ctx.call(config, "/api/lp/shares/invites/revoke", { body: {
+			projectId: project.projectId,
+			inviteId: invite.inviteId
+		} });
+		return output(`Cancelled the pending invite for ${invite.email}; their link no longer works.`, {
+			ok: true,
+			revoked: invite.email
+		});
+	}
+	if (dry) return output(hasFlag(args, "off") ? "Would turn off this project's invite link. Nothing changed." : "Would turn off this project's invite link and make a new one. Nothing changed.", {
+		ok: true,
+		dryRun: true
+	});
+	if (hasFlag(args, "off")) {
+		await ctx.call(config, "/api/lp/shares/link", { body: {
+			projectId: project.projectId,
+			enabled: false
+		} });
+		return output("This project's invite link is off. lp invite turns a new one on.", {
+			ok: true,
+			inviteLink: null
+		});
+	}
+	const { link } = await ctx.call(config, "/api/lp/shares/link/reset", { body: { projectId: project.projectId } });
+	const url = new URL(link.path, config.server).toString();
+	return output(`The old invite link no longer works. New link (${SCOPE_TEXT.project}): ${url}`, {
+		ok: true,
+		inviteLink: url,
+		inviteScope: "project"
+	});
 };
 const joinCommand = async (ctx, args) => {
 	const config = signedIn(ctx);
@@ -2606,6 +3261,17 @@ const joinCommand = async (ctx, args) => {
 		}
 	})();
 	if (invite.length === 0) return refuse("Pass the invite link: lp join <link>");
+	if (link.includes("/lp/join/project")) {
+		const joined = await ctx.call(config, "/api/lp/join/project", { body: {
+			invite,
+			mode: "session"
+		} });
+		return output("Joined the project (this project only). Run lp projects to see it.", {
+			ok: true,
+			projectId: joined.projectId,
+			scope: "project"
+		});
+	}
 	const joined = await ctx.call(config, "/api/lp/join", { body: {
 		invite,
 		mode: "session"
@@ -3068,9 +3734,14 @@ const goalRef = (args) => {
 	const goalId = flagValue(args, "goal");
 	return goalId === null ? {} : { goalId };
 };
+/**
+* `lp setup --agent <id>`: shows the exact diff first. Without --yes nothing is written, so an
+* agent shows the diff to its user and runs it again with --yes once they approve. With
+* --yes each changed file is backed up first (`<file>.lp-backup-<stamp>`).
+*/
 const setupCommand = (ctx, args) => {
 	if (hasFlag(args, "list") || !flagValue(args, "agent") && args.positionals.length === 0) return output([
-		"lp setup --agent <id> [--file <path>] [--project]",
+		"lp setup --agent <id> [--file <path>] [--project] [--dry-run | --yes]",
 		"",
 		...HARNESSES.map((harness) => `  ${harness.id.padEnd(14)}${harness.name}`)
 	].join("\n"), { harnesses: HARNESSES.map(({ id, name }) => ({
@@ -3078,32 +3749,79 @@ const setupCommand = (ctx, args) => {
 		name
 	})) });
 	const agent = flagValue(args, "agent") ?? args.positionals[0];
-	const result = runSetup({
+	const apply = hasFlag(args, "yes") && !hasFlag(args, "dry-run");
+	const run = () => runSetup({
 		agent,
 		file: flagValue(args, "file"),
 		project: hasFlag(args, "project"),
 		cwd: ctx.cwd,
-		env: ctx.env
+		env: ctx.env,
+		...ctx.home === void 0 ? {} : {
+			home: ctx.home,
+			platform: "linux"
+		}
 	});
+	beginFileSession(!apply);
+	let result;
+	try {
+		result = run();
+	} catch (error) {
+		endFileSession();
+		throw error;
+	}
+	const session = endFileSession();
+	const changes = session.changes.map((change) => ({
+		file: change.file,
+		diff: unifiedDiff(change)
+	}));
+	const handSteps = result.steps.length > 0 ? [
+		"",
+		"Do this by hand:",
+		...result.steps.map((step) => `  - ${step}`)
+	] : [];
+	const noShell = result.harness.shell ? [] : ["", `${result.harness.name} does not run commands on its own: run the lp commands it suggests.`];
+	if (!apply) {
+		const again = ["lp setup", `--agent ${result.harness.id}`];
+		const file = flagValue(args, "file");
+		if (file) again.push(`--file ${JSON.stringify(file)}`);
+		if (hasFlag(args, "project")) again.push("--project");
+		again.push("--yes");
+		return output([
+			`${result.harness.name}: nothing written yet. This is exactly what would change:`,
+			"",
+			describeSession(session),
+			...handSteps,
+			...noShell,
+			"",
+			session.changes.length === 0 ? "Nothing to do." : `Show this to your user. When they approve, run: ${again.join(" ")}`
+		].join("\n"), {
+			ok: true,
+			dryRun: true,
+			harness: result.harness.id,
+			changes,
+			commands: session.commands,
+			steps: result.steps,
+			apply: again.join(" ")
+		});
+	}
 	const config = ctx.loadConfig();
 	ctx.saveConfig({
 		...config,
 		harness: result.harness.name
 	});
+	const backups = describeBackups(session);
 	const lines = [
 		`${result.harness.name}:`,
 		...result.changes.map((change) => `  ${outcomeLine(change)}`),
-		...result.steps.length > 0 ? [
-			"",
-			"Do this by hand:",
-			...result.steps.map((step) => `  - ${step}`)
-		] : [],
-		...result.harness.shell ? [] : ["", `${result.harness.name} does not run commands on its own: run the lp commands it suggests.`]
+		...backups ? ["", backups] : [],
+		...handSteps,
+		...noShell
 	];
 	return output(lines.join("\n"), {
 		ok: true,
 		harness: result.harness.id,
 		changes: result.changes,
+		backups: session.backups,
 		steps: result.steps
 	});
 };
@@ -3124,6 +3842,8 @@ const CONNECT_COMMANDS = {
 	invite: inviteCommand,
 	join: joinCommand,
 	members: membersCommand,
+	remove: removeCommand,
+	"revoke-invite": revokeInviteCommand,
 	who: whoCommand,
 	agents: agentsCommand,
 	send: sendCommand,
@@ -3155,6 +3875,151 @@ const emitError = (ctx, args, error) => {
 	}, null, 2));
 	else ctx.print(message);
 	process.exitCode = 1;
+};
+// src/jobs.ts
+const query = (params) => {
+	const search = new URLSearchParams();
+	for (const [key, value] of Object.entries(params)) if (value) search.set(key, value);
+	const text = search.toString();
+	return text.length === 0 ? "" : `?${text}`;
+};
+const jobLine = (job) => `${job.id}  ${job.title}  (${job.level} ${job.role}, ${job.hours} h, ${job.applicants} applicant${job.applicants === 1 ? "" : "s"})${job.myApplication ? `  [you applied: ${job.myApplication.status}]` : ""}`;
+const formatJob = (job) => [
+	`${job.title}`,
+	`id: ${job.id}`,
+	`${job.level} ${job.role}, ${job.hours} hours included`,
+	"",
+	job.scope,
+	"",
+	"Deliverables:",
+	...job.deliverables.map((line) => `- ${line}`),
+	"Milestones:",
+	...job.milestones.map((m, i) => `${i + 1}. ${m.title} (${m.hours} h)`),
+	"Out of scope:",
+	...job.outOfScope.map((line) => `- ${line}`),
+	"",
+	job.myApplication ? `You applied (${job.myApplication.status}).` : `Apply: lp jobs apply ${job.id} --note "how you would do it" [--hours N]`,
+	"Customer and project names stay hidden until you are accepted. Never ask for or copy secrets."
+].join("\n");
+const jobsSearch = async (config, filter) => {
+	const result = await callHost(config, `/api/lp/jobs${query({
+		role: filter.role,
+		skills: filter.skills
+	})}`);
+	return result.jobs.length === 0 ? "No open jobs match." : result.jobs.map(jobLine).join("\n");
+};
+const jobsShow = async (config, id) => {
+	const result = await callHost(config, `/api/lp/jobs/show${query({ id })}`);
+	return formatJob(result.job);
+};
+const jobsApply = async (config, input) => {
+	const result = await callHost(config, "/api/lp/jobs/apply", { body: {
+		jobId: input.id,
+		note: input.note,
+		hours: input.hours ?? null
+	} });
+	return `Applied to ${result.job.title} (${result.job.id}). LogicPacks staff or the customer will review it; lp jobs mine shows the status.`;
+};
+const jobsMine = async (config) => {
+	const result = await callHost(config, "/api/lp/jobs/mine");
+	if (result.jobs.length === 0) return "You have not applied to any jobs yet.";
+	return result.jobs.map((job) => job.projectTitle ? `${job.id}  ${job.title}  accepted: you are in ${job.projectTitle} (${job.hoursUsed ?? 0} of ${job.hours} h used)` : `${job.id}  ${job.title}  ${job.myApplication?.status ?? "applied"}`).join("\n");
+};
+const talentLine = (talent) => `${talent.name}  vetted ${talent.level} ${talent.role}, ${talent.availability}. ${talent.headline}. Skills: ${talent.skills.join(", ")}. Brings own AI: ${talent.tools.join(", ")}.${talent.reasons && talent.reasons.length > 0 ? ` Why: ${talent.reasons.join(", ")}.` : ""}${talent.sample ? " (sample profile)" : ""}`;
+/** Customer side: search vetted freelancers, or match them to a need. */
+const talentSearch = async (config, input) => {
+	const result = await callHost(config, `/api/lp/external/talent${query({
+		q: input.q,
+		role: input.role,
+		need: input.need
+	})}`);
+	return result.talent.length === 0 ? "No vetted freelancers match." : [
+		...result.talent.map(talentLine),
+		"",
+		"To bring one in, your user opens Get help from a vetted freelancer in the thread header. They pay for the person's hours; the freelancer's AI is included and uses none of their tokens."
+	].join("\n");
+};
+/** Errors as text: 403 feature_locked and "Jobs are invite-only for now." read cleanly. */
+const asText = async (run) => {
+	try {
+		return {
+			text: await run(),
+			isError: false
+		};
+	} catch (error) {
+		if (error instanceof OfflineError) return {
+			text: `The LogicPacks host is unreachable: ${error.message}`,
+			isError: true
+		};
+		if (error instanceof RejectedError) return {
+			text: error.message,
+			isError: true
+		};
+		throw error;
+	}
+};
+const JOBS_TOOLS = [
+	{
+		name: "jobs_search",
+		description: "Freelancer jobs board (invite-only): open jobs from LogicPacks customers, redacted until you are accepted. Filter by role (designer, developer, devops) and skills.",
+		inputSchema: {
+			type: "object",
+			properties: {
+				role: { type: "string" },
+				skills: {
+					type: "string",
+					description: "Comma separated."
+				}
+			}
+		},
+		annotations: { readOnlyHint: true }
+	},
+	{
+		name: "jobs_show",
+		description: "One job's full brief: scope, deliverables, milestones, hours, out of scope.",
+		inputSchema: {
+			type: "object",
+			properties: { id: { type: "string" } },
+			required: ["id"]
+		},
+		annotations: { readOnlyHint: true }
+	},
+	{
+		name: "jobs_apply",
+		description: "Apply to a job for your user: a short note on how they would do it, and optionally their own hours estimate. Only when your user asked you to apply.",
+		inputSchema: {
+			type: "object",
+			properties: {
+				id: { type: "string" },
+				note: {
+					type: "string",
+					maxLength: 2e3
+				},
+				hours: { type: "number" }
+			},
+			required: ["id", "note"]
+		}
+	}
+];
+const JOBS_TOOL_NAMES = new Set(JOBS_TOOLS.map((tool) => tool.name));
+const callJobsTool = (config, tool, args) => {
+	const text = (value) => typeof value === "string" ? value : null;
+	if (!config.server || !config.token) return Promise.resolve({
+		text: "LogicPacks is not signed in on this computer. Run lp login.",
+		isError: true
+	});
+	switch (tool) {
+		case "jobs_search": return asText(() => jobsSearch(config, {
+			role: text(args.role),
+			skills: text(args.skills)
+		}));
+		case "jobs_show": return asText(() => jobsShow(config, text(args.id) ?? ""));
+		default: return asText(() => jobsApply(config, {
+			id: text(args.id) ?? "",
+			note: text(args.note) ?? "",
+			hours: typeof args.hours === "number" ? args.hours : null
+		}));
+	}
 };
 // src/mcp.ts
 /**
@@ -3548,9 +4413,20 @@ const handleMcpMessage = async (options, message) => {
 			});
 		}
 		case "ping": return ok({});
-		case "tools/list": return ok({ tools: LEDGER_TOOLS });
+		case "tools/list": return ok({ tools: [...LEDGER_TOOLS, ...JOBS_TOOLS] });
 		case "tools/call": {
 			const name = asString(params.name);
+			if (name !== null && JOBS_TOOL_NAMES.has(name)) {
+				const config = (options.loadConfig ?? loadConfig)();
+				const result = await callJobsTool(config, name, asRecord(params.arguments) ?? {});
+				return ok({
+					content: [{
+						type: "text",
+						text: result.text
+					}],
+					isError: result.isError
+				});
+			}
 			if (name === null || !TOOL_NAMES.has(name)) return fail(-32602, `Unknown tool ${name}`);
 			const toolArgs = asRecord(params.arguments) ?? {};
 			if (name === "inbox") {
@@ -3628,17 +4504,27 @@ const HELP = `LogicPacks helper (lp): use LogicPacks from any agent harness, no 
   lp members | lp who [x] | lp agents        who is in the project, working on what, which agents are active
   lp send | lp ask | lp reply | lp inbox     talk to teammates and their agents
   lp assist | lp packs | lp goals            Request assistance, packs, goals (beta)
+  lp clone <project> [folder]                clone a project onto this computer and link it
+  lp app ops | run <op> [args] | log         work in the apps the host shares (Blender, Resolve, any app)
   lp setup --agent <id>                      add the LogicPacks block to an agent's global instructions
   lp setup-prompt                            the prompt to paste into any agent
   lp help agents                             every command, for agents
 
   lp status                                  connection, this folder's project, queue
+  lp stream --status                         what this folder's sessions send to the project
   lp pause | lp resume                       stop or restart streaming sessions
   lp unlink [folder] | lp link [folder]      keep a folder's sessions private, or share them again
   lp watch | lp install                      stream Claude Code and Codex sessions (hooks, watcher, MCP)
   lp mcp                                     the optional MCP server (stdio)
   lp uninstall                               remove every block, rules file, hook and MCP registration
   lp logout                                  forget this computer's token
+
+Vetted freelancers (invite-only beta):
+  lp jobs search [--role <role>] [--skills <a,b>]   open jobs (briefs redacted until you are accepted)
+  lp jobs show <id>                           one job's brief
+  lp jobs apply <id> --note "..." [--hours N] apply for it
+  lp jobs mine                                your applications and accepted jobs
+  lp talent search [words] [--role <role>] [--need "..."]   vetted freelancers for your project
 
 Add --json to any agent command for machine-readable output. Guide: https://logicpacks.io/setup.md
 `;
@@ -3765,6 +4651,23 @@ const watch = async (args) => {
 		await new Promise((resolve) => setTimeout(resolve, interval));
 	}
 };
+const installSteps = (args, lines) => {
+	if (!args.includes("--no-hooks")) lines.push(`Claude Code hooks added to ${writeClaudeHooks(lpCommandPath())}`);
+	if (!args.includes("--no-watcher")) try {
+		lines.push(`Background watcher: ${installWatcher(scriptPath())}`);
+	} catch (error) {
+		lines.push(error.message);
+	}
+	if (!args.includes("--no-mcp")) lines.push(...registerMcp());
+};
+const uninstallSteps = (args, lines) => {
+	lines.push(...runUninstall(flag(args, "agent")));
+	if (flag(args, "agent") !== null) return;
+	if (!args.includes("--no-hooks")) writeClaudeHooks(null);
+	if (!args.includes("--no-watcher")) uninstallWatcher();
+	if (!args.includes("--no-mcp")) lines.push(...registerMcp(true));
+	lines.push("Removed the LogicPacks blocks, the Claude Code hooks, the background watcher and the MCP server.");
+};
 const main = async () => {
 	const [command = "help", ...args] = process.argv.slice(2);
 	switch (command) {
@@ -3777,9 +4680,6 @@ const main = async () => {
 			});
 			if (result === null) return;
 			emit(ctx, parsed, result);
-			if (!result.exitCode && !args.includes("--no-mcp") && !args.includes("--start")) {
-				if (!parsed.flags.has("json")) registerMcp().forEach(say);
-			}
 			return;
 		}
 		case "logout": {
@@ -3815,39 +4715,112 @@ const main = async () => {
 			if (agentsFile !== null) say(`${command === "unlink" ? "Removed" : "Updated"} the LogicPacks block in ${agentsFile}`);
 			return;
 		}
+		case "clone": {
+			const [wanted, folderName] = args.filter((arg) => !arg.startsWith("--"));
+			if (!wanted) {
+				say("Name the project: lp clone <project name, id or owner/repo> [folder]");
+				process.exitCode = 1;
+				return;
+			}
+			const config = loadConfig();
+			if (!config.server || !config.token) {
+				say("Connect this computer first: lp login");
+				process.exitCode = 1;
+				return;
+			}
+			const cloned = await cloneProject({
+				config,
+				wanted,
+				folder: folderName ?? null,
+				cwd: process.cwd(),
+				say
+			});
+			if (cloned === null) {
+				process.exitCode = 1;
+				return;
+			}
+			saveConfig({
+				...config,
+				unlinked: config.unlinked.filter((root) => root !== cloned.folder)
+			});
+			const agentsFile = await syncAgentsFile(cloned.folder).catch(() => null);
+			if (agentsFile !== null) say(`Added the LogicPacks block to ${agentsFile}`);
+			say(`Ready: cd ${cloned.folder}`);
+			say(`Commit and git push as usual. The host pulls your pushes ${syncDelayText(cloned.syncSeconds)}, and git pull brings teammates' work here.`);
+			say("To show your agent sessions to the team, run lp install once (it starts lp watch).");
+			return;
+		}
+		case "stream": {
+			const config = loadConfig();
+			const setting = flag(args, "mcp-details");
+			const folder = folderArg(args.filter((arg) => arg !== setting));
+			if (setting === "on" || setting === "off") {
+				const others = (config.mcpDetails ?? []).filter((root) => root !== folder);
+				saveConfig({
+					...config,
+					mcpDetails: setting === "on" ? [...others, folder] : others
+				});
+				return say(setting === "on" ? `MCP tool calls in ${folder} now stream with their inputs and results (secrets still redacted). lp stream --mcp-details off to go back to names only.` : `MCP tool calls in ${folder} stream as names only again.`);
+			}
+			const fresh = loadConfig();
+			const unlinked = isUnlinked(fresh, folder);
+			let project = "not part of a LogicPacks project";
+			if (fresh.server && fresh.token && !unlinked) {
+				const context = await fetchContext(fresh, { cwd: folder }, 3e3).catch(() => null);
+				if (context?.linked) project = `"${context.projectTitle}" (everyone in that project sees it)`;
+				else if (context === null) project = "unknown (host unreachable)";
+			}
+			const mcp = (fresh.mcpDetails ?? []).includes(folder);
+			const live = !fresh.paused && !unlinked && project.startsWith("\"");
+			say(`Folder:    ${folder}`);
+			say(`Project:   ${unlinked ? "private (lp link to share it again)" : project}`);
+			say(`Streaming: ${fresh.paused ? "paused on this computer (lp resume)" : unlinked ? "off for this folder (lp unlink)" : live ? "on" : "nothing (no project)"}`);
+			if (live || args.includes("--status")) {
+				say("When on, Claude Code and Codex sessions in this folder send:");
+				say("  - your prompts and the agent's replies (secrets redacted)");
+				say("  - built-in tool calls (commands, edits, reads, searches): input up to 300 characters, result up to 1,500, secrets redacted");
+				say(mcp ? "  - MCP tool calls with inputs and results (opted in: lp stream --mcp-details off)" : "  - MCP tool calls as names only, such as \"mcp: whatsapp.send\" (lp stream --mcp-details on to include details)");
+				say("  - never: the content of .env*, *.pem, *.key, id_* or ~/.ssh files");
+			}
+			say("Stop: lp pause (everything on this computer), lp unlink (just this folder).");
+			return;
+		}
 		case "context": {
 			const config = loadConfig();
 			const context = await fetchContext(config, { cwd: NodePath.resolve(flag(args, "cwd") ?? process.cwd()) });
 			return say(context.linked ? context.text ?? "" : context.message ?? "Not linked.");
 		}
 		case "install":
-			if (!args.includes("--no-hooks")) say(`Claude Code hooks added to ${writeClaudeHooks(lpCommandPath())}`);
-			if (!args.includes("--no-watcher")) try {
-				say(`Background watcher: ${installWatcher(scriptPath())}`);
-			} catch (error) {
-				say(error.message);
+		case "uninstall": {
+			const dryRun = args.includes("--dry-run") || command === "install" && !args.includes("--yes") && !process.stdout.isTTY;
+			const session = beginFileSession(dryRun);
+			const lines = [];
+			try {
+				if (command === "install") installSteps(args, lines);
+				else uninstallSteps(args, lines);
+			} finally {
+				endFileSession();
 			}
-			if (!args.includes("--no-mcp")) registerMcp().forEach(say);
+			if (dryRun) {
+				say(`Nothing written yet. This is exactly what lp ${command} would change:\n`);
+				say(describeSession(session));
+				if (command === "install") say("\nShow this to your user. When they approve, run: lp install --yes");
+				return;
+			}
+			lines.forEach(say);
+			const backups = describeBackups(session);
+			if (backups) say(backups);
 			return;
-		case "uninstall":
-			runUninstall(flag(args, "agent")).forEach(say);
-			if (flag(args, "agent") !== null) return;
-			if (!args.includes("--no-hooks")) writeClaudeHooks(null);
-			if (!args.includes("--no-watcher")) uninstallWatcher();
-			if (!args.includes("--no-mcp")) registerMcp(true).forEach(say);
-			return say("Removed the LogicPacks blocks, the Claude Code hooks, the background watcher and the MCP server.");
+		}
 		case "help":
 			if (args[0] === "agents") return say(helpAgentsCommand().text);
 			return say(HELP);
 		case "mcp": {
 			const cwd = NodePath.resolve(flag(args, "cwd") ?? process.cwd());
 			const sourceArg = flag(args, "source");
-			const source = sourceArg === "codex" || sourceArg === "claude" ? sourceArg : null;
-			const root = gitInfo(cwd).root;
-			if (root !== null && !args.includes("--no-agents-md")) syncAgentsFile(root).catch(() => null);
 			return runMcpServer({
 				cwd,
-				source,
+				source: sourceArg === "codex" || sourceArg === "claude" ? sourceArg : null,
 				sessionId: flag(args, "session")
 			});
 		}
@@ -3856,9 +4829,46 @@ const main = async () => {
 			const file = await syncAgentsFile(folder, 8e3);
 			return say(file === null ? "AGENTS.md is up to date (or this folder is not linked)." : `Updated ${file}`);
 		}
+		case "jobs": {
+			const config = loadConfig();
+			const [sub = "search", ...rest] = args;
+			const positional = rest.filter((arg, index) => !arg.startsWith("--") && !rest[index - 1]?.startsWith("--"));
+			switch (sub) {
+				case "search": return say(await jobsSearch(config, {
+					role: flag(rest, "role"),
+					skills: flag(rest, "skills")
+				}));
+				case "show":
+					if (!positional[0]) return say("Usage: lp jobs show <id>");
+					return say(await jobsShow(config, positional[0]));
+				case "apply": {
+					const note = flag(rest, "note");
+					if (!positional[0] || !note) return say("Usage: lp jobs apply <id> --note \"how you would do it\" [--hours N]");
+					const hours = flag(rest, "hours");
+					return say(await jobsApply(config, {
+						id: positional[0],
+						note,
+						hours: hours === null ? null : Number(hours)
+					}));
+				}
+				case "mine": return say(await jobsMine(config));
+				default: return say(HELP);
+			}
+		}
+		case "talent": {
+			const config = loadConfig();
+			const [, ...rest] = args;
+			const words = rest.filter((arg, index) => !arg.startsWith("--") && !rest[index - 1]?.startsWith("--")).join(" ");
+			return say(await talentSearch(config, {
+				q: words,
+				role: flag(rest, "role"),
+				need: flag(rest, "need")
+			}));
+		}
 		case "hook": return runHook(args[0] ?? "").catch(() => void 0);
 		case "sync": return syncCommand(args);
 		case "watch": return watch(args);
+		case "app": return appCommand(args);
 		default: {
 			const run = CONNECT_COMMANDS[command];
 			if (run === void 0) return say(HELP);

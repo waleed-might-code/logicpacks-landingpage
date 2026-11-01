@@ -22,6 +22,8 @@ if (-not (Get-Command lp.cmd -ErrorAction SilentlyContinue)) { irm https://logic
 
 The helper needs Node.js 18 or newer (Claude Code, Codex and most agents already have it; otherwise install Node.js LTS from https://nodejs.org). It puts `lp` in `~/.local/bin` on macOS and Linux and in `%USERPROFILE%\.logicpacks\helper\bin` on Windows (`lp.cmd` for PowerShell and cmd, `lp` for Git Bash), and adds that folder to your PATH. macOS and many Linux systems also have a printer command named `lp` (`/usr/bin/lp`): if it comes first on your PATH, call `~/.local/bin/lp` (or put `~/.local/bin` first). In Windows PowerShell 5.1, `lp` is a built-in alias for Out-Printer, so type `lp.cmd` there (for example `lp.cmd login --start`); Git Bash, cmd and PowerShell 7 take plain `lp`. If `lp` is not found right after installing, open a new shell or call it by its full path: `~/.local/bin/lp` or `%USERPROFILE%\.logicpacks\helper\bin\lp.cmd`.
 
+Installing only puts the `lp` command in place. It changes no agent's settings: that happens in step 3, and only after your user has seen the diff.
+
 ## 2. Log in
 
 Check first: `lp whoami`. If it says you are not signed in:
@@ -40,11 +42,20 @@ It waits (up to 10 minutes) until they approve, then stores a token in `~/.logic
 
 ## 3. Add the LogicPacks block to your global instructions
 
-Run the command for your harness. It writes a short block between `<!-- logicpacks:start -->` and `<!-- logicpacks:end -->`, keeps the rest of the file as it is, and running it twice changes nothing. It knows where each harness keeps its global instructions: leave out `--file` unless your harness is not in the table.
+First show your user exactly what will change, then write it only after they say yes:
 
 ```sh
-lp setup --agent <id>
+lp setup --agent <id>          # prints the unified diff, writes nothing
+lp setup --agent <id> --yes    # after your user approves: writes it
 ```
+
+Show your user the whole diff from the first command and ask for approval. Do not run `--yes` until they agree. `--dry-run` also shows the diff and never writes.
+
+What `lp setup` guarantees:
+- It only inserts or replaces the text between `<!-- logicpacks:start -->` and `<!-- logicpacks:end -->`. Every other line of the file stays byte for byte the same, and running it twice changes nothing.
+- Before it changes a file it copies it to `<file>.lp-backup-<YYYYMMDD-HHMMSS>` and prints that path.
+- If the file has a lone or doubled LogicPacks marker, it refuses and changes nothing.
+- It writes the global file it resolves for your harness (the table below). Leave out `--file` unless your harness is not in the table, and never point it at an instructions file in a folder above the project (such as a parent folder's `.claude/CLAUDE.md`): `lp setup` refuses those.
 
 | Harness | id | Global instructions | Project file | Runs `lp` itself | MCP |
 |---|---|---|---|---|---|
@@ -103,7 +114,7 @@ The block is:
 Team work runs through the `lp` command (add `--json` to parse its output). If `lp` is the printer command (macOS, Linux), call `~/.local/bin/lp`; in Windows PowerShell type `lp.cmd`. If it is missing, follow https://logicpacks.io/setup.md.
 - At the start of a session and after long tasks, run `lp inbox` and tell the user what is new (messages, questions from other agents, conflicts, drift, review requests).
 - "share this project" / "create a shared session" -> `lp share`, then give the user the invite link.
-- "add my friend X" / "invite X" -> `lp invite <email or name>`.
+- "add my friend X" / "invite X" -> `lp invite <email or name>` (this project only; `--workspace` for every project); "remove X" -> `lp remove <person>`; "turn off the invite link" -> `lp revoke-invite`.
 - "what is X working on" -> `lp who X`; "who is working right now" -> `lp agents` (`--workspace` for every project).
 - "tell X ..." -> `lp send X "<message>"`.
 - To coordinate with a teammate's agent, use `lp ask <person> "<question>"` and `lp reply <id> "<answer>"`; check `lp inbox` for questions from other agents and answer them.
@@ -125,7 +136,7 @@ If your user asked you to share the project they are in:
 lp share
 ```
 
-It pushes the folder to its git remote (it creates a private GitHub repository with `gh` when there is none), registers it on the LogicPacks host and prints an invite link. Give your user the link. To add a teammate by email: `lp invite friend@example.com`.
+It pushes the folder to its git remote (it creates a private GitHub repository with `gh` when there is none), registers it on the LogicPacks host and prints an invite link. The link grants access to this project only; tell your user that, and give them the link. To add a teammate by email: `lp invite friend@example.com` (also this project only). `lp invite --workspace` gives a link to every project in the workspace: use it only when your user asks for that.
 
 ## 5. Every session from now on
 
@@ -138,8 +149,8 @@ LogicPacks for agents. Every command prints readable text; add --json for machin
   lp login [--host <url>] [--start | --finish]                sign in with a device code (default host app.logicpacks.io)
   lp whoami                                                   who you are signed in as, and on which host
   lp projects                                                 the projects you can open
-  lp share [--title <name>]                                   share this folder: push it to its git remote (GitHub) and register it on the host; prints an invite link
-  lp invite <email|name>                                      add someone to this project, or print the invite link to send them
+  lp share [--title <name>] [--workspace]                     share this folder: push it to its git remote (GitHub) and register it on the host; prints an invite link
+  lp invite [<email|name>] [--workspace]                      add someone to this project, or print the invite link to send them
   lp join <invite link>                                       accept an invite link from a teammate
   lp members                                                  who is in this project
   lp who [person|file|topic]                                  who is working on what in this project
@@ -158,22 +169,71 @@ LogicPacks for agents. Every command prints readable text; add --json for machin
   lp goals list | show <id> | confirm <goal> | cancel <goal>  see goals; confirm a draft (sends the milestones) once your user agrees
   lp goals start|blocked|done <milestone> [--note "<text>"]   report on a milestone assigned to you
   lp goals review | decide <id> <action> [--note]             drift and review requests waiting for your user, and their decision
-  lp setup --agent <id> [--file <path>] [--project]           write the LogicPacks block into an agent's instructions
+  lp remove <person> [--project-only] [--dry-run]             take someone's access away (this project and its workspace)
+  lp revoke-invite [<email>] [--off] [--workspace]            turn off this project's invite link (and print a new one), or cancel one person's invite
+  lp stream --status | --mcp-details on|off                   what this folder's sessions send to the project; MCP details are off by default
+  lp setup --agent <id> [--file <path>] [--project] [--yes]   show the diff for the LogicPacks block; --yes writes it (with a backup)
   lp setup-prompt [--installed]                               print the prompt to paste into any agent
-  lp status | lp watch | lp link | lp unlink                  stream Claude Code and Codex sessions into the project
+  lp install [--dry-run | --yes]                              optional: Claude Code hooks, background watcher, MCP for Claude Code and Codex
+  lp pause | lp resume | lp unlink | lp link                  stop streaming sessions (everything, or just this folder) and turn it back on
+  lp status | lp watch                                        connection and queue; the background session streamer
   lp mcp                                                      the optional MCP server (stdio)
-  lp uninstall                                                remove every LogicPacks block, rules file, hook and MCP registration
+  lp uninstall [--dry-run] [--agent <id>]                     remove every LogicPacks block, rules file, hook and MCP registration
 
 Setup guide: https://logicpacks.io/setup.md
 ```
 
 ## Optional: MCP
 
+Only if your user asks for it. Show the diff first with `lp install --dry-run`, then `lp install --yes` after they approve (each changed file is backed up first).
+
 If your user wants MCP tools as well, `lp install` registers the `logicpacks` MCP server (`lp mcp`, stdio) with Claude Code and Codex (and adds the Claude Code session hooks and the background watcher that stream sessions into the project). Other harnesses can add it by hand: command `lp`, args `["mcp"]`. The tools are a small subset of the CLI (who is working on what, send, ask, reply, conflicts, notes, packs). The CLI is the main way.
 
-## Uninstall
+## What streams to the project
+
+Only after `lp install --yes`, Claude Code and Codex sessions in a folder that belongs to a project stream into it, so teammates see what the agents are doing:
+
+- prompts and replies, with secrets redacted (API keys and tokens such as sk-, ghp_, xox, AKIA, JWTs, private key blocks, password= and token= pairs, secret-looking KEY=VALUE lines, credentials in connection strings);
+- built-in tool calls (commands, edits, reads, searches): up to 300 characters of input and 1,500 of result, redacted the same way;
+- MCP tool calls as names only, such as "mcp: whatsapp.send", with no input or result. `lp stream --mcp-details on` in a folder includes them (still redacted);
+- never the content of .env*, *.pem, *.key, id_* or ~/.ssh files.
+
+`lp stream --status` shows what the current folder sends. `lp unlink` keeps one folder private, `lp pause` stops all streaming on this computer, `lp resume` and `lp link` turn it back on.
+
+## What gets installed where
+
+The helper (step 1), macOS and Linux:
+- ~/.logicpacks/helper/lp.mjs (the CLI) and ~/.logicpacks/helper/bin/lp (a 2-line sh wrapper)
+- ~/.local/bin/lp (a symlink to the wrapper)
+- ~/.logicpacks/helper/config.json (host, token, device name; mode 600), setup.json (what lp setup wrote), queue/ (sessions waiting to upload)
+
+The helper (step 1), Windows:
+- %USERPROFILE%\.logicpacks\helper\lp.mjs, bin\lp.cmd and bin\lp (Git Bash wrapper)
+- the user PATH gains %USERPROFILE%\.logicpacks\helper\bin
+- %USERPROFILE%\.logicpacks\helper\config.json, setup.json, queue\
+
+Step 3: lp setup --agent <id>: one marked block in that harness's global instructions file (see the table), or one rules file of its own (Cline, Roo, Kiro, Cursor .mdc); with --project or for UI-only harnesses, the project's file (for example AGENTS.md).
+
+Only with `lp install --yes`, macOS and Linux:
+- ~/.claude/settings.json: hooks SessionStart, UserPromptSubmit, PostToolUse, Stop that run `lp hook <event>` (marked # logicpacks-helper)
+- ~/.claude.json: mcpServers.logicpacks (stdio: lp mcp --source claude)
+- ~/.codex/config.toml: [mcp_servers.logicpacks] table
+- macOS: ~/Library/LaunchAgents/io.logicpacks.helper.plist (runs lp watch); Linux: ~/.config/systemd/user/logicpacks-helper.service
+
+Only with `lp install --yes`, Windows:
+- %USERPROFILE%\.claude\settings.json hooks and %USERPROFILE%\.claude.json MCP entry, as on macOS
+- %USERPROFILE%\.codex\config.toml [mcp_servers.logicpacks]
+- %APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup\logicpacks-helper.vbs (runs lp watch hidden)
+
+Backups: <file>.lp-backup-<YYYYMMDD-HHMMSS> next to each file before it changes.
+
+## Removing access and uninstalling
+
+- `lp remove <person>` takes someone's access away (this project and its workspace; `--project-only` for just the project). `--dry-run` says what it would do.
+- `lp revoke-invite` turns off the current invite link and prints a new one.
 
 ```sh
+lp uninstall --dry-run   # the exact diff, writes nothing
 lp uninstall
 ```
 

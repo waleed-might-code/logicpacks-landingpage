@@ -1,3 +1,4 @@
+import { BENCHMARKS } from '../../src/components/Trust';
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent, waitFor, within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
@@ -235,8 +236,15 @@ describe('Story, research and pricing', () => {
   it('/research shows measured numbers and "Benchmark running" for the rest, never invented values', () => {
     renderAt('/research');
     const bench = screen.getAllByTestId('benchmark').map((r) => r.textContent);
-    expect(bench.length).toBe(4);
-    bench.forEach((t) => expect(t).toContain('Benchmark running'));
+    const metrics = BENCHMARKS.streaming.flatMap((s) => s.metrics);
+    expect(bench.length).toBe(metrics.length);
+    // Each row shows exactly its measured value from research/benchmarks.json, or "Benchmark running".
+    metrics.forEach((m, i) => expect(bench[i]).toContain(m.value == null ? 'Benchmark running' : `${m.value} ${m.unit}`));
+    // Every run is listed with its note (e.g. JPEG rows measured before the queue fix), viewer on the same Mac.
+    const runs = screen.getAllByTestId('benchmark-run').map((r) => r.textContent);
+    expect(runs.length).toBe(BENCHMARKS.runs.length);
+    expect(runs.some((t) => t.includes('Measured before the relay queue fix'))).toBe(true);
+    expect(document.body.textContent).toContain('viewer on the same Mac');
     expect(screen.getAllByTestId('suite')[0]).toHaveTextContent('9/9 passed');
     expect(screen.getAllByTestId('security-check').some((r) => r.textContent.includes('Refused (401)'))).toBe(true);
   });

@@ -124,6 +124,7 @@ export const SETUP_URL = 'https://logicpacks.io/setup.md';
 // The same three lines as `lp setup-prompt` and the app's "Use your own agent" (helper connectText.ts).
 export const CONNECT_PROMPT = `Set up LogicPacks for me: read ${SETUP_URL} and follow it.
 Install the helper, log me in, and add the LogicPacks block to your global instructions.
+Show me what you'll change first and wait for my OK before you write anything.
 Then share this project and give me an invite link.`;
 
 // Sample experts for the Request assistance release on /new. Not real people: the
@@ -173,7 +174,7 @@ export const STORY = [
   { when: 'Nov 2025', title: 'Started building', body: 'A shared workspace where people and their agents work on the same project.' },
   { when: 'Jan 2026', title: 'Internal testing', body: 'Opened to our own team after two months, used on our client work every day.' },
   { when: 'Feb to Oct 2026', title: 'Eight months of testing', body: 'Used in labs and by tech agencies on real projects.' },
-  { when: 'Nov 2026', title: 'Open to everyone', body: 'Version 0.1.8: shared projects, threads, invites, sync and your own agent, free for individuals. App sharing and Request assistance are Beta.' },
+  { when: 'Nov 2026', title: 'Open to everyone', body: 'Version 0.1.9: shared projects, threads, invites, sync and your own agent, free for individuals. App sharing and Request assistance are Beta.' },
 ];
 
 // Launches built with LogicPacks. Facts only from the project notes.
@@ -248,21 +249,21 @@ export const WHERE = [
 
 // Vetted freelancers (Request assistance, Beta): /new and /about.md.
 export const FREELANCERS =
-  'Sometimes it is cheaper to save tokens and bring in a freelancer vetted by LogicPacks. They bring their own Claude and tools and use none of your tokens: you pay for their hours, with their AI included. Every freelancer works under NDA and your keys are never shared with them. Milestones and drift alerts to keep their work on plan come in the next release.';
+  'Sometimes it is cheaper to save tokens and bring in a freelancer vetted by LogicPacks. They bring their own Claude and tools and use none of your tokens: you pay for their hours, with their AI included. Every freelancer works under NDA and your keys are never shared with them. Secret files such as .env are hidden from them, and milestones and drift alerts keep their work on plan.';
 
 // The shortest path for two people (checked against the v2 web app, 2026-11-01).
 export const FRIEND_PATH = [
-  `Open ${APP_URL} and sign up with your email (no install needed; the Mac app is optional).`,
+  `Open ${APP_URL} and sign up with your email (sign-up is by invite during the beta).`,
   'Add a project: start empty, from a template, or clone a Git URL (for example your GitHub repository).',
   'Copy the invite link and send it to your friend; they sign up and join.',
-  'Each of you connects your own agent: "Connect your agent", then "Log in with Claude" (Codex, OpenCode and Gemini work too).',
+  'Each of you connects your own computer: install the Mac app, then "Connect your computer" in the web app. Turns run on your computer with your own Claude login (Codex, OpenCode and Gemini work too).',
   'Each of you works in your own thread with your own agent, and you both see who is working on what.',
 ];
 
 // How it compares: the main page and the top of /index.md read the same lines.
 export const COMPARE = [
   { vs: 'Zed Delta, claude-duet', line: 'They share one Claude Code session. LogicPacks gives each person their own agent, with many agents in parallel that coordinate.' },
-  { vs: 'Cursor, Devin', line: 'Strong single-user agents. LogicPacks puts several people and their agents in one project; goals and drift alerts come in the next release.' },
+  { vs: 'Cursor, Devin', line: 'Strong single-user agents. LogicPacks puts several people and their agents in one project, with goals and drift alerts (Beta).' },
   { vs: 'Tuple, Parsec', line: 'Screen sharing without agents. LogicPacks shares the project, the threads and the agents.' },
   { vs: 'Upwork', line: 'Hiring without the workspace. In LogicPacks a vetted freelancer joins the project with their own AI (Beta).' },
 ];

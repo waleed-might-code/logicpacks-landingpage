@@ -17,7 +17,7 @@ const git = (...a) => execFileSync('git', ['-C', repo, ...a], { encoding: 'utf8'
 
 const winPath = (h) => (h.global.kind === 'block' || h.global.kind === 'file' ? h.global.path.windows ?? null : null);
 const out = {
-  source: { repo: 'feat/v2-connect', commit: git('rev-parse', '--short', 'HEAD'), file: 'packages/helper/src/connectText.ts' },
+  source: { repo: git('rev-parse', '--abbrev-ref', 'HEAD'), commit: git('rev-parse', '--short', 'HEAD'), file: 'packages/helper/src/connectText.ts' },
   helperInstall: text.HELPER_INSTALL,
   helperInstallWindows: text.HELPER_INSTALL_WINDOWS,
   defaultHost: text.DEFAULT_HOST,

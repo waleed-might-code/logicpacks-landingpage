@@ -38,7 +38,7 @@ export default function Research() {
         </h1>
         <p className="mt-3 font-mono text-[12px] text-faint">Updated {b.updated}</p>
       </section>
-      <Block id="streaming" title="App sharing" intro="How a shared app feels to the person watching or driving it. Numbers appear here when a run finishes.">
+      <Block id="streaming" title="App sharing" intro="How a shared app feels to the person watching or driving it, measured with the viewer on the same Mac as the host.">
         {b.streaming.flatMap((s) =>
           s.metrics.map((m) => (
             <Row
@@ -52,6 +52,27 @@ export default function Research() {
           )),
         )}
       </Block>
+      {b.runs?.length > 0 && (
+        <Block
+          id="runs"
+          title="App sharing, every run"
+          intro={`Machine: ${b.machine}. ${(b.methodology ?? []).join(' ')}`}
+        >
+          {b.runs.map((r, i) => (
+            <Row
+              key={`${r.scenario}-${r.transport}-${i}`}
+              testId="benchmark-run"
+              title={`${r.app}: ${r.transport}`}
+              detail={`${r.codec}, ${r.resolution}${r.host_cpu_pct != null ? `, host CPU ${r.host_cpu_pct}%` : ''}${r.note ? `. ${r.note}` : ''}`}
+              value={`${r.latency_ms_p50} ms p50 · ${r.fps_avg} fps`}
+              date={`p95 ${r.latency_ms_p95} ms`}
+            />
+          ))}
+          {(b.omitted ?? []).map((o) => (
+            <Row key={`omitted-${o.scenario}-${o.transport}`} testId="benchmark-omitted" title={`${o.scenario}: ${o.transport}`} detail={o.reason} value="Not measured" pending />
+          ))}
+        </Block>
+      )}
       <Block id="suites" title="Test suites" intro="Automated runs of the real app, end to end, before a release goes out.">
         {b.suites.map((s) => (
           <Row key={s.id} testId="suite" title={s.title} detail={s.detail} value={formatSuite(s)} date={s.date} />

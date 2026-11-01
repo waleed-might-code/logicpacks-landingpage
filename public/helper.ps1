@@ -1,7 +1,8 @@
 # LogicPacks helper installer for Windows: irm https://logicpacks.io/helper.ps1 | iex
 # Optional: $env:LP_SERVER (and $env:LP_TOKEN) to sign in during install, $env:LP_HELPER_URL to
 # install from another copy, $env:LP_HELPER_SHA256 to pin it, $env:LP_HELPER_NO_WATCHER = 1 /
-# $env:LP_HELPER_NO_HOOKS = 1 to skip those steps.
+# $env:LP_HELPER_NO_HOOKS = 1 to skip parts of `lp install`, which runs only with $env:LP_HELPER_INSTALL = 1.
+# By default this only puts the lp command in place: it changes no agent's settings.
 # Runs inside the caller's PowerShell (iex), so it throws instead of calling exit.
 $ErrorActionPreference = 'Stop'
 
@@ -58,10 +59,13 @@ if (-not (($UserPath -split ';') -contains $BinDir)) {
 if (-not (($env:Path -split ';') -contains $BinDir)) { $env:Path = "$env:Path;$BinDir" }
 
 $Lp = Join-Path $BinDir 'lp.cmd'
-$InstallArgs = @('install')
-if ($env:LP_HELPER_NO_HOOKS) { $InstallArgs += '--no-hooks' }
-if ($env:LP_HELPER_NO_WATCHER) { $InstallArgs += '--no-watcher' }
-& $Lp @InstallArgs
+if ($env:LP_HELPER_INSTALL) {
+  $InstallArgs = @('install', '--yes')
+  if ($env:LP_HELPER_NO_HOOKS) { $InstallArgs += '--no-hooks' }
+  if ($env:LP_HELPER_NO_WATCHER) { $InstallArgs += '--no-watcher' }
+  & $Lp @InstallArgs
+}
+Write-Host "Installed $Lp (the lp command) in $HelperHome. No agent settings were changed (the bin folder was added to your user PATH)."
 
 if ($env:LP_SERVER) {
   $LoginArgs = @('login', '--host', $env:LP_SERVER)

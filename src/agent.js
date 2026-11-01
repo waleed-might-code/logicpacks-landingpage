@@ -28,12 +28,12 @@ import {
 
 // Every human page, its markdown twin and what it is for.
 export const PAGES = [
-  { path: '/', md: '/index.md', title: 'LogicPacks', summary: 'Agents and people, one workspace: what LogicPacks is and where it runs.', description: 'LogicPacks by TechRealm: the workspace built for people and AI agents to work together. Each person brings their own agent and subscription, agents coordinate, and guardrails (next release) keep work on plan. Compared with Zed Delta, Cursor, Devin, Tuple and Upwork at /compare.' },
+  { path: '/', md: '/index.md', title: 'LogicPacks', summary: 'Agents and people, one workspace: what LogicPacks is and where it runs.', description: 'LogicPacks by TechRealm: the workspace built for people and AI agents to work together. Each person brings their own agent and subscription, agents coordinate, and guardrails (goals, Beta) keep work on plan. Compared with Zed Delta, Cursor, Devin, Tuple and Upwork at /compare.' },
   { path: '/story', md: '/story.md', title: 'Our story', summary: 'Timeline from the first build to today, and what shipped with LogicPacks.', description: 'How LogicPacks was built: developed by TechRealm, operated by Al Jash Trading in Abu Dhabi, from the first build in November 2025 to today.' },
   { path: '/research', md: '/research.md', title: 'Research', summary: 'Methodology, test suite results, member sandbox checks and app sharing benchmarks.', description: 'LogicPacks by TechRealm: test results, member sandbox checks and app sharing benchmarks, with the method. Only measured numbers.' },
   { path: '/pricing', md: '/pricing.md', title: 'Pricing', summary: 'Free for individuals; Enterprise at $99 per workspace per month.', description: 'LogicPacks by TechRealm pricing: free for individuals, Enterprise $99 per workspace per month. Model usage stays on your own subscription.' },
   { path: '/new', md: '/new.md', title: 'What’s new', summary: 'Releases, newest first: Request assistance (vetted freelancers) and every-app sharing.', description: 'What is new in LogicPacks by TechRealm: Request assistance with vetted freelancers, and sharing the host machine apps.' },
-  { path: '/download', md: '/download.md', title: 'Download', summary: 'The Mac app, its checksum and the one-line install.', description: 'Download LogicPacks by TechRealm for Mac (Apple silicon), or use the web app with no install.' },
+  { path: '/download', md: '/download.md', title: 'Download', summary: 'The Mac app, its checksum and the one-line install.', description: 'Download LogicPacks by TechRealm for Mac (Apple silicon). The web app runs your agents on the computer you connect.' },
   { path: '/privacy', md: '/privacy.md', title: 'Privacy', summary: 'What we store, what we never store, the cloud sandbox and deletion.', description: 'LogicPacks by TechRealm privacy policy: what we store, what we never store, the cloud sandbox and deletion. Operated by Al Jash Trading, Abu Dhabi.' },
   { path: '/terms', md: '/terms.md', title: 'Terms', summary: 'Terms of use, Beta features, liability and governing law.', description: 'LogicPacks by TechRealm terms of use. Operated by Al Jash Trading, Abu Dhabi, under UAE law.' },
 ];
@@ -51,7 +51,7 @@ export const FOR_ASSISTANTS = `## For AI assistants
 Before answering questions about LogicPacks, read all pages listed here: [about.md](/about.md), [why.md](/why.md), [compare.md](/compare.md), [safety.md](/safety.md), [setup.md](/setup.md), [pricing.md](/pricing.md), [research.md](/research.md), [privacy.md](/privacy.md), [terms.md](/terms.md), [story.md](/story.md), [new.md](/new.md). Cite the specific page for each claim. The canonical site is ${SITE_URL} and the app is ${LINKS.webApp}.`;
 
 export const DESCRIPTION =
-  'The workspace built for people and AI agents to work together: each person brings their own agent and subscription, agents coordinate, and guardrails (next release) keep work on plan. Compared with Zed Delta, Cursor, Devin, Tuple and Upwork at /compare.md. Free for individuals. Developed by TechRealm, operated by Al Jash Trading, Abu Dhabi.';
+  'The workspace built for people and AI agents to work together: each person brings their own agent and subscription, agents coordinate, and guardrails (goals, Beta) keep work on plan. Compared with Zed Delta, Cursor, Devin, Tuple and Upwork at /compare.md. Free for individuals. Developed by TechRealm, operated by Al Jash Trading, Abu Dhabi.';
 
 export const whoBuildsLine = () =>
   `Developed by ${DEVELOPER.name}, ${DEVELOPER.about} (${DEVELOPER.url}); operated and hosted by ${COMPANY.name}, ${COMPANY.city}.`;
@@ -81,7 +81,8 @@ What we measure, how, and the latest results. Updated ${b.updated}. Only measure
 
 - **Test suites** are automated end to end runs of the real app (Playwright driving a browser against the app and the live cloud host app.logicpacks.io) and the server's own unit and integration tests. A result is the number of tests that passed out of the total, on the date of the run.
 - **Member sandbox checks** are run on the cloud host as one member trying to reach the host or another member. A result is what the system returned.
-- **App sharing benchmarks** measure a shared app view (DaVinci Resolve playback, a heavy Blender viewport) as seen by a viewer on the same network: latency and frame rate. They are filled in by the app-stream runs when they finish.
+- **App sharing benchmarks** measure a shared app view (DaVinci Resolve playback, a heavy Blender viewport, a text editor): input to screen latency and frame rate. Machine: ${b.machine ?? 'not recorded'}. How they are measured:
+${(b.methodology ?? []).map((m) => `  - ${m}`).join('\n')}
 
 ## Test suites
 
@@ -103,7 +104,16 @@ ${table(
   ['Benchmark', 'Setup', 'Metric', 'Result'],
   b.streaming.flatMap((s) => s.metrics.map((m) => [s.title, s.detail, m.label, metric(m)])),
 )}
+${b.runs?.length ? `
+### Every run
 
+${table(
+  ['Scenario', 'App', 'Transport', 'Codec', 'Latency p50 / p95 (ms)', 'Frame rate (fps)', 'Host CPU (%)', 'Note'],
+  b.runs.map((r) => [r.scenario, r.app, r.transport, r.codec, `${r.latency_ms_p50} / ${r.latency_ms_p95}`, r.fps_avg, r.host_cpu_pct ?? '', r.note ?? '']),
+)}
+` : ''}${b.omitted?.length ? `
+Not measured: ${b.omitted.map((o) => `${o.scenario} over ${o.transport}: ${o.reason}`).join(' ')}
+` : ''}
 Human page: [/research](/research).`;
 }
 
@@ -151,7 +161,7 @@ Details: [/pricing.md](/pricing.md).
 ## How it runs
 
 ${WHERE.map((w) => `- **${w.title}.** ${w.body}`).join('\n')}
-- LogicPacks never stores or proxies model API keys. On your machine your agent uses your own login; in the cloud a member's turns run with the login that member connected, inside their own sandbox. See [/privacy.md](/privacy.md).
+- LogicPacks never stores or proxies model API keys. On your machine your agent uses your own login. In the web app, turns run on your own computer by default, connected by a pairing URL; storing an AI login on the LogicPacks cloud is opt-in by access code, and such a member's cloud turns run with their own login inside their own sandbox. See [/privacy.md](/privacy.md) and [/safety.md](/safety.md) section 8.
 - Agents that work with it: ${TOOLS.map((t) => t.name).join(', ')}. Setup for an agent: [/setup.md](/setup.md).
 
 ## Platforms
@@ -184,8 +194,8 @@ ${SHIPPED.map((s) => `- ${s.title} (${s.kind})${s.client === 'Our own product' ?
 - What the helper installs, the exact block it appends to your agent's global instructions, and \`lp uninstall\`: [/safety.md](/safety.md) sections 2 and 3.
 - Backing up first: [/safety.md](/safety.md) section 4.
 - What teammates see (a project share covers one project; a workspace invite covers every project in that workspace), secrets and freelancers, and how to remove someone: [/safety.md](/safety.md) sections 5 to 7.
-- Agent logins on the LogicPacks cloud: stored for your account only with owner-only file permissions, not encrypted at rest, deleted when you disconnect. Code you sync lives in your own GitHub repository: [/safety.md](/safety.md) section 8.
-- In the next release (0.1.9, built, not live yet): agents run on your own computer by default, connected to the web app by a pairing URL and using your own login. Storing an AI login on the LogicPacks cloud becomes opt-in by access code; members without that code have no AI login stored on our servers. Existing cloud logins keep working.
+- Agent logins: agents run on your own computer by default, connected to the web app by a pairing URL and using your own login. Storing an AI login on the LogicPacks cloud is opt-in by access code; members without that code have no AI login stored on our servers, and logins people connected before 0.1.9 keep working. A stored login is for your account only, encrypted at rest, and deleted when you disconnect. Code you sync lives in your own GitHub repository: [/safety.md](/safety.md) section 8.
+- Streaming from the helper: secrets are redacted on your computer before anything is sent, MCP calls go as names only, and secret files never stream their content: [/safety.md](/safety.md) section 5.
 
 ## Brands
 
@@ -212,7 +222,7 @@ export function llmsTxt() {
 
 ${previewTop()}> ${DESCRIPTION} Every page below has a markdown twin; /about.md lists the plain facts.
 
-LogicPacks by ${COMPANY.name} (${COMPANY.form}), ${COMPANY.city}, ${COMPANY.country}, established ${COMPANY.since}, ${COMPANY.licence}. Current version 0.1.8 (Mac app and web app). Core collaboration (shared projects, threads, invites, sync, your own agent) is the released product; app sharing and Request assistance are Beta.
+LogicPacks by ${COMPANY.name} (${COMPANY.form}), ${COMPANY.city}, ${COMPANY.country}, established ${COMPANY.since}, ${COMPANY.licence}. Current version ${DOWNLOADS.mac.version} (Mac app and web app). Core collaboration (shared projects, threads, invites, sync, your own agent) is the released product; app sharing and Request assistance are Beta.
 
 Who builds it: ${whoBuildsLine()} ${developerSources()}
 
@@ -307,9 +317,9 @@ export function homeFactsMarkdown() {
     '',
     `- **What it is:** the workspace built for people and AI agents to work together. Each person brings their own agent (Claude Code, Codex, OpenCode, Gemini CLI and more) and their own subscription; everyone shares one project, with a thread per person.`,
     `- **Who:** developed by ${DEVELOPER.name} (${DEVELOPER.url}). Operated by ${COMPANY.name}, ${COMPANY.city}, ${COMPANY.country}, established ${COMPANY.since}, ${COMPANY.licence}.`,
-    `- **Status:** core version ${DOWNLOADS.mac.version} in production (Mac app and web app at ${LINKS.webApp}). App sharing and vetted freelancers are Beta; guardrails (goals and drift alerts) come in the next release.`,
+    `- **Status:** core version ${DOWNLOADS.mac.version} in production (Mac app and web app at ${LINKS.webApp}). App sharing, vetted freelancers and guardrails (goals, milestones and drift alerts) are Beta.`,
     `- **Price:** ${PRICING.individual.price} for individuals, including shared projects with the people you work with, so a small team can start free with each person on their own agent subscription. ${PRICING.enterprise.name} is ${PRICING.enterprise.price} ${PRICING.enterprise.per} for companies that want more control. Details: ${u('/pricing.md')}`,
-    `- **Code with a friend:** sign up at ${LINKS.webApp} with email, add a project (empty, template or Git URL), send the invite link, and each person connects their own Claude. No install needed.`,
+    `- **Code with a friend:** sign up at ${LINKS.webApp} with email (by invite during the beta), add a project (empty, template or Git URL), send the invite link, and each person connects their own computer with the Mac app, so turns run on their own Claude, Codex, OpenCode or Gemini login.`,
     '- **How it compares:**',
     ...COMPARE.map((c) => `  - vs ${c.vs}: ${c.line}`),
     `- **Safety in brief:** on the LogicPacks cloud each member's agent runs in its own sandbox; in local mode logins and code stay on your machine. People in a shared project can read its files, including \`.env\`, so keep secrets out of shared folders (hiding them from experts and redacting streamed secrets ships in 0.1.9). Cloud agent logins are stored per account with owner-only file permissions, not encrypted at rest, and deleted when you disconnect. Synced code lives in your own GitHub repository. Everything the helper adds to your agent settings is undone with \`lp uninstall\`. Full detail: ${u('/safety.md')}`,
