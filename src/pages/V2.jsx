@@ -136,7 +136,7 @@ const ease = (x) => (x < 0.5 ? 2 * x * x : 1 - (-2 * x + 2) ** 2 / 2);
 // Desktop: the film starts full screen and settles into its box under the pitch as
 // you scroll (sticky stage, transforms only, one rAF per scroll frame). Mobile and
 // reduced motion get the boxed layout, which is also what the prerendered HTML is.
-function useFilmScroll({ track, box, pitch, sound, shade }) {
+function useFilmScroll({ track, box, pitch, sound, shade, cue }) {
   const [fx, setFx] = useState(false);
   useEffect(() => {
     const wide = window.matchMedia('(min-width: 768px) and (prefers-reduced-motion: no-preference)');
@@ -179,6 +179,7 @@ function useFilmScroll({ track, box, pitch, sound, shade }) {
       pitch.current.style.opacity = String(f);
       pitch.current.style.transform = `translate3d(0, ${(1 - f) * 12}px, 0)`;
       shade.current.style.opacity = String(1 - e);
+      cue.current.style.opacity = String(1 - clamp(p / 0.1));
       // The sound button sits at the bottom right of the visible film, inside the viewport.
       const right = Math.min(vw, rect.x + rect.w / 2 + tx + (rect.w * s) / 2);
       const bottom = Math.min(vh, rect.y + rect.h / 2 + ty + (rect.h * s) / 2);
@@ -203,7 +204,7 @@ function useFilmScroll({ track, box, pitch, sound, shade }) {
       window.removeEventListener('scroll', onScroll);
       window.removeEventListener('resize', measure);
     };
-  }, [fx, track, box, pitch, sound, shade]);
+  }, [fx, track, box, pitch, sound, shade, cue]);
   return fx;
 }
 
@@ -235,7 +236,7 @@ function SoundButton({ box, innerRef, className = '' }) {
 }
 
 export default function V2() {
-  const refs = { track: useRef(null), box: useRef(null), pitch: useRef(null), sound: useRef(null), shade: useRef(null) };
+  const refs = { track: useRef(null), box: useRef(null), pitch: useRef(null), sound: useRef(null), shade: useRef(null), cue: useRef(null) };
   const fx = useFilmScroll(refs);
   return (
     <div className="min-h-screen overflow-x-clip bg-page text-ink">
@@ -284,6 +285,16 @@ export default function V2() {
               </div>
             </section>
             {fx && <SoundButton box={refs.box} innerRef={refs.sound} className="absolute left-0 top-0 z-30" />}
+            {fx && (
+              <div ref={refs.cue} aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 z-20 flex h-44 items-end justify-center bg-gradient-to-t from-black via-black/85 to-transparent pb-6">
+                <div className="v2-bob flex flex-col items-center gap-1.5 text-muted">
+                  <span className="flex h-7 w-[18px] justify-center rounded-full border border-white/40 pt-1.5">
+                    <span className="h-1.5 w-[2px] rounded-full bg-white/60" />
+                  </span>
+                  <span className="text-[11px] tracking-[0.08em]">Scroll</span>
+                </div>
+              </div>
+            )}
           </div>
         </div>
         <GetIt />

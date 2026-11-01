@@ -104,3 +104,7 @@ body {
 @media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
   .v2-track[data-fx='pending'] .v2-box { opacity: 0; }
 }
+
+/* /v2 scroll cue: a gentle bob. */
+@keyframes v2-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(5px); } }
+.v2-bob { animation: v2-bob 1.8s ease-in-out infinite; }
