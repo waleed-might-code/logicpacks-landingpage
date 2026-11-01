@@ -166,9 +166,11 @@ function useFilmScroll({ track, box, pitch, sound, shade }) {
       const vh = window.innerHeight;
       const p = clamp(-tr.getBoundingClientRect().top / (vh * 0.9));
       const e = ease(p);
+      // Full screen starts 96px lower so the film's top content clears the nav, which sits on the dark band.
+      const off = 96;
       const s0 = Math.max(vw / rect.w, vh / rect.h);
       const tx = (vw / 2 - (rect.x + rect.w / 2)) * (1 - e);
-      const ty = (vh / 2 - (rect.y + rect.h / 2)) * (1 - e);
+      const ty = (vh / 2 + off - (rect.y + rect.h / 2)) * (1 - e);
       const s = s0 + (1 - s0) * e;
       el.style.transform = `translate3d(${tx}px, ${ty}px, 0) scale(${s})`;
       el.style.borderRadius = `${(12 * e) / s}px`;
@@ -243,7 +245,7 @@ export default function V2() {
             <div
               ref={refs.shade}
               aria-hidden="true"
-              className={`pointer-events-none absolute inset-x-0 top-0 z-20 h-28 bg-gradient-to-b from-black/70 to-transparent ${fx ? '' : 'hidden'}`}
+              className={`pointer-events-none absolute inset-x-0 top-0 z-20 h-[120px] bg-gradient-to-b from-black/95 via-black/70 to-transparent ${fx ? '' : 'hidden'}`}
             />
             <header className={`${wrap} relative z-30 flex h-16 items-center justify-between`}>
               <Link to="/v2" aria-label="LogicPacks">
