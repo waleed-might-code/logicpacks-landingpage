@@ -26,7 +26,7 @@ const LP = {
     'Beta: goals, milestones, drift alerts, review',
     'Beta preview (scripted demo), not released',
     'Beta: vetted freelancers on request',
-    'local machine yes (the host\'s laptop); our cloud and your own cloud host coming soon',
+    'yes: open source (MIT), runs on your own machine; hosted Cloud coming soon',
     `${PRICING.individual.price} for individuals; ${PRICING.enterprise.price} ${PRICING.enterprise.per}`,
   ],
 };
@@ -97,10 +97,6 @@ const ROWS = [
         'A free kanban board over many agents with git worktrees.',
         'You want a free local board for your agents and accept community maintenance.',
         ['https://vibekanban.com']],
-      ['T3 Code', [ND, 'yes: uses each provider\'s CLI and your subscription', ND, ND, 'partial: remote access to your sessions, not apps', ND, 'yes: local, MIT licence', 'free'],
-        'A free, open-source local control surface for many agent CLIs. LogicPacks is a fork of T3 Code and adds the team, guardrail, app sharing and help layers.',
-        'You work alone and want a free local surface for your agents.',
-        ['https://github.com/pingdotgg/t3code']],
     ],
   },
   {
@@ -163,6 +159,8 @@ export function compareMarkdown() {
   return `# LogicPacks compared
 
 As of ${AS_OF}. Competitor facts come from each product's own site on that date (source per row). "not documented" means their pages did not say, not that the product lacks it. If something here is out of date, tell us (contact below) and we will fix it.
+
+LogicPacks is open source like Zed: the collaborative workspace is MIT licensed (https://github.com/Tech-Realm/logicpacks). Cloud, Talent, Apps/Packs and Enterprise are hosted services.
 
 LogicPacks is a company whose whole product is people and AI agents working together. Most tools below treat collaboration as one feature of something else: Zed builds an editor, Cursor an AI editor, Devin an autonomous agent, Tuple and Parsec screen sharing, Upwork a hiring marketplace. LogicPacks builds the shared workspace around whatever editor and agent each person already uses: each person brings their own agent and subscription, many agents work in parallel in one project, agents message each other and check for overlap before they start, goals and drift alerts keep delegated work on plan, an own-cloud option that keeps working when laptops close is coming soon, and sharing runs from the host's laptop today. It is at version 0.1.10; app sharing and the freelancer marketplace are Beta. Most tools below are stronger at their own core, and LogicPacks works alongside several of them (Claude Code, Codex, Cursor and others run inside it).
 

@@ -34,11 +34,12 @@ describe('Landing', () => {
     expect(screen.getByRole('tabpanel')).toHaveTextContent('Install LogicPacks on this Mac');
   });
 
-  it('has the nav in order: What’s new, Docs, Download', () => {
+  it('has the nav in order: What’s new, Pricing, Docs, Open source, Download', () => {
     renderAt('/');
     const nav = within(screen.getByRole('navigation', { name: 'Main' }));
     const names = nav.getAllByRole('link').map((a) => a.textContent);
-    expect(names).toEqual(['LogicPacks', 'What’s new', 'Pricing', 'Docs', 'Download']);
+    expect(names).toEqual(['LogicPacks', 'What’s new', 'Pricing', 'Docs', 'Open source', 'Download']);
+    expect(nav.getByRole('link', { name: 'Open source' })).toHaveAttribute('href', 'https://github.com/Tech-Realm/logicpacks');
     // Motion backgrounds: the launch band and the closing line.
     expect(document.querySelectorAll('[data-testid="motion-bg"]')).toHaveLength(2);
     expect(nav.getByRole('link', { name: 'What’s new' })).toHaveAttribute('href', '/new');
@@ -76,7 +77,7 @@ describe('Landing', () => {
     renderAt('/');
     const tiles = screen.getAllByTestId('agent-tile');
     expect(tiles.map((t) => t.textContent)).toEqual(TOOLS.map((t) => t.name));
-    for (const name of ['Claude Code', 'Codex', 'Cursor', 'VS Code Copilot', 'Zed', 'JetBrains', 'T3 Code']) {
+    for (const name of ['Claude Code', 'Codex', 'Cursor', 'VS Code Copilot', 'Zed', 'JetBrains']) {
       expect(tiles.some((t) => t.textContent === name)).toBe(true);
     }
     for (const tool of TOOLS) {
@@ -93,7 +94,7 @@ describe('Landing', () => {
     // The prompt is several lines; the copy line shows it as one (truncated) code line.
     expect(screen.getByText((_, element) => element?.tagName === 'CODE' && element.textContent === CONNECT_PROMPT)).toBeInTheDocument();
     const docs = within(screen.getByRole('navigation', { name: 'Main' })).getByRole('link', { name: 'Docs' });
-    expect(docs).toHaveAttribute('href', HAS_SETUP ? '/setup.md' : 'https://github.com/Majboor/t3code/tree/main/docs');
+    expect(docs).toHaveAttribute('href', HAS_SETUP ? '/setup.md' : 'https://github.com/Tech-Realm/logicpacks/tree/main/docs');
     if (!HAS_SETUP) expect(container.querySelector('a[href*="setup.md"]')).toBeNull();
     fireEvent.click(screen.getAllByRole('button', { name: 'Connect your agent' })[0]);
     await waitFor(() => expect(writeText).toHaveBeenCalledWith(CONNECT_PROMPT));

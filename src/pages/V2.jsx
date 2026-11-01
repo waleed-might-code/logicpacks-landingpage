@@ -5,7 +5,7 @@ import { CopyLine } from '../components/Buttons';
 import { AppleIcon } from '../components/Icons';
 import Logo from '../components/Logo';
 import MediaSlot from '../components/MediaSlot';
-import { COMPANY, CONNECT_PROMPT, DEVELOPER, DOWNLOADS, HELPER_INSTALL, HELPER_INSTALL_WINDOWS, INSTALL_COMMAND, LAUNCH_MEDIA, TOOLS } from '../site';
+import { COMPANY, CONNECT_PROMPT, DEVELOPER, DOWNLOADS, HELPER_INSTALL, HELPER_INSTALL_WINDOWS, INSTALL_COMMAND, LAUNCH_MEDIA, OPEN_SOURCE, TOOLS } from '../site';
 
 // A quieter landing to compare with /: the film, three lines, and how to get it.
 // Everything else stays one click away ("View more") and in the markdown pages.
@@ -119,6 +119,7 @@ const QUIET = [
   ['Pricing', '/pricing'],
   ['Compare', '/compare.md'],
   ['Safety', '/safety.md'],
+  [OPEN_SOURCE.label, OPEN_SOURCE.repo],
   ['Privacy', '/privacy'],
   ['Terms', '/terms'],
 ];
@@ -300,7 +301,7 @@ export default function V2() {
       <footer className={`${wrap} border-t border-line py-10`}>
         <nav aria-label="More" className="flex flex-wrap gap-x-5 gap-y-2 text-[12px] text-faint">
           {QUIET.map(([label, href]) =>
-            href.endsWith('.md') ? (
+            href.endsWith('.md') || href.startsWith('http') ? (
               <a key={href} href={href} className="hover:text-muted">
                 {label}
               </a>

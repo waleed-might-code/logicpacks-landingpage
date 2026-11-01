@@ -2,7 +2,7 @@
 // link to the page that backs it. Only claims the product makes good on today; Beta
 // and pending items say so.
 import benchmarks from '../research/benchmarks.json';
-import { FRIEND_PATH, PRICING, SHIPPED, TOOLS, WHERE } from './site';
+import { FRIEND_PATH, OPEN_SOURCE, PRICING, SHIPPED, TOOLS, WHERE } from './site';
 
 const pendingStreaming = benchmarks.streaming.every((s) => s.metrics.every((m) => m.value == null));
 
@@ -10,6 +10,10 @@ export function whyMarkdown() {
   return `# Why LogicPacks
 
 LogicPacks aims to be the easiest way for agents and several people to work together on one project. What that means in practice, point by point. For a side by side with other tools, see [/compare.md](/compare.md).
+
+## Open source
+
+${OPEN_SOURCE.message} Read, run or fork it: ${OPEN_SOURCE.repo} (${OPEN_SOURCE.license}).
 
 ## Code with a friend
 

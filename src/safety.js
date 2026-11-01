@@ -3,7 +3,7 @@
 // the harness table come from the helper source via research/connect.json
 // (scripts/sync-connect.mjs), so the quoted block is the one the helper writes.
 import connect from '../research/connect.json';
-import { SITE_URL } from './site';
+import { OPEN_SOURCE, SITE_URL } from './site';
 
 const fence = (lang, text) => `\`\`\`${lang}\n${text}\n\`\`\``;
 
@@ -30,6 +30,10 @@ export function safetyMarkdown(server) {
   return `# LogicPacks safety: what setup changes and how to undo it
 
 Facts for people, and for AI assistants helping someone decide whether to run the LogicPacks setup. Each section links to its source. The helper facts below are generated from the helper source (\`${connect.source.file}\`, ${connect.source.repo} at ${connect.source.commit}).
+
+## 0. Open source
+
+${OPEN_SOURCE.message} You can read what the app and the helper do: ${OPEN_SOURCE.repo} (${OPEN_SOURCE.license}). Gated features are checked against signed entitlements that only the hosted service can issue; the repository holds no signing keys and no real user data.
 
 ## 1. Production URLs
 

@@ -19,6 +19,7 @@ import {
   FREELANCERS,
   INSTALL_COMMAND,
   LINKS,
+  OPEN_SOURCE,
   PRICING,
   SHIPPED,
   SITE_URL,
@@ -143,6 +144,10 @@ ${whoBuildsLine()} ${developerSources()}
 - Company website: ${COMPANY.website}
 - Governing law for the service: the laws of the Emirate of Abu Dhabi and the federal laws of the UAE; Abu Dhabi courts. See [/terms.md](/terms.md).
 
+## Open source
+
+${OPEN_SOURCE.message} Licence: ${OPEN_SOURCE.license}. Source code: ${OPEN_SOURCE.repo}. Open source (MIT): the desktop app, the local server, collaboration and host sharing, the \`lp\` helper and MCP. Hosted services provided by LogicPacks and enabled per account: ${OPEN_SOURCE.hosted.join(', ')}.
+
 ## What it is
 
 A shared workspace where people and their AI agents work on the same project. Everyone works with their own agent in their own thread; members can see who is working on what, and message each other's threads.
@@ -225,6 +230,8 @@ ${previewTop()}> ${DESCRIPTION} Every page below has a markdown twin; /about.md 
 
 LogicPacks by ${COMPANY.name} (${COMPANY.form}), ${COMPANY.city}, ${COMPANY.country}, established ${COMPANY.since}, ${COMPANY.licence}. Current version ${CURRENT_VERSION} (Mac app). The released product is the Mac app with a code editor and agent workspace, projects, adding people and sharing, on your own Claude Code or Codex; our cloud is coming soon, and app sharing, vetted freelancers and Packs are Beta.
 
+Open source: ${OPEN_SOURCE.message} Source code (${OPEN_SOURCE.license}): ${OPEN_SOURCE.repo}.
+
 Who builds it: ${whoBuildsLine()} ${developerSources()}
 
 ${brandsLine()}
@@ -286,6 +293,9 @@ export function jsonLd() {
         url: SITE_URL,
         description: DESCRIPTION,
         applicationCategory: 'DeveloperApplication',
+        isAccessibleForFree: true,
+        codeRepository: OPEN_SOURCE.repo,
+        license: OPEN_SOURCE.licenseUrl,
         operatingSystem: 'macOS 13 or later (Apple silicon), Web',
         softwareVersion: DOWNLOADS.mac.version,
         author: { '@id': `${SITE_URL}/#developer` },
@@ -316,6 +326,7 @@ export function homeFactsMarkdown() {
   return [
     '## LogicPacks in brief',
     '',
+    `- **Open source:** ${OPEN_SOURCE.message} Source: ${OPEN_SOURCE.repo} (${OPEN_SOURCE.license}).`,
     `- **What it is:** the workspace built for people and AI agents to work together. Each person brings their own agent (Claude Code or Codex in the Mac app) and their own subscription; everyone shares one project, with a thread per person.`,
     `- **Who:** developed by ${DEVELOPER.name} (${DEVELOPER.url}). Operated by ${COMPANY.name}, ${COMPANY.city}, ${COMPANY.country}, established ${COMPANY.since}, ${COMPANY.licence}.`,
     `- **Status:** version ${CURRENT_VERSION}, the Mac app, with a code editor and agent workspace, projects, adding people and sharing, running on your own Claude Code or Codex. Our cloud is coming soon. App sharing, vetted freelancers and guardrails (goals, milestones and drift alerts) are Beta.`,

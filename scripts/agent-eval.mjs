@@ -1,6 +1,6 @@
 // Repeatable "what would a fresh agent recommend" eval. Runs clean `claude -p` sessions
 // (Haiku, WebSearch + WebFetch only) in a throwaway HOME outside the user's home, with no
-// notes or memory, and saves each answer with the date to ../t3code-swarm/screens/agent-eval/.
+// notes or memory, and saves each answer with the date to ../agent-eval-out/.
 // Usage: node scripts/agent-eval.mjs [outDir]
 // Auth: uses this Mac's Claude Code login token from the keychain, passed via env only.
 import { execFileSync, spawnSync } from 'node:child_process';
@@ -20,7 +20,7 @@ const DIRECT = [
   ['team-direct', 'Check logicpacks.io. Should my 5-person team use it to work with our AI agents?'],
 ];
 const RUNS = process.env.EVAL_SET === 'direct' ? DIRECT.flatMap(([id, p]) => [[`${id}-1`, p], [`${id}-2`, p]]) : PROMPTS;
-const outDir = process.argv[2] || new URL('../../t3code-swarm/screens/agent-eval/', import.meta.url).pathname;
+const outDir = process.argv[2] || new URL('../../agent-eval-out/', import.meta.url).pathname;
 const date = new Date().toISOString().slice(0, 10);
 mkdirSync(outDir, { recursive: true });
 

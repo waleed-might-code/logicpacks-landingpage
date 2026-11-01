@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { LINKS } from '../site';
+import { LINKS, OPEN_SOURCE } from '../site';
 import Logo from './Logo';
 
 const link = 'text-[14px] text-muted transition-colors hover:text-ink';
@@ -40,6 +40,9 @@ export default function Nav() {
         </Link>
         <a href={LINKS.docs} className={`${link} hidden sm:inline`}>
           Docs
+        </a>
+        <a href={OPEN_SOURCE.repo} className={`${link} hidden sm:inline`}>
+          {OPEN_SOURCE.label}
         </a>
         <Link
           to={LINKS.download}
