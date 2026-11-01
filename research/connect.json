@@ -1,7 +1,7 @@
 {
   "source": {
     "repo": "release/0.1.9",
-    "commit": "7834cc8d66",
+    "commit": "c73f226dfe",
     "file": "packages/helper/src/connectText.ts"
   },
   "helperInstall": "curl -fsSL https://logicpacks.io/helper.sh | bash",

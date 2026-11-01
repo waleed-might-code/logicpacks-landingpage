@@ -41,11 +41,11 @@ export const DOWNLOADS = {
   mac: {
     // Versioned file names: Cloudflare caches release binaries, so a new
     // release gets a new name (and the ?v= tag) instead of reusing this one.
-    url: 'https://downloads.logicpacks.io/mac/LogicPacks-0.1.8-arm64.dmg?v=0a0bc425',
+    url: 'https://downloads.logicpacks.io/mac/LogicPacks-0.1.9-arm64.dmg?v=2125b6bf',
     // Hex SHA-256 of the DMG, published next to the button.
-    sha256: '0a0bc42532c913c288c74aabd3cea0796ff010f3936f126cf1abc1f960786dd6',
-    version: '0.1.8',
-    size: '176 MB',
+    sha256: '2125b6bf5c6a5e43a0faadc81006fb7409dd9ae05d87d2162f7eb3ae1fd96ad1',
+    version: '0.1.9',
+    size: '177 MB',
     requires: 'macOS 13 or later, Apple silicon',
   },
   // A Windows build does not exist yet. Set a url here once it does.
@@ -174,7 +174,7 @@ export const STORY = [
   { when: 'Nov 2025', title: 'Started building', body: 'A shared workspace where people and their agents work on the same project.' },
   { when: 'Jan 2026', title: 'Internal testing', body: 'Opened to our own team after two months, used on our client work every day.' },
   { when: 'Feb to Oct 2026', title: 'Eight months of testing', body: 'Used in labs and by tech agencies on real projects.' },
-  { when: 'Nov 2026', title: 'Open to everyone', body: 'Version 0.1.9: shared projects, threads, invites, sync and your own agent, free for individuals. App sharing and Request assistance are Beta.' },
+  { when: 'Nov 2026', title: 'Public beta', body: 'Version 0.1.9: shared projects, threads, invites, sync and your own agent, free for individuals. App sharing and Request assistance are Beta.' },
 ];
 
 // Launches built with LogicPacks. Facts only from the project notes.

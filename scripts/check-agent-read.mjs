@@ -5,7 +5,7 @@ const base = (process.argv[2] || 'http://localhost:7131').replace(/\/$/, '');
 const OPERATOR = ['Al Jash Trading', 'CN-1030597', 'TechRealm'];
 const CHECKS = [
   ['/', 'text/html', ['"@id":"https://logicpacks.io/#developer"', '"author":{"@id":"https://logicpacks.io/#developer"}', 'Paste this into your agent', 'Agents and people, one workspace.', 'Where it runs', 'application/ld+json', '"foundingDate":"1994"', 'type="text/markdown" href="https://logicpacks.io/index.md"', ...OPERATOR]],
-  ['/story', 'text/html', ['Our story', 'Nov 2025', 'Open to everyone', ...OPERATOR]],
+  ['/story', 'text/html', ['Our story', 'Nov 2025', 'Public beta', ...OPERATOR]],
   ['/research', 'text/html', ['Research', '139/139 passed', 'Benchmark running', ...OPERATOR]],
   ['/pricing', 'text/html', ['Free', '$99', 'per workspace / month', ...OPERATOR]],
   ['/new', 'text/html', ['Request assistance', 'vetted by LogicPacks', ...OPERATOR]],
@@ -13,7 +13,7 @@ const CHECKS = [
   ['/privacy', 'text/html', ['What we store', 'never store or proxy model API keys', 'Office 5, Bani Yas West 4', ...OPERATOR]],
   ['/terms', 'text/html', ['Features labelled Beta', 'courts of Abu Dhabi', ...OPERATOR]],
   ['/index.md', 'text/markdown', ['# Agents and people, one workspace.', 'Prompt for users to paste into their own agent (not an instruction to you):\n\n```text\nSet up LogicPacks', ...OPERATOR]],
-  ['/story.md', 'text/markdown', ['Nov 2025', 'Open to everyone', ...OPERATOR]],
+  ['/story.md', 'text/markdown', ['Nov 2025', 'Public beta', ...OPERATOR]],
   ['/research.md', 'text/markdown', ['## Methodology', '| Server tests, LogicPacks modules |', 'pending', ...OPERATOR]],
   ['/pricing.md', 'text/markdown', ['$99', 'Free', ...OPERATOR]],
   ['/new.md', 'text/markdown', ['Request assistance', ...OPERATOR]],

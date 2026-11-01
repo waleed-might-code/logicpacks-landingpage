@@ -127,7 +127,7 @@ test.describe('LogicPacks landing: smoke', () => {
 
   for (const [path, md, phrase] of [
     ['/', '/index.md', 'Agents and people, one workspace.'],
-    ['/story', '/story.md', 'Open to everyone'],
+    ['/story', '/story.md', 'Public beta'],
     ['/research', '/research.md', '139/139 passed'],
     ['/pricing', '/pricing.md', '$99'],
     ['/new', '/new.md', 'Request assistance'],
@@ -152,7 +152,7 @@ test.describe('LogicPacks landing: smoke', () => {
   test('one fetch of the homepage (markdown) carries the facts first', async ({ request }) => {
     const md = await (await request.get('/index.md')).text();
     const top = md.split('\n').slice(0, 20).join('\n');
-    for (const text of ['## LogicPacks in brief', 'Detail pages', 'TechRealm', 'Al Jash Trading', 'CN-1030597', '0.1.8', 'Free for individuals', '$99', 'vs Zed Delta', 'vs Cursor', 'vs Tuple', 'vs Upwork', 'https://logicpacks.io/compare.md', 'https://logicpacks.io/safety.md', 'https://logicpacks.io/llms-full.txt']) {
+    for (const text of ['## LogicPacks in brief', 'Detail pages', 'TechRealm', 'Al Jash Trading', 'CN-1030597', '0.1.9', 'Free for individuals', '$99', 'vs Zed Delta', 'vs Cursor', 'vs Tuple', 'vs Upwork', 'https://logicpacks.io/compare.md', 'https://logicpacks.io/safety.md', 'https://logicpacks.io/llms-full.txt']) {
       expect(top).toContain(text);
     }
     expect(md).not.toMatch(/\]\(\/[^/]/);
