@@ -185,6 +185,7 @@ ${SHIPPED.map((s) => `- ${s.title} (${s.kind})${s.client === 'Our own product' ?
 - Backing up first: [/safety.md](/safety.md) section 4.
 - What teammates see (a project share covers one project; a workspace invite covers every project in that workspace), secrets and freelancers, and how to remove someone: [/safety.md](/safety.md) sections 5 to 7.
 - Agent logins on the LogicPacks cloud: stored for your account only with owner-only file permissions, not encrypted at rest, deleted when you disconnect. Code you sync lives in your own GitHub repository: [/safety.md](/safety.md) section 8.
+- In the next release (0.1.9, built, not live yet): agents run on your own computer by default, connected to the web app by a pairing URL and using your own login. Storing an AI login on the LogicPacks cloud becomes opt-in by access code; members without that code have no AI login stored on our servers. Existing cloud logins keep working.
 
 ## Brands
 
