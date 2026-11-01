@@ -80,7 +80,6 @@ What `lp setup` guarantees:
 | Factory Droid | `droid` | `~/.factory/AGENTS.md` | `AGENTS.md` | yes | yes |
 | JetBrains Junie | `junie` | `~/.junie/AGENTS.md` | `.junie/AGENTS.md` | yes | yes |
 | Hermes Agent | `hermes` | settings UI only | `AGENTS.md` | yes | yes |
-| T3 Code | `t3code` | settings UI only | `AGENTS.md` | yes | yes |
 | Any other agent | `generic` | settings UI only | `AGENTS.md` | yes | yes |
 
 Notes:
@@ -98,7 +97,6 @@ Notes:
 - **Factory Droid**: The docs say Droid looks in ~/.factory/; the exact global file name is unverified.
 - **JetBrains Junie**: Older projects use .junie/guidelines.md, which Junie still reads.
 - **Hermes Agent**: Hermes has no global instructions file (~/.hermes/SOUL.md is persona only). LogicPacks writes the block into this project's AGENTS.md, which Hermes reads.
-- **T3 Code**: T3 Code runs the agents you have installed (Codex, Claude Code, OpenCode...) and has no file of its own. Set up each of those (lp setup --agent codex, --agent claude...); LogicPacks also writes this project's AGENTS.md.
 - **Any other agent**: Pass the file your agent reads its instructions from: lp setup --agent generic --file <path>. Without --file, LogicPacks writes this project's AGENTS.md, which most agents read.
 - Any other harness: `lp setup --agent generic --file <the file you read instructions from>`. If you would rather edit the file yourself, `lp setup-block` prints the block; paste it with its markers.
 - To also write the project file (for example `AGENTS.md`), add `--project`.

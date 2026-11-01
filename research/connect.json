@@ -204,14 +204,6 @@
       "project": "AGENTS.md"
     },
     {
-      "id": "t3code",
-      "name": "T3 Code",
-      "kind": "ui",
-      "global": "settings UI only",
-      "globalWindows": null,
-      "project": "AGENTS.md"
-    },
-    {
       "id": "generic",
       "name": "Any other agent",
       "kind": "ui",

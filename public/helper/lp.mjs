@@ -455,19 +455,6 @@ const HARNESSES = [
 		docs: ["https://hermes-agent.nousresearch.com/docs/user-guide/features/context-files"]
 	},
 	{
-		id: "t3code",
-		name: "T3 Code",
-		global: {
-			kind: "ui",
-			steps: ["T3 Code runs the agents you have installed (Codex, Claude Code, OpenCode...) and has no file of its own.", "Set up each of those (lp setup --agent codex, --agent claude...); LogicPacks also writes this project's AGENTS.md."]
-		},
-		project: AGENTS_MD,
-		format: "markdown",
-		shell: true,
-		mcp: true,
-		docs: ["https://github.com/pingdotgg/t3code"]
-	},
-	{
 		id: "generic",
 		name: "Any other agent",
 		global: {
@@ -498,8 +485,6 @@ const ALIASES = {
 	factory: "droid",
 	"qwen-code": "qwen",
 	"hermes-agent": "hermes",
-	"t3-code": "t3code",
-	t3: "t3code",
 	other: "generic",
 	custom: "generic"
 };

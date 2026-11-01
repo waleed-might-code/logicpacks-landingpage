@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { COMPANY, DEVELOPER, LINKS } from '../site';
+import { COMPANY, DEVELOPER, LINKS, OPEN_SOURCE } from '../site';
 import Logo from './Logo';
 
 const COLUMNS = [
@@ -15,6 +15,7 @@ const COLUMNS = [
     title: 'Developers',
     links: [
       { label: 'Getting started', href: LINKS.docs },
+      { label: OPEN_SOURCE.label, href: OPEN_SOURCE.repo },
     ],
   },
   {

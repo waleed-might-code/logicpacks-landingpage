@@ -16,6 +16,16 @@ import {
 
 export const SITE_URL = 'https://logicpacks.io';
 
+// Open source: the collaborative workspace is MIT; the hosted services are not part of the repository.
+export const OPEN_SOURCE = {
+  repo: 'https://github.com/Tech-Realm/logicpacks',
+  license: 'MIT',
+  licenseUrl: 'https://opensource.org/licenses/MIT',
+  label: 'Open source',
+  message: 'The collaborative workspace is open source under MIT; Cloud, Talent, Apps/Packs and Enterprise are hosted services.',
+  hosted: ['LogicPacks Cloud (coming soon)', 'Talent', 'Apps and Packs', 'Enterprise'],
+};
+
 // The version the copy describes. DOWNLOADS.mac.version (below) is the shipped DMG and is set at release.
 export const CURRENT_VERSION = '0.1.11';
 
@@ -25,7 +35,7 @@ export const CURRENT_VERSION = '0.1.11';
 export const HAS_SETUP = typeof __HAS_SETUP__ !== 'undefined' && __HAS_SETUP__;
 
 export const LINKS = {
-  docs: HAS_SETUP ? '/setup.md' : 'https://github.com/Majboor/t3code/tree/main/docs',
+  docs: HAS_SETUP ? '/setup.md' : 'https://github.com/Tech-Realm/logicpacks/tree/main/docs',
   download: '/download',
   whatsNew: '/new',
   privacy: '/privacy',
@@ -120,7 +130,6 @@ export const TOOLS = [
   { name: 'Qwen Code', mark: 'qwen' },
   { name: 'Warp', mark: 'warp' },
   { name: 'Hermes' },
-  { name: 'T3 Code' },
 ];
 
 // The paste-in prompt that connects an agent already in use to LogicPacks.
