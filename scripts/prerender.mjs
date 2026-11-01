@@ -62,7 +62,7 @@ try {
     const main = body.match(/<main[^>]*>([\s\S]*)<\/main>/)?.[1] ?? body;
     let mdBody = toMd(main).replace(/\]\(\/(?!\/)/g, `](${SITE_URL}/`);
     // The homepage twin carries the facts right after its H1.
-    if (page.path === '/') mdBody = mdBody.replace(/^(# [^\n]*\n)/, `$1\n${agent.homeFactsMarkdown()}`);
+    if (page.path === '/' || page.path === '/v2') mdBody = mdBody.replace(/^(# [^\n]*\n)/, `$1\n${agent.homeFactsMarkdown()}`);
     const md = `${mdBody}${mdFooter(canonical)}`.replace(/\]\(\/(?!\/)/g, `](${SITE_URL}/`);
     writeFileSync(`dist${page.md}`, md);
     twins.push([page, md]);

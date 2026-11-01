@@ -3,6 +3,7 @@
 // twin. Everything else passes straight through to the static site.
 const TWINS = {
   '/': '/index.md',
+  '/v2': '/v2.md',
   '/story': '/story.md',
   '/research': '/research.md',
   '/pricing': '/pricing.md',

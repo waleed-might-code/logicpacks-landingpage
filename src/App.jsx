@@ -9,6 +9,7 @@ import { Privacy, Terms } from './pages/Legal';
 import Pricing from './pages/Pricing';
 import Research from './pages/Research';
 import Story from './pages/Story';
+import V2 from './pages/V2';
 
 const TITLES = {
   '/': 'LogicPacks by TechRealm: people and AI agents in one workspace',
@@ -19,6 +20,7 @@ const TITLES = {
   '/pricing': 'Pricing · LogicPacks by TechRealm',
   '/research': 'Research · LogicPacks by TechRealm',
   '/story': 'Our story · LogicPacks by TechRealm',
+  '/v2': 'LogicPacks by TechRealm: your team and your agents, one workspace',
 };
 
 // Start each page at the top and give it its own tab title.
@@ -32,6 +34,8 @@ function useRouteChrome() {
 
 export default function App() {
   useRouteChrome();
+  // /v2 is the quiet landing being compared with /: its own header and footer.
+  if (useLocation().pathname === '/v2') return <V2 />;
   return (
     <div className="min-h-screen overflow-x-clip bg-page text-ink">
       <a

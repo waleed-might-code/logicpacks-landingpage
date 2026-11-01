@@ -5,6 +5,8 @@ const base = (process.argv[2] || 'http://localhost:7131').replace(/\/$/, '');
 const OPERATOR = ['Al Jash Trading', 'CN-1030597', 'TechRealm'];
 const CHECKS = [
   ['/', 'text/html', ['"@id":"https://logicpacks.io/#developer"', '"author":{"@id":"https://logicpacks.io/#developer"}', 'Paste this into your agent', 'Agents and people, one workspace.', 'Where it runs', 'application/ld+json', '"foundingDate":"1994"', 'type="text/markdown" href="https://logicpacks.io/index.md"', ...OPERATOR]],
+  ['/v2', 'text/html', ['Your team and your agents, one workspace.', 'Get LogicPacks', 'Download for Mac', 'View more', 'type="text/markdown" href="https://logicpacks.io/v2.md"', 'application/ld+json', ...OPERATOR]],
+  ['/v2.md', 'text/markdown', ['## LogicPacks in brief', 'vs Zed Delta', 'https://logicpacks.io/safety.md', 'Get LogicPacks', ...OPERATOR]],
   ['/story', 'text/html', ['Our story', 'Nov 2025', 'Public beta', ...OPERATOR]],
   ['/research', 'text/html', ['Research', '139/139 passed', 'App sharing, every run', ...OPERATOR]],
   ['/pricing', 'text/html', ['Free', '$99', 'per workspace / month', ...OPERATOR]],

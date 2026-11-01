@@ -58,6 +58,10 @@ export const DOWNLOADS = {
 // SHA-256, installs it to /Applications and opens it (public/install.sh).
 export const INSTALL_COMMAND = `curl -fsSL ${SITE_URL}/install.sh | bash`;
 
+// The agent helper alone (lp), from research/connect.json.
+export const HELPER_INSTALL = `curl -fsSL ${SITE_URL}/helper.sh | bash`;
+export const HELPER_INSTALL_WINDOWS = `irm ${SITE_URL}/helper.ps1 | iex`;
+
 // Copied by "Install with your agent". Written for Claude Code, Codex or any
 // agent with a shell: plain steps, no assumptions about which agent runs it.
 export const AGENT_PROMPT = `Install LogicPacks on this Mac and set this project up in it.

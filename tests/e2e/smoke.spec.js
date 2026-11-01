@@ -149,6 +149,21 @@ test.describe('LogicPacks landing: smoke', () => {
     });
   }
 
+  test('/v2: film, three lines, platform tabs, view more', async ({ page }) => {
+    await page.goto('/v2');
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('Your team and your agents, one workspace.');
+    await expect(page.getByRole('link', { name: 'Download for Mac' })).toHaveAttribute('href', /LogicPacks-0\.1\.9-arm64\.dmg/);
+    await page.getByRole('tab', { name: 'Windows' }).click();
+    await expect(page.getByText('irm https://logicpacks.io/helper.ps1 | iex')).toBeVisible();
+    await expect(page.getByText('Windows app coming soon.')).toBeVisible();
+    await page.getByRole('tab', { name: 'Linux' }).click();
+    await expect(page.getByText('Linux app coming soon.')).toBeVisible();
+    await page.getByRole('tab', { name: 'With your agent' }).click();
+    await expect(page.getByText('Paste this into your agent:')).toBeVisible();
+    await expect(page.getByRole('link', { name: /View more: how it works/ })).toHaveAttribute('href', '/');
+    await expect(page.locator('footer')).toContainText('Operated by Al Jash Trading');
+  });
+
   test('one fetch of the homepage (markdown) carries the facts first', async ({ request }) => {
     const md = await (await request.get('/index.md')).text();
     const top = md.split('\n').slice(0, 20).join('\n');
