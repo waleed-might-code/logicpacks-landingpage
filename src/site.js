@@ -41,10 +41,10 @@ export const DOWNLOADS = {
   mac: {
     // Versioned file names: Cloudflare caches release binaries, so a new
     // release gets a new name (and the ?v= tag) instead of reusing this one.
-    url: 'https://downloads.logicpacks.io/mac/LogicPacks-0.1.9-arm64.dmg?v=2125b6bf',
+    url: 'https://downloads.logicpacks.io/mac/LogicPacks-0.1.10-arm64.dmg?v=5a0d9785',
     // Hex SHA-256 of the DMG, published next to the button.
-    sha256: '2125b6bf5c6a5e43a0faadc81006fb7409dd9ae05d87d2162f7eb3ae1fd96ad1',
-    version: '0.1.9',
+    sha256: '5a0d9785c3d1215e53608c42a8c9ae5bbdeced8bdce4c6311f9fa94c63b460ba',
+    version: '0.1.10',
     size: '177 MB',
     requires: 'macOS 13 or later, Apple silicon',
   },
