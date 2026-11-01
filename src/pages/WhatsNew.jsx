@@ -38,7 +38,7 @@ function ExpertCard({ expert }) {
         <p className="text-[13px] font-semibold text-ink">{expert.role}</p>
         <p className="mt-1 text-[12px] leading-[1.45] text-faint">{expert.line}</p>
         <a
-          href={LINKS.webApp}
+          href={LINKS.download}
           className="mt-auto flex items-center justify-between pt-4 text-[12px] text-muted transition-colors hover:text-ink"
         >
           View profile <span aria-hidden="true">→</span>
@@ -112,7 +112,7 @@ export default function WhatsNew() {
           />
           <Facts items={EVERY_APP} />
         </div>
-        <p className="mt-3 text-[12px] text-faint">The web app is for code. Other recipes need the Mac app.</p>
+        <p className="mt-3 text-[12px] text-faint">Other recipes need the Mac app.</p>
       </article>
     </>
   );

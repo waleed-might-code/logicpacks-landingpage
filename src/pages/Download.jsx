@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { InstallCommand, copyText } from '../components/Buttons';
 import { AppleIcon, CheckIcon } from '../components/Icons';
-import { AGENT_PROMPT, DOWNLOADS, LINKS } from '../site';
+import { AGENT_PROMPT, DOWNLOADS } from '../site';
 
 const container = 'mx-auto w-full max-w-site px-4 sm:px-8';
 const box = 'rounded-xl border border-line bg-panel p-[22px]';
@@ -51,7 +51,7 @@ function MacBox() {
         {[
           'Download the .dmg and open it.',
           'Drag LogicPacks to Applications, then open it.',
-          'It uses your Claude Code login on this Mac. Add a folder and start a thread.',
+          'It uses the Claude Code or Codex already logged in on this Mac. Add a folder and start a thread.',
         ].map((step, i) => (
           <li key={step} className="flex gap-3">
             <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-line text-[11px] text-faint">
@@ -73,9 +73,6 @@ function MacBox() {
             The .dmg is on the way
           </span>
         )}
-        <a href={LINKS.webApp} className={`${btn} border border-line bg-raised text-ink hover:bg-[#232323]`}>
-          Use the web app
-        </a>
       </div>
       {meta && <p className="mt-4 text-[12px] text-faint">{meta}</p>}
       {ready && (
@@ -136,10 +133,10 @@ const OTHERS = [
   },
   {
     id: 'web',
-    title: 'Web app',
-    body: 'Code projects in any browser, with your agents running on the computer you connect. Other recipes need the Mac app.',
-    url: LINKS.webApp,
-    cta: 'Open the web app',
+    title: 'Our cloud',
+    body: 'Cloud-hosted projects, with work that keeps going when your laptop is off.',
+    url: null,
+    cta: '',
   },
 ];
 
@@ -147,14 +144,14 @@ export default function Download() {
   return (
     <section aria-labelledby="download-title" className={`${container} pb-24 pt-16 sm:pb-32 sm:pt-24`}>
       <p className="inline-flex h-7 items-center rounded-full border border-line bg-raised px-3 text-[12px] text-muted">
-        Mac app and web app
+        Mac app
       </p>
       <h1
         id="download-title"
         className="mt-6 text-[28px] font-normal leading-[1.12] tracking-[-0.025em] sm:text-[38px]"
       >
         Download LogicPacks.
-        <span className="block text-muted">On your Mac, or in the browser for code.</span>
+        <span className="block text-muted">On your Mac, with your own agents.</span>
       </h1>
 
       <div className="mt-10 grid gap-3 lg:grid-cols-2">

@@ -30,7 +30,7 @@ const CHECKS = [
   ['/setup.md', 'text/markdown', ['LogicPacks', '/safety.md']],
   ['/why.md', 'text/markdown', ['# Why LogicPacks', '## Bring your own agent', 'no per-token markup', '/compare.md', ...OPERATOR]],
   ['/compare.md', 'text/markdown', ['# LogicPacks compared', 'As of 2026-11-01', 'Cursor', 'Devin', 'Tuple', 'Upwork', 'T3 Code', 'pick', ...OPERATOR]],
-  ['/safety.md', 'text/markdown', ['## 2. What the helper installs', '<!-- logicpacks:start -->\n## LogicPacks\nTeam work runs through the `lp` command', '<!-- logicpacks:end -->', '`~/.claude/CLAUDE.md`', 'lp uninstall', '.lp-backup-', 'https://logicpacks.io', 'https://app.logicpacks.io', '## 5.', '## 6.', '## 7.', ...OPERATOR]],
+  ['/safety.md', 'text/markdown', ['## 2. What the helper installs', '<!-- logicpacks:start -->\n## LogicPacks\nTeam work runs through the `lp` command', '<!-- logicpacks:end -->', '`~/.claude/CLAUDE.md`', 'lp uninstall', '.lp-backup-', 'https://logicpacks.io', '## 5.', '## 6.', '## 7.', ...OPERATOR]],
 ];
 let failed = 0;
 const preview = !/^https:\/\/(www\.)?logicpacks\.io$/.test(base) && !base.includes('localhost');

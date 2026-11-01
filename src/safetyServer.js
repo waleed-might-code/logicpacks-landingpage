@@ -1,5 +1,5 @@
 // Sections 5 to 7 of /safety.md: sharing, secrets and removing access. Written from a
-// read of the v2 server, web app and helper code (LogicPacks 0.1.9, release/0.1.9) on
+// read of the v2 server, web app and helper code (LogicPacks 0.1.9 code; copy updated for 0.1.10) on
 // 2026-11-01. Update this file when that behaviour changes.
 
 export const SERVER_SAFETY = `## 5. What teammates can see
@@ -18,13 +18,13 @@ What streams from your computer:
 
 What teammates cannot do:
 
-- Run your local agent, your MCP servers or your tools. Each person's agent runs on their own login, on their own computer or in their own cloud seat. Teammates can send messages and questions to your agent's thread (\`lp send\`, \`lp ask\`), and your agent sees their thread titles and the files they are editing as project context.
-- Use your model login. By default each member's cloud turns run only on the login that member connected. The one exception is "Share my agent login" in Request assistance, which lets that expert run turns on your login in that one project until you revoke it (section 7).
+- Run your local agent, your MCP servers or your tools. Each person's agent runs on their own login, on their own computer. Teammates can send messages and questions to your agent's thread (\`lp send\`, \`lp ask\`), and your agent sees their thread titles and the files they are editing as project context.
+- Use your model login. Each member's turns run only on the login that member has on their own computer. The one exception is "Share my agent login" in Request assistance, which lets that expert run turns on your login in that one project until you revoke it (section 7).
 
 ## 6. Secrets and access to files
 
 - A member reaches only their own folder, the projects shared with them and those projects' worktrees. Every request is checked against their current role. Host-level actions are refused, and terminals are off for members.
-- On the LogicPacks cloud (app.logicpacks.io), each member's agent runs as its own Unix user with a scrubbed environment (no host credentials, no GitHub token, no SSH agent). Checks: [/research.md](/research.md) (Member sandbox). This applies to the LogicPacks cloud. A machine you host yourself is your own: its owner and admins can reach everything on it.
+- When you share a project, the host is your own laptop: its owner can reach everything on it, and teammates connect and sync to it while it is on. Our cloud, where each member's agent would run as its own isolated user with a scrubbed environment (no host credentials, no GitHub token, no SSH agent), is coming soon and is not available yet. Checks of that design: [/research.md](/research.md) (Member sandbox).
 - **A member can read everything in a shared project folder, including \`.env\` and key files.** Experts from Request assistance join as ordinary project members, so the same applies to them. Neither files nor pasted text are filtered or redacted for them.
 - **Vetted freelancers (Beta) are the exception:** in the projects they are assigned to, secret files (\`.env\`, keys and similar) are hidden from them, secrets pasted into threads are redacted in what they see, and they run on their own AI login unless you allow yours for that offer. Their access ends when the work is completed or cancelled.
 - Keep secrets out of shared projects: use \`.gitignore\` for \`.env\` and key files, keep them outside the project folder, or use a secrets manager. Do not paste keys into a shared thread. \`lp share\` pushes the project to its GitHub remote, so anything committed is in that repository as well.
@@ -41,12 +41,15 @@ What teammates cannot do:
 - **From the command line:** \`lp members\` lists who is in the project; \`lp remove <person>\` removes them from the project and its workspace (\`--project-only\` for just the project, \`--dry-run\` to see what it would do).
 - **Timing:** removal applies to the person's next request (each request checks their current access), and their helper can no longer stream into the project. An agent turn that is already running is not stopped and keeps its access until it ends. Removal does not touch GitHub: LogicPacks does not add teammates as collaborators on your repository, and any copy a person already cloned stays with them.
 
-## 8. Agent logins and code on the LogicPacks cloud
+## 8. Agent logins and code
+- **Agents run on your own computer.** The Mac app uses the Claude Code or Codex CLI that is already installed and logged in on your machine. There is no "Log in with Claude" in the app; if the CLI is missing, the app shows the install command and tells you to log in in your terminal. Nothing of that login is stored on our servers.
+- **Sharing is host-based:** teammates connect and sync to the host's laptop while it is on. The project lives on the host's laptop.
 
-- **Agents run on your own computer by default:** the web app connects to your computer through a pairing URL ("Connect your computer"), and turns run there with your own Claude, Codex, OpenCode or Gemini login. Nothing of that login is stored on our servers.
-- **Logins stored on the LogicPacks cloud are opt-in, by access code.** Members who connected a cloud login before 0.1.9 keep it. A stored login is kept for your account only and encrypted at rest (AES-256-GCM, with a key per member derived from a host key that is not part of any backup); it is decrypted only while your agent runs on the cloud and sealed again when it stops. This protects copies of the disk and backups; the host's administrator, who holds the key, could still read it. No API or screen shows one member's login to another member.
-- **Disconnecting:** "Disconnect" in the app deletes the stored Codex, Gemini or OpenCode login file and drops the stored Claude login. You can also revoke the login from your Claude, OpenAI or Google account at any time.
-- **Each member runs separately:** on the LogicPacks cloud, each member's agent runs in its own sandbox.
-- **Your code:** projects imported from or synced to GitHub live in your GitHub repository, so you keep a full copy outside LogicPacks. A project created from scratch on the cloud has no GitHub copy until you sync it, and thread history is stored on the LogicPacks cloud only.
-- **Self-hosted:** if you run LogicPacks on your own machine, logins and code stay on that machine.
+### Our cloud (coming soon, not available yet)
+
+Our cloud is not live. The following describes how it is designed, so you can judge it ahead of time:
+
+- **Cloud logins:** a stored agent login would be kept for your account only and encrypted at rest (AES-256-GCM, with a key per member derived from a host key that is not part of any backup), decrypted only while your agent runs in the cloud and sealed again when it stops. This protects copies of the disk and backups; the host's administrator, who holds the key, could still read it. No API or screen would show one member's login to another member.
+- **Each member runs separately:** each member's agent runs in its own sandbox.
+- **Your code:** a project created from scratch in the cloud has no GitHub copy until you sync it, and thread history is stored in the cloud only.
 `;

@@ -3,7 +3,7 @@
 // the harness table come from the helper source via research/connect.json
 // (scripts/sync-connect.mjs), so the quoted block is the one the helper writes.
 import connect from '../research/connect.json';
-import { LINKS, SITE_URL } from './site';
+import { SITE_URL } from './site';
 
 const fence = (lang, text) => `\`\`\`${lang}\n${text}\n\`\`\``;
 
@@ -33,7 +33,7 @@ Facts for people, and for AI assistants helping someone decide whether to run th
 
 ## 1. Production URLs
 
-- Site: ${SITE_URL}. App: ${LINKS.webApp}. Agent setup guide: ${SITE_URL}/setup.md.
+- Site: ${SITE_URL}. Agent setup guide: ${SITE_URL}/setup.md.
 - Every page declares \`<link rel="canonical">\` to ${SITE_URL}, and every markdown file names its canonical URL at the bottom (and in a \`Link: rel="canonical"\` header).
 - Preview builds (for example \`*.logicpacks-landingpage.pages.dev\`) are test builds: they carry \`noindex\` and say so at the top of /llms.txt and /about.md. Use the production URLs above.
 

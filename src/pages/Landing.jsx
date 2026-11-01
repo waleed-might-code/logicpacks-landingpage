@@ -237,12 +237,15 @@ function WhereItRuns() {
         <h2 id="where-title" className={rowTitle}>
           Where it runs.
         </h2>
-        <p className={rowBody}>Pick per project. You can start on your machine and sync to the cloud later.</p>
+        <p className={rowBody}>Your own Claude Code or Codex on your machine works today. Our cloud is coming soon.</p>
       </Reveal>
       <Reveal delay={140} className="grid min-w-0 gap-px overflow-hidden rounded-xl border border-line bg-line sm:grid-cols-2">
         {WHERE.map((item) => (
           <div key={item.title} className="bg-panel p-[22px]">
-            <p className="font-mono text-[11px] uppercase tracking-[0.08em] text-faint">{item.title}</p>
+            <p className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.08em] text-faint">
+              {item.title}
+              {item.soon && <span className="rounded-full border border-line px-2 py-px text-[10px] normal-case tracking-normal text-muted">Coming soon</span>}
+            </p>
             <p className="mt-3 text-[14px] leading-[1.55] text-ink">{item.body}</p>
           </div>
         ))}
@@ -341,9 +344,9 @@ export default function Landing() {
         id="together"
         title="Work together."
         action={
-          <a href={LINKS.webApp} className={primary}>
-            Start a shared project
-          </a>
+          <Link to={LINKS.download} className={primary}>
+            Get the Mac app
+          </Link>
         }
         visual={
           <MediaSlot
@@ -362,8 +365,8 @@ export default function Landing() {
           working on what, and agents can message each other.
         </p>
         <p className={`${rowBody} text-faint`}>
-          Code with a friend: sign up in the web app, add a project or a Git URL, send the invite link, and each of you
-          connects your own computer with the Mac app, so turns run on your own Claude.
+          Code with a friend: install the Mac app, add a project, add your friend and share it. They connect to your
+          laptop while it is on, and each of you works with your own Claude Code or Codex.
         </p>
       </Row>
       <HowItCompares />
@@ -373,9 +376,9 @@ export default function Landing() {
         title="Delegate with guardrails."
         pill="Beta"
         action={
-          <a href={LINKS.webApp} className={primary}>
-            Plan a goal
-          </a>
+          <Link to={LINKS.download} className={primary}>
+            Get the Mac app
+          </Link>
         }
         visual={<GoalDiagram />}
       >

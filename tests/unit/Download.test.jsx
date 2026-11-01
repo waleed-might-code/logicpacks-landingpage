@@ -40,12 +40,13 @@ describe('Download page', () => {
     expect(screen.getByText('curl -fsSL https://logicpacks.io/install.sh | bash')).toBeInTheDocument();
   });
 
-  it('lists Windows and iOS as coming soon (the only Coming soon left) and links the web app', async () => {
+  it('lists Windows, iOS and our cloud as coming soon', async () => {
     await renderDownload({});
     expect(screen.getByRole('heading', { name: 'Windows' })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'iPhone and iPad' })).toBeInTheDocument();
-    expect(screen.getAllByText('Coming soon')).toHaveLength(2);
-    expect(screen.getByRole('link', { name: 'Open the web app' })).toHaveAttribute('href', 'https://app.logicpacks.io');
+    expect(screen.getAllByText('Coming soon')).toHaveLength(3);
+    expect(screen.getByRole('heading', { name: 'Our cloud' })).toBeInTheDocument();
+    expect(document.body.innerHTML).not.toContain('app.logicpacks.io');
     expect(screen.getByRole('button', { name: 'Copy prompt' })).toBeInTheDocument();
   });
 });

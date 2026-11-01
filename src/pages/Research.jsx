@@ -78,7 +78,7 @@ export default function Research() {
           <Row key={s.id} testId="suite" title={s.title} detail={s.detail} value={formatSuite(s)} date={s.date} />
         ))}
       </Block>
-      <Block id="security" title="Member sandbox" intro="Checks that keep members of a cloud workspace apart from the host and from each other.">
+      <Block id="security" title="Member sandbox (our cloud, coming soon)" intro="Checks of the design that keeps members of a cloud workspace apart from the host and from each other. Our cloud is coming soon and is not available yet.">
         {b.security.map((c) => (
           <Row key={c.id} testId="security-check" title={c.title} detail={c.detail} value={formatCheck(c)} pending={c.result == null} date={c.date} />
         ))}

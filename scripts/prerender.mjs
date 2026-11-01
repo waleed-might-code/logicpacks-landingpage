@@ -87,7 +87,7 @@ try {
   writeFileSync('dist/llms.txt', agent.llmsTxt());
   // A no-install path for two people, ahead of the helper setup steps.
   if (existsSync('dist/setup.md') && !readFileSync('dist/setup.md', 'utf8').includes('## Code with a friend')) {
-    appendFileSync('dist/setup.md', `\n## Code with a friend (no install)\n\nIf you only want to work with one other person, you can skip the helper:\n\n${FRIEND_PATH.map((step, i) => `${i + 1}. ${step}`).join('\n')}\n`);
+    appendFileSync('dist/setup.md', `\n## Code with a friend\n\nIf you only want to work with one other person, the Mac app is enough:\n\n${FRIEND_PATH.map((step, i) => `${i + 1}. ${step}`).join('\n')}\n`);
   }
   const setup = existsSync('dist/setup.md') ? readFileSync('dist/setup.md', 'utf8') : '';
   const full = [

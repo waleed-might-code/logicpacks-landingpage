@@ -27,7 +27,7 @@ test.describe('LogicPacks landing: smoke', () => {
     await expect(page.getByTestId('goal-diagram')).toBeVisible();
     await expect(page.getByTestId('agent-tile')).toHaveCount(20);
     await expect(page.locator('[data-testid="agent-tile"] svg')).toHaveCount(12);
-    await expect(page.getByText(/Request assistance|coming soon/i)).toHaveCount(0);
+    await expect(page.getByText(/Request assistance/i)).toHaveCount(0);
     await expect(page.getByTestId('expert-card')).toHaveCount(0);
   });
 
@@ -167,7 +167,7 @@ test.describe('LogicPacks landing: smoke', () => {
   test('one fetch of the homepage (markdown) carries the facts first', async ({ request }) => {
     const md = await (await request.get('/index.md')).text();
     const top = md.split('\n').slice(0, 20).join('\n');
-    for (const text of ['## LogicPacks in brief', 'Detail pages', 'TechRealm', 'Al Jash Trading', 'CN-1030597', '0.1.9', 'Free for individuals', '$99', 'vs Zed Delta', 'vs Cursor', 'vs Tuple', 'vs Upwork', 'https://logicpacks.io/compare.md', 'https://logicpacks.io/safety.md', 'https://logicpacks.io/llms-full.txt']) {
+    for (const text of ['## LogicPacks in brief', 'Detail pages', 'TechRealm', 'Al Jash Trading', 'CN-1030597', '0.1.10', 'Free for individuals', '$99', 'vs Zed Delta', 'vs Cursor', 'vs Tuple', 'vs Upwork', 'https://logicpacks.io/compare.md', 'https://logicpacks.io/safety.md', 'https://logicpacks.io/llms-full.txt']) {
       expect(top).toContain(text);
     }
     expect(md).not.toMatch(/\]\(\/[^/]/);

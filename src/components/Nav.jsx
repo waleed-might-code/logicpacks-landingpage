@@ -41,15 +41,12 @@ export default function Nav() {
         <a href={LINKS.docs} className={`${link} hidden sm:inline`}>
           Docs
         </a>
-        <Link to={LINKS.download} className={`${link} hidden sm:inline`}>
-          Download
-        </Link>
-        <a
-          href={LINKS.signIn}
+        <Link
+          to={LINKS.download}
           className="inline-flex h-9 items-center rounded-full bg-ink px-4 text-[14px] font-medium leading-none text-page transition-colors hover:bg-white"
         >
-          Sign in
-        </a>
+          Download
+        </Link>
       </nav>
     </header>
   );

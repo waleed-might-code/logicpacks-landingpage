@@ -9,14 +9,12 @@ const COLUMNS = [
       { label: 'Download', to: LINKS.download },
       { label: 'What’s new', to: LINKS.whatsNew },
       { label: 'Pricing', to: LINKS.pricing },
-      { label: 'Web app', href: LINKS.webApp },
     ],
   },
   {
     title: 'Developers',
     links: [
       { label: 'Getting started', href: LINKS.docs },
-      { label: 'Sign in', href: LINKS.signIn },
     ],
   },
   {

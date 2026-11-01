@@ -34,11 +34,11 @@ describe('Landing', () => {
     expect(screen.getByRole('tabpanel')).toHaveTextContent('Install LogicPacks on this Mac');
   });
 
-  it('has the nav in order: What’s new, Docs, Download, Sign in', () => {
+  it('has the nav in order: What’s new, Docs, Download', () => {
     renderAt('/');
     const nav = within(screen.getByRole('navigation', { name: 'Main' }));
     const names = nav.getAllByRole('link').map((a) => a.textContent);
-    expect(names).toEqual(['LogicPacks', 'What’s new', 'Pricing', 'Docs', 'Download', 'Sign in']);
+    expect(names).toEqual(['LogicPacks', 'What’s new', 'Pricing', 'Docs', 'Download']);
     // Motion backgrounds: the launch band and the closing line.
     expect(document.querySelectorAll('[data-testid="motion-bg"]')).toHaveLength(2);
     expect(nav.getByRole('link', { name: 'What’s new' })).toHaveAttribute('href', '/new');
@@ -56,8 +56,7 @@ describe('Landing', () => {
       'Where it runs.',
       'Developed by TechRealm. Operated by Al Jash Trading, Abu Dhabi. Since 1994.Try it on your next project.',
     ]);
-    expect(screen.getByRole('link', { name: 'Start a shared project' })).toHaveAttribute('href', 'https://app.logicpacks.io');
-    expect(screen.getByRole('link', { name: 'Plan a goal' })).toBeInTheDocument();
+    expect(screen.getAllByRole('link', { name: 'Get the Mac app' })[0]).toHaveAttribute('href', '/download');
     expect(screen.getByTestId('goal-diagram')).toHaveTextContent('Drifting');
     expect(screen.getByText(/or an outside team/)).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /See what’s new/ })).toHaveAttribute('href', '/new');
@@ -70,7 +69,7 @@ describe('Landing', () => {
       expect(screen.getByText(title)).toBeInTheDocument();
     }
     expect(screen.queryAllByTestId('expert-card')).toHaveLength(0);
-    expect(container.textContent).not.toMatch(/coming soon|enterprise|ledger|orchestrat|context budget/i);
+    expect(container.textContent).not.toMatch(/enterprise|ledger|orchestrat|context budget/i);
   });
 
   it('shows every harness and editor, with a CC0 mark or a wordmark', () => {
@@ -159,13 +158,15 @@ describe('Trust details', () => {
     expect(footer.textContent).not.toMatch(/Waleed/i);
   });
 
-  it('explains where it runs: your machine or our sandbox cloud', () => {
+  it('explains where it runs: your machine, with our cloud coming soon', () => {
     renderAt('/');
     const where = screen.getByRole('heading', { name: 'Where it runs.' }).closest('section');
     expect(where).toHaveTextContent('Your machine');
     expect(where).toHaveTextContent('your login stays on your machine');
-    expect(where).toHaveTextContent('Our sandbox cloud');
-    expect(where).toHaveTextContent('isolated sandbox user, with no access to the host or to other members');
+    expect(where).toHaveTextContent('Our cloud');
+    expect(where).toHaveTextContent('Coming soon');
+    expect(where).toHaveTextContent('isolated user');
+    expect(within(where).queryByRole('link')).toBeNull();
   });
 
   it('renders the privacy policy with what we store, what we never store, deletion and the operator', () => {

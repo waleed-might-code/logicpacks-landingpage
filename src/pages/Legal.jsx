@@ -64,21 +64,20 @@ export function Privacy() {
         <ul className="list-disc space-y-1 pl-5">
           <li>Your account: name, email address and a hashed password, or the sign-in you used.</li>
           <li>Workspace and project details: names, members, invites, threads and their status.</li>
-          <li>Synced projects, only when you choose to sync a project to the cloud. A project you keep on your machine stays there.</li>
+          <li>Projects stay on your machine, or on the host&rsquo;s laptop when shared. Syncing projects to our cloud is coming soon and is not available yet.</li>
           <li>Basic logs needed to run the service and fix problems, kept for a short time.</li>
         </ul>
       </Part>
       <Part title="What we do not store">
         <p>
-          We never store or proxy model API keys. Your agent runs on your own Claude Code, Codex, OpenCode or Gemini CLI
-          login on your machine, and your login stays there. In the cloud, a member&rsquo;s turns run with the login that
-          member connected, inside their own sandbox.
+          We never store or proxy model API keys. Your agent runs on your own Claude Code or Codex
+          login on your machine, and your login stays there.
         </p>
       </Part>
-      <Part title="The cloud">
+      <Part title="Our cloud (coming soon)">
         <p>
-          Each member of a cloud workspace gets an isolated sandbox user. It has no access to the host or to other
-          members&rsquo; sandboxes. Projects you sync are also pushed to the GitHub repository you connect.
+          Our cloud is coming soon and is not available yet. As designed, each member of a cloud workspace gets an isolated sandbox user with no access to the
+          host or to other members&rsquo; sandboxes.
         </p>
       </Part>
       <Part title="Your choices">

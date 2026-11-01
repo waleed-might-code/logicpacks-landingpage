@@ -15,7 +15,9 @@ import {
 // changing where "Sign in" or "Download" points is a one-line edit.
 
 export const SITE_URL = 'https://logicpacks.io';
-export const APP_URL = 'https://app.logicpacks.io';
+
+// The version the copy describes. DOWNLOADS.mac.version (below) is the shipped DMG and is set at release.
+export const CURRENT_VERSION = '0.1.10';
 
 // public/setup.md is the agent setup guide. Until it ships, Docs points at the repo
 // docs so nothing links a 404. The build sets __HAS_SETUP__ (vite.config.js).
@@ -24,8 +26,6 @@ export const HAS_SETUP = typeof __HAS_SETUP__ !== 'undefined' && __HAS_SETUP__;
 
 export const LINKS = {
   docs: HAS_SETUP ? '/setup.md' : 'https://github.com/Majboor/t3code/tree/main/docs',
-  signIn: APP_URL,
-  webApp: APP_URL,
   download: '/download',
   whatsNew: '/new',
   privacy: '/privacy',
@@ -69,9 +69,9 @@ export const AGENT_PROMPT = `Install LogicPacks on this Mac and set this project
 1. If /Applications/LogicPacks.app is missing, run: ${INSTALL_COMMAND}
    It downloads the signed app, checks its SHA-256, copies it to /Applications and opens it. Stop if it reports a checksum mismatch.
 2. If LogicPacks is already installed, just open it.
-3. LogicPacks uses my Claude Code login on this machine. If it asks, help me sign in.
-4. Add this folder as a project. It will show "Not synced" until I choose to share it.
-5. Tell me when it is ready, and remind me that saying "sync this to the cloud" in the project's chat shares it with my team.`;
+3. LogicPacks uses the Claude Code or Codex CLI already installed and logged in on this machine. If the app says the CLI is missing, help me install it and log in in the terminal.
+4. Add this folder as a project. It stays on this machine until I share it.
+5. Tell me when it is ready, and remind me that I can add teammates and share the project from the app. Teammates connect to my laptop while it is on.`;
 
 // The hero visual: the launch film (public/launch.mp4) over its poster frame.
 export const LAUNCH_MEDIA = {
@@ -178,7 +178,7 @@ export const STORY = [
   { when: 'Nov 2025', title: 'Started building', body: 'A shared workspace where people and their agents work on the same project.' },
   { when: 'Jan 2026', title: 'Internal testing', body: 'Opened to our own team after two months, used on our client work every day.' },
   { when: 'Feb to Oct 2026', title: 'Eight months of testing', body: 'Used in labs and by tech agencies on real projects.' },
-  { when: 'Nov 2026', title: 'Public beta', body: 'Version 0.1.9: shared projects, threads, invites, sync and your own agent, free for individuals. App sharing and Request assistance are Beta.' },
+  { when: 'Nov 2026', title: 'Public beta', body: 'Version 0.1.10: the Mac app with a code editor and agent workspace, projects, adding people and sharing, running on your own Claude Code or Codex. Our cloud is coming soon. App sharing and Request assistance are Beta.' },
 ];
 
 // Launches built with LogicPacks. Facts only from the project notes.
@@ -223,9 +223,9 @@ export const PRICING = {
     price: 'Free',
     note: 'For you and the people you work with.',
     features: [
-      'Shared projects with your team',
-      'Your own agent and subscription: Claude Code, Codex, OpenCode, Gemini CLI and more',
-      'Mac app and web app',
+      'Shared projects with your team, hosted on your laptop while it is on',
+      'Your own agent and subscription: Claude Code or Codex',
+      'The Mac app, with a code editor and agent workspace',
       'Beta features as they land',
     ],
   },
@@ -235,7 +235,7 @@ export const PRICING = {
     per: ENTERPRISE_PER,
     note: 'For companies that want more control.',
     features: ['Everything in Individuals'],
-    soon: ['Single sign-on', 'Admin controls and audit log', 'Your own cloud host', 'Vetted freelancers on request'],
+    soon: ['Single sign-on', 'Admin controls and audit log', 'Our cloud, and your own cloud host', 'Vetted freelancers on request'],
   },
 };
 
@@ -243,11 +243,13 @@ export const PRICING = {
 export const WHERE = [
   {
     title: 'Your machine',
-    body: 'Use the Claude Code, Codex, OpenCode or Gemini CLI you already run. We do not run anything for you, and your login stays on your machine.',
+    body: 'Use the Claude Code or Codex you already have installed and logged in on your computer. We do not run anything for you, and your login stays on your machine.',
+    soon: false,
   },
   {
-    title: 'Our sandbox cloud',
-    body: 'Each member gets an isolated sandbox user, with no access to the host or to other members. Work keeps going when your laptop is off.',
+    title: 'Our cloud',
+    body: 'A sandboxed cloud where each member gets an isolated user, and work keeps going when your laptop is off.',
+    soon: true,
   },
 ];
 
@@ -255,13 +257,12 @@ export const WHERE = [
 export const FREELANCERS =
   'Sometimes it is cheaper to save tokens and bring in a freelancer vetted by LogicPacks. They bring their own Claude and tools and use none of your tokens: you pay for their hours, with their AI included. Every freelancer works under NDA and your keys are never shared with them. Secret files such as .env are hidden from them, and milestones and drift alerts keep their work on plan.';
 
-// The shortest path for two people (checked against the v2 web app, 2026-11-01).
+// The shortest path for two people (the 0.1.10 Mac app).
 export const FRIEND_PATH = [
-  `Open ${APP_URL} and sign up with your email (sign-up is by invite during the beta).`,
-  'Add a project: start empty, from a template, or clone a Git URL (for example your GitHub repository).',
-  'Copy the invite link and send it to your friend; they sign up and join.',
-  'Each of you connects your own computer: install the Mac app, then "Connect your computer" in the web app. Turns run on your computer with your own Claude login (Codex, OpenCode and Gemini work too).',
-  'Each of you works in your own thread with your own agent, and you both see who is working on what.',
+  'Each of you installs the Mac app from https://logicpacks.io/download and has Claude Code or Codex installed and logged in. If the CLI is missing, the app shows the install command and tells you to log in in your terminal.',
+  'The host adds a project in the app: an empty folder, or an existing folder or Git repository.',
+  'The host adds the other person and shares the project. Teammates connect and sync to the host\'s laptop while it is on.',
+  'Each of you works in your own thread with your own agent on your own login, and you both see who is working on what.',
 ];
 
 // How it compares: the main page and the top of /index.md read the same lines.

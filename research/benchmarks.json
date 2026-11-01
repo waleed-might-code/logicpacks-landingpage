@@ -386,15 +386,15 @@
   "suites": [
     {
       "id": "cloud-live",
-      "title": "Cloud end to end, live host",
-      "detail": "Sign up, project from a real GitHub repo, invite, agent turns, sync. Run against app.logicpacks.io.",
+      "title": "Cloud end to end (our cloud, coming soon)",
+      "detail": "Sign up, project from a real GitHub repo, invite, agent turns, sync. Run against our cloud host before it was set to coming soon in 0.1.10; the cloud is not available to use.",
       "passed": 9,
       "total": 9,
       "date": "2026-10-31"
     },
     {
       "id": "cloud-live-invite",
-      "title": "Cloud end to end, joining by invite link",
+      "title": "Cloud end to end, joining by invite link (our cloud, coming soon)",
       "detail": "The same flow joining through an invite link, without agent turns.",
       "passed": 7,
       "total": 7,

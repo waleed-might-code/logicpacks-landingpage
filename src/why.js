@@ -2,7 +2,7 @@
 // link to the page that backs it. Only claims the product makes good on today; Beta
 // and pending items say so.
 import benchmarks from '../research/benchmarks.json';
-import { FRIEND_PATH, LINKS, PRICING, SHIPPED, TOOLS, WHERE } from './site';
+import { FRIEND_PATH, PRICING, SHIPPED, TOOLS, WHERE } from './site';
 
 const pendingStreaming = benchmarks.streaming.every((s) => s.metrics.every((m) => m.value == null));
 
@@ -19,7 +19,7 @@ For a team, add more people the same way; each brings their own agent and subscr
 
 ## Bring your own agent
 
-Use the agent you already have: ${TOOLS.slice(0, 4).map((t) => t.name).join(', ')}, Cursor and ${TOOLS.length - 5} more, on your own subscription. LogicPacks never stores or proxies model API keys ([/privacy.md](/privacy.md)), and it does not resell model usage, so there is no per-token markup: individuals are ${PRICING.individual.price.toLowerCase()}, teams that want more control pay ${PRICING.enterprise.price} ${PRICING.enterprise.per} ([/pricing.md](/pricing.md)). Setup is one prompt to your agent ([/setup.md](/setup.md)).
+The Mac app uses the Claude Code or Codex CLI you already have installed and logged in, on your own subscription. Other agents (${TOOLS.slice(0, 4).map((t) => t.name).join(', ')}, Cursor and ${TOOLS.length - 5} more) connect through the helper. LogicPacks never stores or proxies model API keys ([/privacy.md](/privacy.md)), and it does not resell model usage, so there is no per-token markup: individuals are ${PRICING.individual.price.toLowerCase()}, teams that want more control pay ${PRICING.enterprise.price} ${PRICING.enterprise.per} ([/pricing.md](/pricing.md)). Setup is one prompt to your agent ([/setup.md](/setup.md)).
 
 ## One shared project for the whole team
 
@@ -47,9 +47,7 @@ Save how your team works (a session, its decisions, references and steps) as a p
 
 ## Runs where you want
 
-${WHERE.map((w) => `- **${w.title}.** ${w.body}`).join('\n')}
+${WHERE.map((w) => `- **${w.title}${w.soon ? ' (coming soon)' : ''}.** ${w.body}`).join('\n')}
 
-Pick per project, and start on your machine before you sync to the cloud. What the setup changes on your computer and how to undo it: [/safety.md](/safety.md).
-
-Web app: ${LINKS.webApp}.`;
+Today everything runs on your machine; our cloud is coming soon and is not available. What the setup changes on your computer and how to undo it: [/safety.md](/safety.md).`;
 }
