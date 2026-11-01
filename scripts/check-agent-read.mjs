@@ -6,7 +6,7 @@ const OPERATOR = ['Al Jash Trading', 'CN-1030597', 'TechRealm'];
 const CHECKS = [
   ['/', 'text/html', ['"@id":"https://logicpacks.io/#developer"', '"author":{"@id":"https://logicpacks.io/#developer"}', 'Paste this into your agent', 'Agents and people, one workspace.', 'Where it runs', 'application/ld+json', '"foundingDate":"1994"', 'type="text/markdown" href="https://logicpacks.io/index.md"', ...OPERATOR]],
   ['/story', 'text/html', ['Our story', 'Nov 2025', 'Public beta', ...OPERATOR]],
-  ['/research', 'text/html', ['Research', '139/139 passed', 'Benchmark running', ...OPERATOR]],
+  ['/research', 'text/html', ['Research', '139/139 passed', 'App sharing, every run', ...OPERATOR]],
   ['/pricing', 'text/html', ['Free', '$99', 'per workspace / month', ...OPERATOR]],
   ['/new', 'text/html', ['Request assistance', 'vetted by LogicPacks', ...OPERATOR]],
   ['/download', 'text/html', ['Download', 'sha', ...OPERATOR]],
