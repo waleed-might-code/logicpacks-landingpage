@@ -252,7 +252,7 @@ export default function V2() {
               <Link to="/v2" aria-label="LogicPacks">
                 <Logo className="text-[15px]" />
               </Link>
-              <Link to="/" className="text-[13px] text-muted hover:text-ink">
+              <Link to="/overview" className="text-[13px] text-muted hover:text-ink">
                 View more
               </Link>
             </header>
@@ -299,7 +299,7 @@ export default function V2() {
         </div>
         <GetIt />
         <section className={`${wrap} pb-20`}>
-          <Link to="/" className="inline-flex items-center gap-2 text-[13px] text-ink hover:underline">
+          <Link to="/overview" className="inline-flex items-center gap-2 text-[13px] text-ink hover:underline">
             View more: how it works, how it compares, safety and pricing <span aria-hidden="true">→</span>
           </Link>
         </section>

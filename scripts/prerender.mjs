@@ -43,7 +43,7 @@ try {
     const body = render(page.path);
     if (!body.includes('Al Jash Trading')) throw new Error(`${page.path} rendered without the operator`);
     const file = page.path === '/' ? 'index.html' : `${page.path.slice(1)}.html`;
-    const canonical = `${SITE_URL}${page.path === '/' ? '/' : page.path}`;
+    const canonical = `${SITE_URL}${page.path === '/' || page.path === '/v2' ? '/' : page.path}`;
     const title = page.path === '/' ? 'LogicPacks by TechRealm: people and AI agents in one workspace' : `${page.title} · LogicPacks by TechRealm`;
     const html = shell
       .replace('<div id="root"></div>', `<div id="root">${body}</div>`)

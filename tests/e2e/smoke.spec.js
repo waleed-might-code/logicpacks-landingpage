@@ -160,7 +160,7 @@ test.describe('LogicPacks landing: smoke', () => {
     await expect(page.getByText('Linux app coming soon.')).toBeVisible();
     await page.getByRole('tab', { name: 'With your agent' }).click();
     await expect(page.getByText('Paste this into your agent:')).toBeVisible();
-    await expect(page.getByRole('link', { name: /View more: how it works/ })).toHaveAttribute('href', '/');
+    await expect(page.getByRole('link', { name: /View more: how it works/ })).toHaveAttribute('href', '/overview');
     await expect(page.locator('footer')).toContainText('Operated by Al Jash Trading');
   });
 

@@ -27,7 +27,8 @@ const TITLES = {
 function useRouteChrome() {
   const { pathname, hash } = useLocation();
   useEffect(() => {
-    document.title = TITLES[pathname] ?? TITLES['/'];
+    const b = pathname === '/' && document.documentElement.dataset.variant === 'b';
+    document.title = TITLES[b ? '/v2' : pathname] ?? TITLES['/'];
     if (!hash) window.scrollTo(0, 0);
   }, [pathname, hash]);
 }
@@ -35,7 +36,10 @@ function useRouteChrome() {
 export default function App() {
   useRouteChrome();
   // /v2 is the quiet landing being compared with /: its own header and footer.
-  if (useLocation().pathname === '/v2') return <V2 />;
+  const { pathname } = useLocation();
+  // logicpacks.io/ is A/B tested (functions/_middleware.js marks <html data-variant>).
+  const variantB = pathname === '/' && typeof document !== 'undefined' && document.documentElement.dataset.variant === 'b';
+  if (pathname === '/v2' || variantB) return <V2 />;
   return (
     <div className="min-h-screen overflow-x-clip bg-page text-ink">
       <a
@@ -48,6 +52,7 @@ export default function App() {
       <main id="main" className="pt-[72px]">
         <Routes>
           <Route path="/" element={<Landing />} />
+          <Route path="/overview" element={<Landing />} />
           <Route path="/download" element={<Download />} />
           <Route path="/new" element={<WhatsNew />} />
           <Route path="/privacy" element={<Privacy />} />
