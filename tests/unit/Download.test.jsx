@@ -40,11 +40,20 @@ describe('Download page', () => {
     expect(screen.getByText('curl -fsSL https://logicpacks.io/install.sh | bash')).toBeInTheDocument();
   });
 
-  it('lists Windows, iOS and our cloud as coming soon', async () => {
+  it('offers the Windows installer with its one-line PowerShell install and SHA-256', async () => {
     await renderDownload({});
-    expect(screen.getByRole('heading', { name: 'Windows' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'LogicPacks for Windows' })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /Download \.exe/ })).toHaveAttribute('href', expect.stringMatching(/\/win\/LogicPacks-[\d.]+-x64\.exe/));
+    expect(screen.getByText('irm https://logicpacks.io/install.ps1 | iex')).toBeInTheDocument();
+    expect(screen.getByText(/SmartScreen/)).toBeInTheDocument();
+    expect(screen.getByText('irm https://logicpacks.io/helper.ps1 | iex')).toBeInTheDocument();
+    expect(document.body.textContent).not.toMatch(/Node\.js|npm/);
+  });
+
+  it('lists iOS and our cloud as coming soon', async () => {
+    await renderDownload({});
     expect(screen.getByRole('heading', { name: 'iPhone and iPad' })).toBeInTheDocument();
-    expect(screen.getAllByText('Coming soon')).toHaveLength(3);
+    expect(screen.getAllByText('Coming soon')).toHaveLength(2);
     expect(screen.getByRole('heading', { name: 'Our cloud' })).toBeInTheDocument();
     expect(document.body.innerHTML).not.toContain('app.logicpacks.io');
     expect(screen.getByRole('button', { name: 'Copy prompt' })).toBeInTheDocument();

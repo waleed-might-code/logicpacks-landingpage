@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { CONNECT_PROMPT, INSTALL_COMMAND, LINKS } from '../site';
-import { AppleIcon, CheckIcon, TerminalIcon } from './Icons';
+import { CONNECT_PROMPT, INSTALL_COMMAND, INSTALL_COMMAND_WINDOWS, LINKS } from '../site';
+import { AppleIcon, CheckIcon, TerminalIcon, WindowsIcon } from './Icons';
 
 const base =
   'inline-flex h-9 shrink-0 items-center gap-2 rounded-full px-4 text-[14px] font-medium leading-none whitespace-nowrap transition-colors';
@@ -11,6 +11,18 @@ export function DownloadButton({ className = '' }) {
     <Link to={LINKS.download} className={`${base} bg-ink text-page hover:bg-white ${className}`}>
       <AppleIcon className="h-[14px] w-[14px] -translate-y-px" />
       Download for Mac
+    </Link>
+  );
+}
+
+export function WindowsDownloadButton({ className = '' }) {
+  return (
+    <Link
+      to={`${LINKS.download}#windows`}
+      className={`${base} border border-line bg-raised text-ink hover:border-[#3a3a3a] hover:bg-[#232323] ${className}`}
+    >
+      <WindowsIcon className="h-[13px] w-[13px]" />
+      Download for Windows
     </Link>
   );
 }
@@ -109,4 +121,8 @@ export function CopyLine({ text, prefix = '$', label, className = '', agentPromp
 // The one-line Terminal install, with a copy button.
 export function InstallCommand({ className = '' }) {
   return <CopyLine text={INSTALL_COMMAND} className={className} />;
+}
+
+export function InstallCommandWindows({ className = '' }) {
+  return <CopyLine text={INSTALL_COMMAND_WINDOWS} prefix=">" label="the PowerShell install command" className={className} />;
 }

@@ -21,7 +21,7 @@ const LP = {
   name: 'LogicPacks',
   cells: [
     'yes: shared projects, each person with their own agent',
-    'yes: Claude Code and Codex in the Mac app; more through the helper',
+    'yes: Claude Code and Codex in the Mac and Windows app; more through the helper',
     'yes: `lp ask`, `lp reply`, `lp send`',
     'Beta: goals, milestones, drift alerts, review',
     'Beta preview (scripted demo), not released',
@@ -189,7 +189,7 @@ ${sections}
 
 ## Where LogicPacks is weaker today
 
-- Young: version 0.1.11, with app sharing and the freelancer marketplace in Beta. The Mac app needs macOS 13 or later on Apple silicon; there is no Windows or iOS app yet, and our cloud is coming soon. Sharing is host-based: teammates sync to the host's laptop while it is on.
+- Young: version 0.1.12, with app sharing and the freelancer marketplace in Beta. The Mac app needs macOS 13 or later on Apple silicon; the Windows app (x64) is new in 0.1.12, is not code-signed yet and cannot host app sharing (that is macOS only); there is no Linux desktop or iOS app yet, and our cloud is coming soon. Sharing is host-based: teammates sync to the host's laptop while it is on.
 - App sharing between people is a Beta preview, not generally released; its first latency and frame rate benchmarks were measured with the viewer on the same Mac, not over a network ([/research.md](/research.md)); Parsec and Tuple are far more mature at streaming and pairing.
 - No independent security certification is documented. What is in place and what is pending: [/research.md](/research.md) and [/safety.md](/safety.md).
 - The freelancer network is new and small next to Upwork or Toptal.

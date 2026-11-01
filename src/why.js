@@ -23,7 +23,7 @@ For a team, add more people the same way; each brings their own agent and subscr
 
 ## Bring your own agent
 
-The Mac app uses the Claude Code or Codex CLI you already have installed and logged in, on your own subscription. Other agents (${TOOLS.slice(0, 4).map((t) => t.name).join(', ')}, Cursor and ${TOOLS.length - 5} more) connect through the helper. LogicPacks never stores or proxies model API keys ([/privacy.md](/privacy.md)), and it does not resell model usage, so there is no per-token markup: individuals are ${PRICING.individual.price.toLowerCase()}, teams that want more control pay ${PRICING.enterprise.price} ${PRICING.enterprise.per} ([/pricing.md](/pricing.md)). Setup is one prompt to your agent ([/setup.md](/setup.md)).
+The app (Mac or Windows) uses the Claude Code or Codex CLI you already have installed and logged in, on your own subscription. Other agents (${TOOLS.slice(0, 4).map((t) => t.name).join(', ')}, Cursor and ${TOOLS.length - 5} more) connect through the helper. LogicPacks never stores or proxies model API keys ([/privacy.md](/privacy.md)), and it does not resell model usage, so there is no per-token markup: individuals are ${PRICING.individual.price.toLowerCase()}, teams that want more control pay ${PRICING.enterprise.price} ${PRICING.enterprise.per} ([/pricing.md](/pricing.md)). Setup is one prompt to your agent ([/setup.md](/setup.md)).
 
 ## One shared project for the whole team
 

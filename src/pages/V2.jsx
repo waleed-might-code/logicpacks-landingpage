@@ -2,10 +2,10 @@ import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { BrandMark } from '../components/BrandIcons';
 import { CopyLine } from '../components/Buttons';
-import { AppleIcon } from '../components/Icons';
+import { AppleIcon, WindowsIcon } from '../components/Icons';
 import Logo from '../components/Logo';
 import MediaSlot from '../components/MediaSlot';
-import { COMPANY, CONNECT_PROMPT, DEVELOPER, DOWNLOADS, HELPER_INSTALL, HELPER_INSTALL_WINDOWS, INSTALL_COMMAND, LAUNCH_MEDIA, OPEN_SOURCE, TOOLS } from '../site';
+import { COMPANY, CONNECT_PROMPT, DEVELOPER, DOWNLOADS, HELPER_INSTALL, HELPER_INSTALL_WINDOWS, INSTALL_COMMAND, INSTALL_COMMAND_WINDOWS, LAUNCH_MEDIA, OPEN_SOURCE, SMARTSCREEN_NOTE, TOOLS } from '../site';
 
 // A quieter landing to compare with /: the film, three lines, and how to get it.
 // Everything else stays one click away ("View more") and in the markdown pages.
@@ -28,6 +28,7 @@ function WebAppLine() {
 
 function Panel({ tab }) {
   const mac = DOWNLOADS.mac;
+  const win = DOWNLOADS.windows;
   if (tab === 'mac')
     return (
       <>
@@ -41,29 +42,45 @@ function Panel({ tab }) {
         <Note>
           Version {mac.version} · {mac.requires} · {mac.size}
         </Note>
-        <p className="mt-6 text-[12px] text-muted">Or install from Terminal (checks the SHA-256 and opens the app):</p>
+        <p className="mt-6 text-[12px] text-muted">
+          Or one line in Terminal: checks the SHA-256, installs the app and the lp helper, and opens it:
+        </p>
         <CopyLine text={INSTALL_COMMAND} label="the install command" className="mt-2" />
-        <p className="mt-5 text-[12px] text-muted">Only the helper, to use LogicPacks from your agent:</p>
+        <p className="mt-5 text-[12px] text-muted">Only the lp helper, to use LogicPacks from your agent (no Node needed):</p>
         <CopyLine text={HELPER_INSTALL} label="the helper install command" className="mt-2" />
       </>
     );
   if (tab === 'windows')
     return (
       <>
-        <p className="text-[12px] text-muted">
-          Install the helper in PowerShell, to use LogicPacks from your agent (tested on Windows 11 with Claude Code):
+        <a
+          href={win.url}
+          className="inline-flex h-9 items-center gap-2 rounded-full bg-ink px-4 text-[14px] font-medium text-page hover:bg-white"
+        >
+          <WindowsIcon className="h-[13px] w-[13px]" />
+          Download for Windows
+        </a>
+        <Note>
+          Version {win.version} · {win.requires} · {win.size} · installs for your user, no admin
+        </Note>
+        <p className="mt-6 text-[12px] text-muted">
+          Or one line in PowerShell: checks the SHA-256, installs the app and puts lp on your PATH:
         </p>
-        <CopyLine text={HELPER_INSTALL_WINDOWS} prefix=">" label="the PowerShell install command" className="mt-2" />
-        <Note>Windows app coming soon.</Note>
+        <CopyLine text={INSTALL_COMMAND_WINDOWS} prefix=">" label="the PowerShell install command" className="mt-2" />
+        <Note>{SMARTSCREEN_NOTE}</Note>
+        <p className="mt-5 text-[12px] text-muted">Only the lp helper, to use LogicPacks from your agent (no Node needed):</p>
+        <CopyLine text={HELPER_INSTALL_WINDOWS} prefix=">" label="the helper install command" className="mt-2" />
         <WebAppLine />
       </>
     );
   if (tab === 'linux')
     return (
       <>
-        <p className="text-[12px] text-muted">Install the helper, to use LogicPacks from your agent:</p>
-        <CopyLine text={HELPER_INSTALL} label="the helper install command" className="mt-2" />
-        <Note>Linux app coming soon.</Note>
+        <p className="text-[12px] text-muted">
+          One line installs the lp helper, to use LogicPacks from your agent (one executable, no Node needed):
+        </p>
+        <CopyLine text={INSTALL_COMMAND} label="the install command" className="mt-2" />
+        <Note>Linux app coming soon. lp works with the app on a Mac or Windows PC.</Note>
         <WebAppLine />
       </>
     );

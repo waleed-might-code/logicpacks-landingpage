@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
-import { InstallCommand, copyText } from '../components/Buttons';
-import { AppleIcon, CheckIcon } from '../components/Icons';
-import { AGENT_PROMPT, DOWNLOADS } from '../site';
+import { CopyLine, InstallCommand, copyText } from '../components/Buttons';
+import { AppleIcon, CheckIcon, WindowsIcon } from '../components/Icons';
+import { AGENT_PROMPT, DOWNLOADS, HELPER_INSTALL, HELPER_INSTALL_WINDOWS, INSTALL_COMMAND_WINDOWS, SMARTSCREEN_NOTE } from '../site';
 
 const container = 'mx-auto w-full max-w-site px-4 sm:px-8';
 const box = 'rounded-xl border border-line bg-panel p-[22px]';
@@ -77,23 +77,79 @@ function MacBox() {
       {meta && <p className="mt-4 text-[12px] text-faint">{meta}</p>}
       {ready && (
         <div className="mt-5">
-          <p className="text-[12px] text-faint">Or in Terminal: installs to Applications and checks the file for you.</p>
+          <p className="text-[12px] text-faint">
+            Or one line in Terminal: checks the file, installs the app to Applications with the lp helper.
+          </p>
           <InstallCommand className="mt-1.5" />
         </div>
       )}
-      <div className="mt-auto pt-6">
-        <p className="text-[12px] text-faint">SHA-256</p>
-        {mac.sha256 ? (
-          <div className="mt-1.5 flex items-center gap-2">
-            <code className="min-w-0 flex-1 truncate rounded-md border border-line bg-page px-2.5 py-1.5 font-mono text-[12px] text-muted">
-              {mac.sha256}
-            </code>
-            <CopyButton text={mac.sha256} />
-          </div>
+      <Sha value={mac.sha256} />
+    </article>
+  );
+}
+
+function Sha({ value }) {
+  return (
+    <div className="mt-auto pt-6">
+      <p className="text-[12px] text-faint">SHA-256</p>
+      {value ? (
+        <div className="mt-1.5 flex items-center gap-2">
+          <code className="min-w-0 flex-1 truncate rounded-md border border-line bg-page px-2.5 py-1.5 font-mono text-[12px] text-muted">
+            {value}
+          </code>
+          <CopyButton text={value} />
+        </div>
+      ) : (
+        <p className="mt-1.5 text-[12px] text-muted">Published here with the release.</p>
+      )}
+    </div>
+  );
+}
+
+function WindowsBox() {
+  const win = DOWNLOADS.windows;
+  const ready = Boolean(win.url);
+  const meta = [win.version && `Version ${win.version}`, win.size, win.requires].filter(Boolean).join(' · ');
+  return (
+    <article id="windows" className={`${box} flex flex-col`}>
+      <Tag strong>New</Tag>
+      <h2 className="mt-4 text-[20px] font-normal tracking-[-0.015em] text-ink">LogicPacks for Windows</h2>
+      <ol className="mt-4 space-y-2.5 text-[13px] leading-[1.45] text-muted">
+        {[
+          'Download the installer and run it. It installs for your user, no admin needed.',
+          'It also puts the lp helper on your PATH, so your agents can use LogicPacks.',
+          'It uses the Claude Code or Codex already logged in on this PC. Add a folder and start a thread.',
+        ].map((step, i) => (
+          <li key={step} className="flex gap-3">
+            <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-line text-[11px] text-faint">
+              {i + 1}
+            </span>
+            <span>{step}</span>
+          </li>
+        ))}
+      </ol>
+      <div className="mt-6 flex flex-wrap items-center gap-2">
+        {ready ? (
+          <a href={win.url} download className={`${btn} bg-ink text-page hover:bg-white`}>
+            <WindowsIcon className="h-[13px] w-[13px]" />
+            Download .exe
+          </a>
         ) : (
-          <p className="mt-1.5 text-[12px] text-muted">Published here with the release.</p>
+          <span aria-disabled="true" className={`${btn} cursor-not-allowed border border-line text-faint`}>
+            <WindowsIcon className="h-[13px] w-[13px]" />
+            The installer is on the way
+          </span>
         )}
       </div>
+      {meta && <p className="mt-4 text-[12px] text-faint">{meta}</p>}
+      {ready && (
+        <div className="mt-5">
+          <p className="text-[12px] text-faint">Or one line in PowerShell: checks the file, installs the app and lp.</p>
+          <CopyLine text={INSTALL_COMMAND_WINDOWS} prefix=">" label="the PowerShell install command" className="mt-1.5" />
+          <p className="mt-2 text-[12px] text-faint">{SMARTSCREEN_NOTE}</p>
+        </div>
+      )}
+      <Sha value={win.sha256} />
     </article>
   );
 }
@@ -118,13 +174,6 @@ function AgentBox() {
 
 const OTHERS = [
   {
-    id: 'windows',
-    title: 'Windows',
-    body: 'A Windows build is in the works.',
-    url: DOWNLOADS.windows.url,
-    cta: 'Download for Windows',
-  },
-  {
     id: 'ios',
     title: 'iPhone and iPad',
     body: 'Check on your agents and your team from your phone.',
@@ -144,22 +193,38 @@ export default function Download() {
   return (
     <section aria-labelledby="download-title" className={`${container} pb-24 pt-16 sm:pb-32 sm:pt-24`}>
       <p className="inline-flex h-7 items-center rounded-full border border-line bg-raised px-3 text-[12px] text-muted">
-        Mac app
+        Mac and Windows
       </p>
       <h1
         id="download-title"
         className="mt-6 text-[28px] font-normal leading-[1.12] tracking-[-0.025em] sm:text-[38px]"
       >
         Download LogicPacks.
-        <span className="block text-muted">On your Mac, with your own agents.</span>
+        <span className="block text-muted">On your Mac or Windows PC, with your own agents.</span>
       </h1>
 
       <div className="mt-10 grid gap-3 lg:grid-cols-2">
         <MacBox />
-        <AgentBox />
+        <WindowsBox />
       </div>
 
-      <div className="mt-3 grid overflow-hidden rounded-xl border border-line bg-panel sm:grid-cols-3">
+      <div className="mt-3 grid gap-3 lg:grid-cols-2">
+        <AgentBox />
+        <article id="helper" className={`${box} flex flex-col`}>
+          <Tag>Linux, or just the helper</Tag>
+          <h2 className="mt-4 text-[20px] font-normal tracking-[-0.015em] text-ink">The lp helper</h2>
+          <p className="mt-2 text-[13px] leading-[1.45] text-muted">
+            One small executable that lets Claude Code, Codex or any agent use LogicPacks. No Node needed. On Linux (x64) and
+            Intel Macs the Terminal line above installs only this.
+          </p>
+          <p className="mt-5 text-[12px] text-faint">macOS and Linux:</p>
+          <CopyLine text={HELPER_INSTALL} label="the helper install command" className="mt-1.5" />
+          <p className="mt-4 text-[12px] text-faint">Windows PowerShell:</p>
+          <CopyLine text={HELPER_INSTALL_WINDOWS} prefix=">" label="the helper install command for Windows" className="mt-1.5" />
+        </article>
+      </div>
+
+      <div className="mt-3 grid overflow-hidden rounded-xl border border-line bg-panel sm:grid-cols-2">
         {OTHERS.map((item, i) => (
           <article
             key={item.id}

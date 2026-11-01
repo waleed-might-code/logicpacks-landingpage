@@ -8,6 +8,14 @@ export function AppleIcon(props) {
   );
 }
 
+export function WindowsIcon(props) {
+  return (
+    <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" {...props}>
+      <path d="M0 2.2 6.5 1.3v6.2H0zM7.3 1.2 16 0v7.5H7.3zM0 8.3h6.5v6.3L0 13.7zM7.3 8.3H16V16l-8.7-1.2z" />
+    </svg>
+  );
+}
+
 export function TerminalIcon(props) {
   return (
     <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...props}>

@@ -27,7 +27,7 @@ export const OPEN_SOURCE = {
 };
 
 // The version the copy describes. DOWNLOADS.mac.version (below) is the shipped DMG and is set at release.
-export const CURRENT_VERSION = '0.1.11';
+export const CURRENT_VERSION = '0.1.12';
 
 // public/setup.md is the agent setup guide. Until it ships, Docs points at the repo
 // docs so nothing links a 404. The build sets __HAS_SETUP__ (vite.config.js).
@@ -51,33 +51,47 @@ export const DOWNLOADS = {
   mac: {
     // Versioned file names: Cloudflare caches release binaries, so a new
     // release gets a new name (and the ?v= tag) instead of reusing this one.
-    url: 'https://downloads.logicpacks.io/mac/LogicPacks-0.1.11-arm64.dmg?v=368bf4ea',
+    url: 'https://downloads.logicpacks.io/mac/LogicPacks-0.1.12-arm64.dmg?v=40f2c39e',
     // Hex SHA-256 of the DMG, published next to the button.
-    sha256: '368bf4eaa73bb19c8e2918372f3b79c89b7ecc87aa8ee684fbc04a4e13c4080d',
-    version: '0.1.11',
+    sha256: '40f2c39e0ba0fc731c2b8d3ba07fdec03123a61b99cde81272813c13dabfe216',
+    version: '0.1.12',
     size: '177 MB',
     requires: 'macOS 13 or later, Apple silicon',
   },
-  // A Windows build does not exist yet. Set a url here once it does.
-  windows: { url: null },
+  // The Windows installer: per user (no admin), x64, not code-signed yet (SmartScreen may ask).
+  windows: {
+    url: 'https://downloads.logicpacks.io/win/LogicPacks-0.1.12-x64.exe?v=5c75f0f4',
+    sha256: '5c75f0f496f78302639b63a2e6e0987f79c3e7e3798d4dba8a471886a3f3b92a',
+    version: '0.1.12',
+    size: '248 MB',
+    requires: 'Windows 10 or 11, x64',
+  },
   // iOS is not built yet.
   ios: { url: null },
 };
 
-// One line in Terminal: downloads the signed, notarized app, checks its
-// SHA-256, installs it to /Applications and opens it (public/install.sh).
+// One line in Terminal (macOS): downloads the signed, notarized app, checks its SHA-256,
+// installs it to /Applications with the lp helper and opens it (public/install.sh).
+// On Linux the same line installs the lp helper only.
 export const INSTALL_COMMAND = `curl -fsSL ${SITE_URL}/install.sh | bash`;
+// One line in PowerShell (Windows): the app, installed per user with no admin, plus lp.exe on the
+// PATH, both checked against their SHA-256 (public/install.ps1).
+export const INSTALL_COMMAND_WINDOWS = `irm ${SITE_URL}/install.ps1 | iex`;
+// Said next to the Windows command: the app is not code-signed yet.
+export const SMARTSCREEN_NOTE =
+  'The app is not code-signed yet: if Windows SmartScreen asks, choose More info, then Run anyway.';
 
-// The agent helper alone (lp), from research/connect.json.
+// The agent helper alone (lp, one standalone executable, no Node needed), from research/connect.json.
 export const HELPER_INSTALL = `curl -fsSL ${SITE_URL}/helper.sh | bash`;
 export const HELPER_INSTALL_WINDOWS = `irm ${SITE_URL}/helper.ps1 | iex`;
 
 // Copied by "Install with your agent". Written for Claude Code, Codex or any
 // agent with a shell: plain steps, no assumptions about which agent runs it.
-export const AGENT_PROMPT = `Install LogicPacks on this Mac and set this project up in it.
+export const AGENT_PROMPT = `Install LogicPacks on this computer and set this project up in it.
 
-1. If /Applications/LogicPacks.app is missing, run: ${INSTALL_COMMAND}
-   It downloads the signed app, checks its SHA-256, copies it to /Applications and opens it. Stop if it reports a checksum mismatch.
+1. If LogicPacks is not installed, install it with one line. It checks the SHA-256, installs the app and the lp helper, and opens the app. Stop if it reports a checksum mismatch.
+   macOS (Apple silicon), in Terminal: ${INSTALL_COMMAND}
+   Windows (x64), in PowerShell: ${INSTALL_COMMAND_WINDOWS}
 2. If LogicPacks is already installed, just open it.
 3. LogicPacks uses the Claude Code or Codex CLI already installed and logged in on this machine. If the app says the CLI is missing, help me install it and log in in the terminal.
 4. Add this folder as a project. It stays on this machine until I share it.
@@ -134,9 +148,9 @@ export const TOOLS = [
 
 // The paste-in prompt that connects an agent already in use to LogicPacks.
 export const SETUP_URL = 'https://logicpacks.io/setup.md';
-// Not the helper's `lp setup-prompt`: this one installs the Mac app first (no cloud sign-in; the cloud is coming soon).
+// Not the helper's `lp setup-prompt`: this one installs the app first (no cloud sign-in; the cloud is coming soon).
 export const CONNECT_PROMPT = `Set up LogicPacks for me: read ${SETUP_URL} and follow it.
-1. Download and install the LogicPacks Mac app: ${DOWNLOADS.mac.url}
+1. If the LogicPacks app is missing, install it with one line, which also installs the lp helper: on macOS run ${INSTALL_COMMAND} in Terminal, on Windows run ${INSTALL_COMMAND_WINDOWS} in PowerShell.
 2. Make sure Claude Code or Codex is installed and logged in in my terminal. If not, help me install it and log in.
 3. Open this project in LogicPacks, then help me add my teammates.
 Once the app is open, run lp login to connect the helper to it on this computer; there is no account. Do not send me to app.logicpacks.io: our cloud is coming soon.
@@ -189,7 +203,7 @@ export const STORY = [
   { when: 'Nov 2025', title: 'Started building', body: 'A shared workspace where people and their agents work on the same project.' },
   { when: 'Jan 2026', title: 'Internal testing', body: 'Opened to our own team after two months, used on our client work every day.' },
   { when: 'Feb to Oct 2026', title: 'Eight months of testing', body: 'Used in labs and by tech agencies on real projects.' },
-  { when: 'Nov 2026', title: 'Public beta', body: 'Version 0.1.11: the Mac app with a code editor and agent workspace, projects, adding people and sharing, running on your own Claude Code or Codex. Our cloud is coming soon. App sharing and Request assistance are Beta.' },
+  { when: 'Nov 2026', title: 'Public beta', body: 'Version 0.1.12: the app for Mac and Windows with a code editor and agent workspace, projects, adding people and sharing, running on your own Claude Code or Codex. Our cloud is coming soon. App sharing and Request assistance are Beta.' },
 ];
 
 // Launches built with LogicPacks. Facts only from the project notes.
@@ -236,7 +250,7 @@ export const PRICING = {
     features: [
       'Shared projects with your team, hosted on your laptop while it is on',
       'Your own agent and subscription: Claude Code or Codex',
-      'The Mac app, with a code editor and agent workspace',
+      'The app for Mac and Windows, with a code editor and agent workspace',
       'Beta features as they land',
     ],
   },
@@ -268,9 +282,9 @@ export const WHERE = [
 export const FREELANCERS =
   'Sometimes it is cheaper to save tokens and bring in a freelancer vetted by LogicPacks. They bring their own Claude and tools and use none of your tokens: you pay for their hours, with their AI included. Every freelancer works under NDA and your keys are never shared with them. Secret files such as .env are hidden from them, and milestones and drift alerts keep their work on plan.';
 
-// The shortest path for two people (the 0.1.11 Mac app).
+// The shortest path for two people (the 0.1.12 app, Mac or Windows).
 export const FRIEND_PATH = [
-  'Each of you installs the Mac app from https://logicpacks.io/download and has Claude Code or Codex installed and logged in. If the CLI is missing, the app shows the install command and tells you to log in in your terminal.',
+  'Each of you installs the app (Mac or Windows) from https://logicpacks.io/download and has Claude Code or Codex installed and logged in. If the CLI is missing, the app shows the install command and tells you to log in in your terminal.',
   'The host adds a project in the app: an empty folder, or an existing folder or Git repository.',
   'The host adds the other person and shares the project. Teammates connect and sync to the host\'s laptop while it is on.',
   'Each of you works in your own thread with your own agent on your own login, and you both see who is working on what.',

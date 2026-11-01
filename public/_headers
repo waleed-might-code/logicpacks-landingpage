@@ -4,6 +4,11 @@
 /helper.ps1
   Content-Type: text/plain; charset=utf-8
   Cache-Control: public, max-age=300
+/install.ps1
+  Content-Type: text/plain; charset=utf-8
+  Cache-Control: public, max-age=300
+/install.sh
+  Cache-Control: public, max-age=300
 /helper.sh
   Content-Type: text/plain; charset=utf-8
   Cache-Control: public, max-age=300

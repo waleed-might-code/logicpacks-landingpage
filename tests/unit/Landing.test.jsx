@@ -24,14 +24,16 @@ describe('Landing', () => {
     expect(downloads.length).toBeGreaterThanOrEqual(2);
     downloads.forEach((link) => expect(link).toHaveAttribute('href', '/download'));
     expect(screen.getAllByRole('button', { name: 'Connect your agent' }).length).toBeGreaterThanOrEqual(1);
-    expect(screen.getByText(/curl -fsSL https:\/\/logicpacks\.io\/install\.sh/)).toBeInTheDocument();
+    expect(screen.getAllByText(/curl -fsSL https:\/\/logicpacks\.io\/install\.sh/).length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText('irm https://logicpacks.io/install.ps1 | iex').length).toBeGreaterThanOrEqual(1);
+    expect(screen.getByRole('link', { name: /Download for Windows/ })).toHaveAttribute('href', '/download#windows');
     expect(screen.getByRole('tab', { name: 'In LogicPacks' })).toHaveAttribute('aria-selected', 'true');
   });
 
   it('shows the paste-in install prompt under the "In your agent" tab', () => {
     renderAt('/');
     fireEvent.click(screen.getByRole('tab', { name: 'In your agent' }));
-    expect(screen.getByRole('tabpanel')).toHaveTextContent('Install LogicPacks on this Mac');
+    expect(screen.getByRole('tabpanel')).toHaveTextContent('Install LogicPacks on this computer');
   });
 
   it('has the nav in order: What’s new, Pricing, Docs, Open source, Download', () => {
@@ -57,7 +59,7 @@ describe('Landing', () => {
       'Where it runs.',
       'Developed by TechRealm. Operated by Al Jash Trading, Abu Dhabi. Since 1994.Try it on your next project.',
     ]);
-    expect(screen.getAllByRole('link', { name: 'Get the Mac app' })[0]).toHaveAttribute('href', '/download');
+    expect(screen.getAllByRole('link', { name: 'Get the app' })[0]).toHaveAttribute('href', '/download');
     expect(screen.getByTestId('goal-diagram')).toHaveTextContent('Drifting');
     expect(screen.getByText(/or an outside team/)).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /See what’s new/ })).toHaveAttribute('href', '/new');

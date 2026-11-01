@@ -17,25 +17,24 @@ lp help 2>/dev/null | grep -q LogicPacks || curl -fsSL https://logicpacks.io/hel
 Windows (PowerShell):
 
 ```powershell
-if (-not (Get-Command lp.cmd -ErrorAction SilentlyContinue)) { irm https://logicpacks.io/helper.ps1 | iex }
+if (-not (Get-Command lp.exe -ErrorAction SilentlyContinue)) { irm https://logicpacks.io/helper.ps1 | iex }
 ```
 
-The helper needs Node.js 18 or newer (Claude Code, Codex and most agents already have it; otherwise install Node.js LTS from https://nodejs.org). It puts `lp` in `~/.local/bin` on macOS and Linux and in `%USERPROFILE%\.logicpacks\helper\bin` on Windows (`lp.cmd` for PowerShell and cmd, `lp` for Git Bash), and adds that folder to your PATH. macOS and many Linux systems also have a printer command named `lp` (`/usr/bin/lp`): if it comes first on your PATH, call `~/.local/bin/lp` (or put `~/.local/bin` first). In Windows PowerShell 5.1, `lp` is a built-in alias for Out-Printer, so type `lp.cmd` there (for example `lp.cmd login --start`); Git Bash, cmd and PowerShell 7 take plain `lp`. If `lp` is not found right after installing, open a new shell or call it by its full path: `~/.local/bin/lp` or `%USERPROFILE%\.logicpacks\helper\bin\lp.cmd`.
+The helper is one standalone executable: it needs no Node.js, npm or anything else. The installer downloads the build for your system (macOS Apple silicon or Intel, Linux x64, Windows x64), checks its SHA-256 against https://downloads.logicpacks.io/helper/latest.json, puts `lp` in `~/.local/bin` on macOS and Linux and `lp.exe` in `%USERPROFILE%\.logicpacks\helper\bin` on Windows, and adds that folder to your PATH. The LogicPacks Windows app installs the same `lp.exe` in the same place, so if your user installed the app, `lp` is already there. macOS and many Linux systems also have a printer command named `lp` (`/usr/bin/lp`): if it comes first on your PATH, call `~/.local/bin/lp` (or put `~/.local/bin` first). In Windows PowerShell 5.1, `lp` is a built-in alias for Out-Printer, so type `lp.exe` there (for example `lp.exe login`); Git Bash, cmd and PowerShell 7 take plain `lp`. If `lp` is not found right after installing, open a new shell or call it by its full path: `~/.local/bin/lp` or `%USERPROFILE%\.logicpacks\helper\bin\lp.exe`.
 
 Installing only puts the `lp` command in place. It changes no agent's settings: that happens in step 3, and only after your user has seen the diff.
 
-## 2. Install the Mac app (no sign-in)
+## 2. Connect to the LogicPacks app
 
-There is no account to sign in to yet: the LogicPacks cloud (app.logicpacks.io) is coming soon. Today the Mac app runs on the Claude Code or Codex already installed on your user's computer.
+Check first: `lp whoami`. If it says LogicPacks is not connected:
 
-1. Download the app: https://downloads.logicpacks.io/mac/LogicPacks-0.1.11-arm64.dmg (or run `curl -fsSL https://logicpacks.io/install.sh | bash`).
-2. Check that Claude Code or Codex is installed and logged in in the terminal (`claude` or `codex`). If not, help your user install it and log in.
-3. Open the project in LogicPacks.
-4. Add teammates to the project.
+```sh
+lp login
+```
 
-5. With the app open, run `lp login`. It connects the helper to the LogicPacks app on this computer, with no browser step and no account. If it says the app is not running, ask your user to open the LogicPacks Mac app, then run it again.
+This connects the helper to the LogicPacks app running on this computer, with no browser step and no account. If it says the app is not running, ask your user to open the LogicPacks app, then run `lp login` again. If the app is not installed, install it with one line (it also installs `lp`): `curl -fsSL https://logicpacks.io/install.sh | bash` on macOS, or `irm https://logicpacks.io/install.ps1 | iex` in Windows PowerShell; or download it from https://logicpacks.io/download. LogicPacks cloud is coming soon; until then everything runs through the app on this computer.
 
-Do not send your user to app.logicpacks.io for now.
+Teams that run their own host add `--host https://their-host`. That path asks your user to approve a device code in a browser: run `lp login --host <url> --start`, show your user the link and code, then `lp login --host <url> --finish` once they approve.
 
 ## 3. Add the LogicPacks block to your global instructions
 
@@ -80,6 +79,7 @@ What `lp setup` guarantees:
 | Factory Droid | `droid` | `~/.factory/AGENTS.md` | `AGENTS.md` | yes | yes |
 | JetBrains Junie | `junie` | `~/.junie/AGENTS.md` | `.junie/AGENTS.md` | yes | yes |
 | Hermes Agent | `hermes` | settings UI only | `AGENTS.md` | yes | yes |
+| T3 Code | `t3code` | settings UI only | `AGENTS.md` | yes | yes |
 | Any other agent | `generic` | settings UI only | `AGENTS.md` | yes | yes |
 
 Notes:
@@ -97,6 +97,7 @@ Notes:
 - **Factory Droid**: The docs say Droid looks in ~/.factory/; the exact global file name is unverified.
 - **JetBrains Junie**: Older projects use .junie/guidelines.md, which Junie still reads.
 - **Hermes Agent**: Hermes has no global instructions file (~/.hermes/SOUL.md is persona only). LogicPacks writes the block into this project's AGENTS.md, which Hermes reads.
+- **T3 Code**: T3 Code runs the agents you have installed (Codex, Claude Code, OpenCode...) and has no file of its own. Set up each of those (lp setup --agent codex, --agent claude...); LogicPacks also writes this project's AGENTS.md.
 - **Any other agent**: Pass the file your agent reads its instructions from: lp setup --agent generic --file <path>. Without --file, LogicPacks writes this project's AGENTS.md, which most agents read.
 - Any other harness: `lp setup --agent generic --file <the file you read instructions from>`. If you would rather edit the file yourself, `lp setup-block` prints the block; paste it with its markers.
 - To also write the project file (for example `AGENTS.md`), add `--project`.
@@ -106,7 +107,7 @@ The block is:
 ```markdown
 <!-- logicpacks:start -->
 ## LogicPacks
-Team work runs through the `lp` command (add `--json` to parse its output). If `lp` is the printer command (macOS, Linux), call `~/.local/bin/lp`; in Windows PowerShell type `lp.cmd`. If it is missing, follow https://logicpacks.io/setup.md.
+Team work runs through the `lp` command (add `--json` to parse its output). If `lp` is the printer command (macOS, Linux), call `~/.local/bin/lp`; in Windows PowerShell 5.1 type `lp.exe` (`lp` is an Out-Printer alias there). If it is missing, follow https://logicpacks.io/setup.md.
 - At the start of a session and after long tasks, run `lp inbox` and tell the user what is new (messages, questions from other agents, conflicts, drift, review requests).
 - "share this project" / "create a shared session" -> `lp share`, then give the user the invite link.
 - "add my friend X" / "invite X" -> `lp invite <email or name>` (this project only; `--workspace` for every project); "remove X" -> `lp remove <person>`; "turn off the invite link" -> `lp revoke-invite`.
@@ -141,7 +142,7 @@ It pushes the folder to its git remote (it creates a private GitHub repository w
 ```text
 LogicPacks for agents. Every command prints readable text; add --json for machine output.
 
-  lp login [--cloud | --host <url>] [--start | --finish]      connect to the LogicPacks Mac app on this computer (no browser step); --cloud or --host <url> sign in to a hosted one with a device code
+  lp login [--cloud | --host <url>] [--start | --finish]      connect to the LogicPacks app on this computer (no browser step); --cloud or --host <url> sign in to a hosted one with a device code
   lp whoami                                                   who you are signed in as, and on which host
   lp projects                                                 the projects you can open
   lp share [--title <name>] [--workspace]                     share this folder: push it to its git remote (GitHub) and register it on the host; prints an invite link
@@ -198,12 +199,12 @@ Only after `lp install --yes`, Claude Code and Codex sessions in a folder that b
 ## What gets installed where
 
 The helper (step 1), macOS and Linux:
-- ~/.logicpacks/helper/lp.mjs (the CLI) and ~/.logicpacks/helper/bin/lp (a 2-line sh wrapper)
-- ~/.local/bin/lp (a symlink to the wrapper)
+- ~/.logicpacks/helper/bin/lp (the CLI: one standalone executable, no Node needed)
+- ~/.local/bin/lp (a symlink to it)
 - ~/.logicpacks/helper/config.json (host, token, device name; mode 600), setup.json (what lp setup wrote), queue/ (sessions waiting to upload)
 
 The helper (step 1), Windows:
-- %USERPROFILE%\.logicpacks\helper\lp.mjs, bin\lp.cmd and bin\lp (Git Bash wrapper)
+- %USERPROFILE%\.logicpacks\helper\bin\lp.exe (the CLI: one standalone executable, no Node needed), plus bin\lp.cmd (cmd) and bin\lp (Git Bash) that start it
 - the user PATH gains %USERPROFILE%\.logicpacks\helper\bin
 - %USERPROFILE%\.logicpacks\helper\config.json, setup.json, queue\
 

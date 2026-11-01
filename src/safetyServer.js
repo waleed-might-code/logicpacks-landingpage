@@ -42,7 +42,7 @@ What teammates cannot do:
 - **Timing:** removal applies to the person's next request (each request checks their current access), and their helper can no longer stream into the project. An agent turn that is already running is not stopped and keeps its access until it ends. Removal does not touch GitHub: LogicPacks does not add teammates as collaborators on your repository, and any copy a person already cloned stays with them.
 
 ## 8. Agent logins and code
-- **Agents run on your own computer.** The Mac app uses the Claude Code or Codex CLI that is already installed and logged in on your machine. There is no "Log in with Claude" in the app; if the CLI is missing, the app shows the install command and tells you to log in in your terminal. Nothing of that login is stored on our servers.
+- **Agents run on your own computer.** The app (Mac or Windows) uses the Claude Code or Codex CLI that is already installed and logged in on your machine. There is no "Log in with Claude" in the app; if the CLI is missing, the app shows the install command and tells you to log in in your terminal. Nothing of that login is stored on our servers.
 - **Sharing is host-based:** teammates connect and sync to the host's laptop while it is on. The project lives on the host's laptop.
 
 ### Our cloud (coming soon, not available yet)

@@ -18,6 +18,9 @@ import {
   DOWNLOADS,
   FREELANCERS,
   INSTALL_COMMAND,
+  INSTALL_COMMAND_WINDOWS,
+  HELPER_INSTALL,
+  HELPER_INSTALL_WINDOWS,
   LINKS,
   OPEN_SOURCE,
   PRICING,
@@ -36,7 +39,7 @@ export const PAGES = [
   { path: '/research', md: '/research.md', title: 'Research', summary: 'Methodology, test suite results, member sandbox checks and app sharing benchmarks.', description: 'LogicPacks by TechRealm: test results, member sandbox checks and app sharing benchmarks, with the method. Only measured numbers.' },
   { path: '/pricing', md: '/pricing.md', title: 'Pricing', summary: 'Free for individuals; Enterprise at $99 per workspace per month.', description: 'LogicPacks by TechRealm pricing: free for individuals, Enterprise $99 per workspace per month. Model usage stays on your own subscription.' },
   { path: '/new', md: '/new.md', title: 'What’s new', summary: 'Releases, newest first: Request assistance (vetted freelancers) and every-app sharing.', description: 'What is new in LogicPacks by TechRealm: Request assistance with vetted freelancers, and sharing the host machine apps.' },
-  { path: '/download', md: '/download.md', title: 'Download', summary: 'The Mac app, its checksum and the one-line install.', description: 'Download LogicPacks by TechRealm for Mac (Apple silicon). It runs your own Claude Code or Codex on your computer.' },
+  { path: '/download', md: '/download.md', title: 'Download', summary: 'The Mac and Windows apps, their checksums, the one-line installs and the lp helper.', description: 'Download LogicPacks by TechRealm for Mac (Apple silicon) or Windows (x64), or install it in one line. It runs your own Claude Code or Codex on your computer.' },
   { path: '/privacy', md: '/privacy.md', title: 'Privacy', summary: 'What we store, what we never store, the cloud sandbox and deletion.', description: 'LogicPacks by TechRealm privacy policy: what we store, what we never store, the cloud sandbox and deletion. Operated by Al Jash Trading, Abu Dhabi.' },
   { path: '/terms', md: '/terms.md', title: 'Terms', summary: 'Terms of use, Beta features, liability and governing law.', description: 'LogicPacks by TechRealm terms of use. Operated by Al Jash Trading, Abu Dhabi, under UAE law.' },
 ];
@@ -168,13 +171,15 @@ Details: [/pricing.md](/pricing.md).
 ## How it runs
 
 ${WHERE.map((w) => `- **${w.title}${w.soon ? ' (coming soon)' : ''}.** ${w.body}`).join('\n')}
-- LogicPacks never stores or proxies model API keys. The Mac app uses the Claude Code or Codex already installed and logged in on your computer; there is no "Log in with Claude" in the app, and if the CLI is missing it shows the install command and tells you to log in in your terminal. Sharing is host-based: teammates connect and sync to the host's laptop while it is on. Our cloud (cloud-hosted projects, syncing projects to the cloud, cloud agent logins and cloud turns) is coming soon and not available. See [/privacy.md](/privacy.md) and [/safety.md](/safety.md) section 8.
+- LogicPacks never stores or proxies model API keys. The app (Mac or Windows) uses the Claude Code or Codex already installed and logged in on your computer; there is no "Log in with Claude" in the app, and if the CLI is missing it shows the install command and tells you to log in in your terminal. Sharing is host-based: teammates connect and sync to the host's laptop while it is on. Our cloud (cloud-hosted projects, syncing projects to the cloud, cloud agent logins and cloud turns) is coming soon and not available. See [/privacy.md](/privacy.md) and [/safety.md](/safety.md) section 8.
 - Agents that work with it: ${TOOLS.map((t) => t.name).join(', ')}. Setup for an agent: [/setup.md](/setup.md).
 
 ## Platforms
 
-- Mac app: version ${mac.version}, ${mac.requires}, ${mac.size}. SHA-256 ${mac.sha256}. Install: \`${INSTALL_COMMAND}\`. See [/download.md](/download.md).
-- Windows and iOS: not available yet.
+- Mac app: version ${mac.version}, ${mac.requires}, ${mac.size}. SHA-256 ${mac.sha256}. One line in Terminal: \`${INSTALL_COMMAND}\` (checks the SHA-256, installs the app and the lp helper). See [/download.md](/download.md).
+- Windows app: version ${DOWNLOADS.windows.version}, ${DOWNLOADS.windows.requires}, ${DOWNLOADS.windows.size}, installs per user with no admin, not code-signed yet (SmartScreen may ask). SHA-256 ${DOWNLOADS.windows.sha256}. One line in PowerShell: \`${INSTALL_COMMAND_WINDOWS}\` (checks the SHA-256, installs the app and puts lp.exe on the PATH).
+- The lp helper alone (one standalone executable, no Node needed; macOS, Linux x64, Windows x64): \`${HELPER_INSTALL}\` or, in PowerShell, \`${HELPER_INSTALL_WINDOWS}\`. On Linux, \`${INSTALL_COMMAND}\` installs the helper only.
+- Linux app and iOS: not available yet.
 
 ## Security
 
@@ -228,7 +233,7 @@ export function llmsTxt() {
 
 ${previewTop()}> ${DESCRIPTION} Every page below has a markdown twin; /about.md lists the plain facts.
 
-LogicPacks by ${COMPANY.name} (${COMPANY.form}), ${COMPANY.city}, ${COMPANY.country}, established ${COMPANY.since}, ${COMPANY.licence}. Current version ${CURRENT_VERSION} (Mac app). The released product is the Mac app with a code editor and agent workspace, projects, adding people and sharing, on your own Claude Code or Codex; our cloud is coming soon, and app sharing, vetted freelancers and Packs are Beta.
+LogicPacks by ${COMPANY.name} (${COMPANY.form}), ${COMPANY.city}, ${COMPANY.country}, established ${COMPANY.since}, ${COMPANY.licence}. Current version ${CURRENT_VERSION} (Mac and Windows apps). The released product is the app for Mac and Windows with a code editor and agent workspace, projects, adding people and sharing, on your own Claude Code or Codex; our cloud is coming soon, and app sharing, vetted freelancers and Packs are Beta.
 
 Open source: ${OPEN_SOURCE.message} Source code (${OPEN_SOURCE.license}): ${OPEN_SOURCE.repo}.
 
@@ -327,11 +332,11 @@ export function homeFactsMarkdown() {
     '## LogicPacks in brief',
     '',
     `- **Open source:** ${OPEN_SOURCE.message} Source: ${OPEN_SOURCE.repo} (${OPEN_SOURCE.license}).`,
-    `- **What it is:** the workspace built for people and AI agents to work together. Each person brings their own agent (Claude Code or Codex in the Mac app) and their own subscription; everyone shares one project, with a thread per person.`,
+    `- **What it is:** the workspace built for people and AI agents to work together. Each person brings their own agent (Claude Code or Codex in the Mac or Windows app) and their own subscription; everyone shares one project, with a thread per person.`,
     `- **Who:** developed by ${DEVELOPER.name} (${DEVELOPER.url}). Operated by ${COMPANY.name}, ${COMPANY.city}, ${COMPANY.country}, established ${COMPANY.since}, ${COMPANY.licence}.`,
-    `- **Status:** version ${CURRENT_VERSION}, the Mac app, with a code editor and agent workspace, projects, adding people and sharing, running on your own Claude Code or Codex. Our cloud is coming soon. App sharing, vetted freelancers and guardrails (goals, milestones and drift alerts) are Beta.`,
+    `- **Status:** version ${CURRENT_VERSION}, the app for Mac and Windows, with a code editor and agent workspace, projects, adding people and sharing, running on your own Claude Code or Codex. Our cloud is coming soon. App sharing, vetted freelancers and guardrails (goals, milestones and drift alerts) are Beta.`,
     `- **Price:** ${PRICING.individual.price} for individuals, including shared projects with the people you work with, so a small team can start free with each person on their own agent subscription. ${PRICING.enterprise.name} is ${PRICING.enterprise.price} ${PRICING.enterprise.per} for companies that want more control. Details: ${u('/pricing.md')}`,
-    `- **Code with a friend:** install the Mac app, add a project, add your friend and share it; they connect and sync to your laptop while it is on, and each of you works with your own Claude Code or Codex.`,
+    `- **Code with a friend:** install the app (Mac or Windows), add a project, add your friend and share it; they connect and sync to your laptop while it is on, and each of you works with your own Claude Code or Codex.`,
     '- **How it compares:**',
     ...COMPARE.map((c) => `  - vs ${c.vs}: ${c.line}`),
     `- **Safety in brief:** logins and code stay on your machine; our cloud, with a sandbox per member, is coming soon. People in a shared project can read its files, including \`.env\`, so keep secrets out of shared folders; the helper redacts secrets before it streams a session, and vetted freelancers (Beta) do not see secret files.  Everything the helper adds to your agent settings is undone with \`lp uninstall\`. Full detail: ${u('/safety.md')}`,

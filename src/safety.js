@@ -43,12 +43,12 @@ ${OPEN_SOURCE.message} You can read what the app and the helper do: ${OPEN_SOURC
 
 ## 2. What the helper installs
 
-Install line, macOS and Linux: \`${connect.helperInstall}\`. Windows (PowerShell): \`${connect.helperInstallWindows}\`. The helper needs Node.js 18 or newer and runs as your user (no admin rights).
+Install line, macOS and Linux: \`${connect.helperInstall}\`. Windows (PowerShell): \`${connect.helperInstallWindows}\`. The helper is one standalone executable (it needs no Node.js or anything else), checked against the SHA-256 in https://downloads.logicpacks.io/helper/latest.json, and runs as your user (no admin rights). The LogicPacks Windows app installs the same \`lp.exe\` in the same place.
 
 Files it puts on your computer:
 
-- macOS and Linux: \`~/.logicpacks/helper/lp.mjs\` (the helper), \`~/.logicpacks/helper/bin/lp\` (a small wrapper) and a symlink \`~/.local/bin/lp\`. It does not edit your shell profile; if \`~/.local/bin\` is not on your PATH it prints how to add it.
-- Windows: \`%USERPROFILE%\\.logicpacks\\helper\\\` with \`lp.cmd\` and \`lp\` in its \`bin\` folder, and that \`bin\` folder added to your user PATH.
+- macOS and Linux: \`~/.logicpacks/helper/bin/lp\` (the helper) and a symlink \`~/.local/bin/lp\`. It does not edit your shell profile; if \`~/.local/bin\` is not on your PATH it prints how to add it.
+- Windows: \`%USERPROFILE%\\.logicpacks\\helper\\bin\\lp.exe\` (the helper) with \`lp.cmd\` (cmd) and \`lp\` (Git Bash) next to it, and that \`bin\` folder added to your user PATH. In Windows PowerShell 5.1 type \`lp.exe\`: \`lp\` there is a built-in alias for Out-Printer.
 - Your sign-in token, after \`lp login\`: \`~/.logicpacks/\`. \`lp logout\` forgets it.
 
 The installer and \`lp login\` change no agent settings. Streaming your sessions is optional: \`lp install\` shows what it would change and writes only with \`--yes\` (\`lp install --dry-run\` never writes; the installer runs \`lp install --yes\` only if you set \`LP_HELPER_INSTALL=1\`). It sets up:

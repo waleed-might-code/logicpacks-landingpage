@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { BrandMark } from '../components/BrandIcons';
-import { AgentButton, CopyLine, DownloadButton, InstallCommand } from '../components/Buttons';
+import { AgentButton, CopyLine, DownloadButton, InstallCommand, InstallCommandWindows, WindowsDownloadButton } from '../components/Buttons';
 import LaunchMedia from '../components/LaunchMedia';
 import { MotionBg, Reveal } from '../components/Motion';
 import MediaSlot from '../components/MediaSlot';
@@ -27,10 +27,12 @@ function Hero() {
       </h1>
       <div className="lp-rise mt-8 flex flex-wrap items-center gap-2" style={{ '--d': '120ms' }}>
         <DownloadButton />
+        <WindowsDownloadButton />
         <AgentButton onCopied={(ok) => setHint(ok ? 'copied' : 'failed')} />
       </div>
-      <div className="lp-rise mt-3 max-w-[460px]" style={{ '--d': '220ms' }}>
+      <div className="lp-rise mt-3 flex max-w-[460px] flex-col gap-2" style={{ '--d': '220ms' }}>
         <InstallCommand />
+        <InstallCommandWindows />
       </div>
       <p aria-live="polite" className="mt-3 min-h-[18px] text-[13px] text-faint">
         {hint === 'copied' && 'Copied. Paste it into Claude Code, Codex, Cursor or any agent.'}
@@ -345,7 +347,7 @@ export default function Landing() {
         title="Work together."
         action={
           <Link to={LINKS.download} className={primary}>
-            Get the Mac app
+            Get the app
           </Link>
         }
         visual={
@@ -365,7 +367,7 @@ export default function Landing() {
           working on what, and agents can message each other.
         </p>
         <p className={`${rowBody} text-faint`}>
-          Code with a friend: install the Mac app, add a project, add your friend and share it. They connect to your
+          Code with a friend: install the app (Mac or Windows), add a project, add your friend and share it. They connect to your
           laptop while it is on, and each of you works with your own Claude Code or Codex.
         </p>
       </Row>
@@ -377,7 +379,7 @@ export default function Landing() {
         pill="Beta"
         action={
           <Link to={LINKS.download} className={primary}>
-            Get the Mac app
+            Get the app
           </Link>
         }
         visual={<GoalDiagram />}
