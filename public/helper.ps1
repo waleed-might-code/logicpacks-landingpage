@@ -82,7 +82,7 @@ $PosixTarget = $Target -replace '\\', '/'
 # Put the bin folder on the user's PATH (new shells) and this session's PATH.
 $UserPath = [Environment]::GetEnvironmentVariable('Path', 'User')
 if (-not (($UserPath -split ';') -contains $BinDir)) {
-  $NewPath = if ([string]::IsNullOrEmpty($UserPath)) { $BinDir } else { "$UserPath;$BinDir" }
+  $NewPath = if ([string]::IsNullOrEmpty($UserPath)) { $BinDir } else { "$($UserPath.TrimEnd(';'));$BinDir" }
   [Environment]::SetEnvironmentVariable('Path', $NewPath, 'User')
 }
 if (-not (($env:Path -split ';') -contains $BinDir)) { $env:Path = "$env:Path;$BinDir" }

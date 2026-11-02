@@ -79,7 +79,8 @@ Say "lp help: OK ($(& lp.exe version), $((Get-Command lp.exe).Source))"
 
 if (-not $env:LOGICPACKS_NO_OPEN) {
   Say 'Opening LogicPacks.'
-  Start-Process -FilePath $App
+  # Through Explorer, so the app does not attach to this console and print its logs here.
+  Start-Process -FilePath (Join-Path $env:WINDIR 'explorer.exe') -ArgumentList "`"$App`""
 }
 Say 'Done. Add a folder as a project in the app, then run lp login to connect your agent to it.'
 if ($PSVersionTable.PSVersion.Major -lt 6) { Say 'In new Windows PowerShell windows, type lp.exe (lp there is the Out-Printer alias); cmd, Git Bash and PowerShell 7 take lp.' }
