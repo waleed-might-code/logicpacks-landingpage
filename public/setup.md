@@ -116,7 +116,6 @@ Team work runs through the `lp` command (add `--json` to parse its output). If `
 - To coordinate with a teammate's agent, use `lp ask <person> "<question>"` and `lp reply <id> "<answer>"`; check `lp inbox` for questions from other agents and answer them.
 - "request assistance" / "get an expert" -> `lp assist request "<brief>"`.
 - "set goals" / "ask X to do Y by Friday" -> `lp goals plan "<goal>" "<person>: <task> by <day>" ...`; your user confirms with `lp goals confirm <id>`. Milestones for you arrive in `lp inbox`: `lp goals start|done <id>`.
-- "save this as a pack" -> `lp packs save "<name>"`; `lp packs list`, `lp packs use <id>`.
 - Before you edit shared files, run `lp who <file or topic>`; if a teammate is on it, tell the user first.
 - On a conflict or negotiation in `lp inbox`, answer with `lp reply <id>`; when it needs a person, ask the user, then `lp decide <id> mine|theirs|both`.
 - If you cannot run shell commands, ask the user to run the `lp` command, or use the `logicpacks` MCP tools if they are set up.
@@ -160,7 +159,6 @@ LogicPacks for agents. Every command prints readable text; add --json for machin
   lp done <id>                                                dismiss an inbox item you handled
   lp assist request "<brief>" [--expert <id>]                 Request assistance: bring in an expert (beta)
   lp assist experts | list | end <request id>                 the expert catalog, this project's requests, end a request
-  lp packs save "<name>" | list | use <id> [--to <person>]    save this session as a pack, list packs, hand one to a thread
   lp goals plan "<goal>" "<person>: <task> [by <day>]"...     draft a goal with milestones for people or experts (beta); nothing is sent yet
   lp goals list | show <id> | confirm <goal> | cancel <goal>  see goals; confirm a draft (sends the milestones) once your user agrees
   lp goals start|blocked|done <milestone> [--note "<text>"]   report on a milestone assigned to you
@@ -183,7 +181,7 @@ Setup guide: https://logicpacks.io/setup.md
 
 Only if your user asks for it. Show the diff first with `lp install --dry-run`, then `lp install --yes` after they approve (each changed file is backed up first).
 
-If your user wants MCP tools as well, `lp install` registers the `logicpacks` MCP server (`lp mcp`, stdio) with Claude Code and Codex (and adds the Claude Code session hooks and the background watcher that stream sessions into the project). Other harnesses can add it by hand: command `lp`, args `["mcp"]`. The tools are a small subset of the CLI (who is working on what, send, ask, reply, conflicts, notes, packs). The CLI is the main way.
+If your user wants MCP tools as well, `lp install` registers the `logicpacks` MCP server (`lp mcp`, stdio) with Claude Code and Codex (and adds the Claude Code session hooks and the background watcher that stream sessions into the project). Other harnesses can add it by hand: command `lp`, args `["mcp"]`. The tools are a small subset of the CLI (who is working on what, send, ask, reply, conflicts, notes). The CLI is the main way.
 
 ## What streams to the project
 

@@ -22,8 +22,8 @@ export const OPEN_SOURCE = {
   license: 'MIT',
   licenseUrl: 'https://opensource.org/licenses/MIT',
   label: 'Open source',
-  message: 'The collaborative workspace is open source under MIT; Cloud, Talent, Apps/Packs and Enterprise are hosted services.',
-  hosted: ['LogicPacks Cloud (coming soon)', 'Talent', 'Apps and Packs', 'Enterprise'],
+  message: 'The collaborative workspace is open source under MIT; Cloud, Talent, Apps and Enterprise are hosted services.',
+  hosted: ['LogicPacks Cloud (coming soon)', 'Talent', 'Apps', 'Enterprise'],
 };
 
 // The version the copy describes. DOWNLOADS.mac.version (below) is the shipped DMG and is set at release.

@@ -108,7 +108,7 @@ export function Terms() {
         <p>Do not use LogicPacks to break the law, to attack or overload the service, or to reach other members&rsquo; data.</p>
       </Part>
       <Part title="Your work">
-        <p>Your code, projects and packs are yours. We only handle them to run the service for you.</p>
+        <p>Your code and projects are yours. We only handle them to run the service for you.</p>
       </Part>
       <Part title="Beta features">
         <p>

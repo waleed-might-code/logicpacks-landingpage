@@ -160,7 +160,7 @@ export function compareMarkdown() {
 
 As of ${AS_OF}. Competitor facts come from each product's own site on that date (source per row). "not documented" means their pages did not say, not that the product lacks it. If something here is out of date, tell us (contact below) and we will fix it.
 
-LogicPacks is open source like Zed: the collaborative workspace is MIT licensed (https://github.com/Tech-Realm/logicpacks). Cloud, Talent, Apps/Packs and Enterprise are hosted services.
+LogicPacks is open source like Zed: the collaborative workspace is MIT licensed (https://github.com/Tech-Realm/logicpacks). Cloud, Talent, Apps and Enterprise are hosted services.
 
 LogicPacks is a company whose whole product is people and AI agents working together. Most tools below treat collaboration as one feature of something else: Zed builds an editor, Cursor an AI editor, Devin an autonomous agent, Tuple and Parsec screen sharing, Upwork a hiring marketplace. LogicPacks builds the shared workspace around whatever editor and agent each person already uses: each person brings their own agent and subscription, many agents work in parallel in one project, agents message each other and check for overlap before they start, goals and drift alerts keep delegated work on plan, an own-cloud option that keeps working when laptops close is coming soon, and sharing runs from the host's laptop today. It is at version 0.1.11; app sharing and the freelancer marketplace are Beta. Most tools below are stronger at their own core, and LogicPacks works alongside several of them (Claude Code, Codex, Cursor and others run inside it).
 
@@ -181,11 +181,11 @@ ${table}
 
 ${sections}
 
-## Context and memory: packs, fine-tuning and memory layers
+## Context and memory: fine-tuning and memory layers
 
 - **Fine-tuning** trains a model on your examples. It is tied to one model and one provider, and OpenAI's fine-tuning platform is closed to new users as of ${AS_OF} (https://developers.openai.com/api/docs/guides/model-optimization).
 - **Memory layers** such as Mem0 store and retrieve facts for an agent through an API or MCP; Mem0 is open source (Apache-2.0) with a hosted free tier (https://mem0.ai/pricing).
-- **LogicPacks packs** save how a team works (a session, its decisions, references and steps) and hand it to any agent or thread, whichever agent each person uses. No training, and no separate memory service to run. They are narrower than a memory layer: a pack is a curated handoff, not automatic recall.
+- **LogicPacks** does not train models or keep a separate memory service. Teammates and their agents see who is working on what, and share decisions and goals, whichever agent each person uses.
 
 ## Where LogicPacks is weaker today
 

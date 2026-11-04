@@ -261,7 +261,7 @@ const HINTS = [
   { to: LINKS.story, title: 'Our story', line: 'A year in the works, and what we shipped with it.' },
   { to: LINKS.research, title: 'Research', line: 'Test runs, sandbox checks and benchmarks.' },
   { to: LINKS.pricing, title: 'Pricing', line: 'Free for individuals.' },
-  { to: LINKS.whatsNew, title: 'What’s new', line: 'Vetted freelancers, apps and packs.' },
+  { to: LINKS.whatsNew, title: 'What’s new', line: 'Vetted freelancers and apps.' },
 ];
 
 function Hints() {
@@ -402,8 +402,8 @@ export default function Landing() {
         visual={<ToolStrip />}
       >
         <p className={rowBody}>
-          Use Claude Code, Codex, Cursor, VS Code and more, on your own subscription. Add a pack of your team&rsquo;s
-          know-how and any agent works your way, with no fine-tuning.
+          Use Claude Code, Codex, Cursor, VS Code and more, on your own subscription. Teammates and their agents see who is
+          working on what, so any agent works with the team, with no fine-tuning.
         </p>
       </Row>
       <WhereItRuns />
