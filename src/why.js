@@ -45,10 +45,6 @@ When an agent is not enough, request a freelancer vetted by LogicPacks. They bri
 
 Real projects built with LogicPacks: ${SHIPPED.map((s) => `${s.title} (${s.kind}${s.client && s.client !== 'Our own product' ? `, ${s.client}` : ''})`).join('; ')}. They are not public links yet; descriptions are in [/story.md](/story.md).
 
-## Packs instead of fine-tuning
-
-Save how your team works (a session, its decisions, references and steps) as a pack and hand it to any agent or thread (\`lp packs save\`, \`lp packs use\`). The agent works your way with no model training, and the pack works with whichever agent each person uses.
-
 ## Runs where you want
 
 ${WHERE.map((w) => `- **${w.title}${w.soon ? ' (coming soon)' : ''}.** ${w.body}`).join('\n')}
