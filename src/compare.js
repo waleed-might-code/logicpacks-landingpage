@@ -149,7 +149,7 @@ As of ${AS_OF}. Competitor facts come from each product's own site on that date 
 
 LogicPacks is open source like Zed: the collaborative workspace is MIT licensed (https://github.com/Tech-Realm/logicpacks). Cloud and Enterprise are hosted services, not available yet.
 
-LogicPacks is a company whose whole product is people and AI agents working together. Most tools below treat collaboration as one feature of something else: Zed builds an editor, Cursor an AI editor, Devin an autonomous agent, Tuple and Parsec screen sharing. LogicPacks builds the shared workspace around whatever editor and agent each person already uses: each person brings their own agent and subscription, many agents work in parallel in one project, agents message each other and check for overlap before they start, goals and drift alerts keep delegated work on plan, an own-cloud option that keeps working when laptops close is coming soon, and sharing runs from the host's laptop today. It is at version 0.1.15; app sharing is a Beta preview. Most tools below are stronger at their own core, and LogicPacks works alongside several of them (Claude Code, Codex, Cursor and others run inside it).
+LogicPacks is a company whose whole product is people and AI agents working together. Most tools below treat collaboration as one feature of something else: Zed builds an editor, Cursor an AI editor, Devin an autonomous agent, Tuple and Parsec screen sharing. LogicPacks builds the shared workspace around whatever editor and agent each person already uses: each person brings their own agent and subscription, many agents work in parallel in one project, agents message each other and check for overlap before they start, goals and drift alerts keep delegated work on plan, an own-cloud option that keeps working when laptops close is coming soon, and sharing runs from the host's laptop today. It is at version 0.1.16; app sharing is a Beta preview. Most tools below are stronger at their own core, and LogicPacks works alongside several of them (Claude Code, Codex, Cursor and others run inside it).
 
 ## Which to pick
 
@@ -175,7 +175,7 @@ ${sections}
 
 ## Where LogicPacks is weaker today
 
-- Young: version 0.1.15, with app sharing in Beta. The Mac app needs macOS 13 or later on Apple silicon; the Windows app (x64) is new since 0.1.12, is not code-signed yet and cannot host app sharing (that is macOS only); there is no Linux desktop or iOS app yet, and our cloud is coming soon. Sharing is host-based: teammates sync to the host's laptop while it is on.
+- Young: version 0.1.16, with app sharing in Beta. The Mac app needs macOS 13 or later on Apple silicon; the Windows app (x64) is new since 0.1.12, is not code-signed yet and cannot host app sharing (that is macOS only); there is no Linux desktop or iOS app yet, and our cloud is coming soon. Sharing is host-based: teammates sync to the host's laptop while it is on.
 - App sharing between people is a Beta preview, not generally released; its first latency and frame rate benchmarks were measured with the viewer on the same Mac, not over a network ([/research.md](/research.md)); Parsec and Tuple are far more mature at streaming and pairing.
 - No independent security certification is documented. What is in place and what is pending: [/research.md](/research.md) and [/safety.md](/safety.md).
 - Single sign-on, admin controls and audit log, and our cloud and your own cloud host are coming soon, not available ([/pricing.md](/pricing.md)).
