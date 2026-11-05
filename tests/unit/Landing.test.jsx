@@ -61,7 +61,7 @@ describe('Landing', () => {
     ]);
     expect(screen.getAllByRole('link', { name: 'Get the app' })[0]).toHaveAttribute('href', '/download');
     expect(screen.getByTestId('goal-diagram')).toHaveTextContent('Drifting');
-    expect(screen.getByText(/or an outside team/)).toBeInTheDocument();
+    expect(document.body.textContent).not.toMatch(/freelancer|outside team/i);
     expect(screen.getByRole('link', { name: /See what’s new/ })).toHaveAttribute('href', '/new');
   });
 
@@ -218,7 +218,7 @@ describe('Story, research and pricing', () => {
     const hints = screen.getAllByTestId('hint');
     expect(hints.map((h) => h.getAttribute('href'))).toEqual(['/story', '/research', '/pricing', '/new']);
     expect(container.textContent).not.toMatch(/testimonial|Virtual sizing|Benchmark running|\$99|access code|waitlist|invite-only/i);
-    expect(screen.getByText(/freelancer vetted by LogicPacks/)).toBeInTheDocument();
+    expect(screen.queryByText(/freelancer vetted by LogicPacks/)).not.toBeInTheDocument();
   });
 
   it('/story lists the shipped launches', () => {

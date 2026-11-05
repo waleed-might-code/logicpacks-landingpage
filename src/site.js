@@ -295,5 +295,4 @@ export const COMPARE = [
   { vs: 'Zed Delta, claude-duet', line: 'They share one Claude Code session. LogicPacks gives each person their own agent, with many agents in parallel that coordinate.' },
   { vs: 'Cursor, Devin', line: 'Strong single-user agents. LogicPacks puts several people and their agents in one project, with goals and drift alerts (Beta).' },
   { vs: 'Tuple, Parsec', line: 'Screen sharing without agents. LogicPacks shares the project, the threads and the agents.' },
-  { vs: 'Upwork', line: 'Hiring without the workspace. In LogicPacks a vetted freelancer joins the project with their own AI (Beta).' },
 ];

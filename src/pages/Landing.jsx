@@ -261,7 +261,7 @@ const HINTS = [
   { to: LINKS.story, title: 'Our story', line: 'A year in the works, and what we shipped with it.' },
   { to: LINKS.research, title: 'Research', line: 'Test runs, sandbox checks and benchmarks.' },
   { to: LINKS.pricing, title: 'Pricing', line: 'Free for individuals.' },
-  { to: LINKS.whatsNew, title: 'What’s new', line: 'Vetted freelancers and apps.' },
+  { to: LINKS.whatsNew, title: 'What’s new', line: 'The Windows app, open source and sharing.' },
 ];
 
 function Hints() {
@@ -385,14 +385,8 @@ export default function Landing() {
         visual={<GoalDiagram />}
       >
         <p className={rowBody}>
-          Hand work to a teammate, or an outside team, as clear milestones with limits. Their agent stays on plan, and you
+          Hand work to a teammate as clear milestones with limits. Their agent stays on plan, and you
           see the moment anything drifts. Message them or watch, right there.
-        </p>
-        <p className="mt-3 max-w-[460px] text-[13px] leading-[1.55] text-faint">
-          Or bring in a freelancer vetted by LogicPacks, with their own Claude and tools.{' '}
-          <Link to={LINKS.whatsNew} className="text-muted underline decoration-line underline-offset-4 hover:text-ink">
-            How it works
-          </Link>
         </p>
       </Row>
       <Row
