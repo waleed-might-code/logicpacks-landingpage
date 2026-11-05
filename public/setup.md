@@ -109,7 +109,7 @@ The block is:
 ## LogicPacks
 Team work runs through the `lp` command (add `--json` to parse its output). If `lp` is the printer command (macOS, Linux), call `~/.local/bin/lp`; in Windows PowerShell 5.1 type `lp.exe` (`lp` is an Out-Printer alias there). If it is missing, follow https://logicpacks.io/setup.md.
 - At the start of a session and after long tasks, run `lp inbox` and tell the user what is new (messages, questions from other agents, conflicts, drift, review requests).
-- "share this project" / "create a shared session" -> `lp share`, then give the user the invite link.
+- "share this project" / "create a shared session" -> `lp share`, then give the user the share link it prints (the same public link the app's Share dialog gives: anyone with it can join this project).
 - "add my friend X" / "invite X" -> `lp invite <email or name>` (this project only; `--workspace` for every project); "remove X" -> `lp remove <person>`; "turn off the invite link" -> `lp revoke-invite`.
 - "what is X working on" -> `lp who X`; "who is working right now" -> `lp agents` (`--workspace` for every project).
 - "tell X ..." -> `lp send X "<message>"`.
@@ -130,7 +130,7 @@ If your user asked you to share the project they are in:
 lp share
 ```
 
-It pushes the folder to its git remote (it creates a private GitHub repository with `gh` when there is none), registers it on the LogicPacks host and prints an invite link. The link grants access to this project only; tell your user that, and give them the link. To add a teammate by email: `lp invite friend@example.com` (also this project only). `lp invite --workspace` gives a link to every project in the workspace: use it only when your user asks for that.
+It pushes the folder to its git remote (it creates a private GitHub repository with `gh` when there is none), registers it on the LogicPacks host and prints the project's public share link. It is the same link the Share dialog in the LogicPacks app gives: anyone who has it can join, and it grants access to this project only. Tell your user that, give them the link, and say they can turn it off or reset it in the Share dialog (or with `lp revoke-invite`). To add one person by email: `lp invite friend@example.com` (also this project only, with their own personal invite link if they have no account yet). `lp invite --workspace` gives a link to every project in the workspace: use it only when your user asks for that.
 
 ## 5. Every session from now on
 
@@ -143,8 +143,8 @@ LogicPacks for agents. Every command prints readable text; add --json for machin
   lp login [--cloud | --host <url>] [--start | --finish]      connect to the LogicPacks app on this computer (no browser step); --cloud or --host <url> sign in to a hosted one with a device code
   lp whoami                                                   who you are signed in as, and on which host
   lp projects                                                 the projects you can open
-  lp share [--title <name>] [--workspace]                     share this folder: push it to its git remote (GitHub) and register it on the host; prints an invite link
-  lp invite [<email|name>] [--workspace]                      add someone to this project, or print the invite link to send them
+  lp share [--title <name>] [--workspace]                     share this folder: push it to its git remote (GitHub) and register it on the host; prints the project's public share link
+  lp invite [<email|name>] [--workspace]                      add someone to this project, or print the project's share link to send them
   lp join <invite link>                                       accept an invite link from a teammate
   lp members                                                  who is in this project
   lp who [person|file|topic]                                  who is working on what in this project

@@ -6,7 +6,7 @@ export const SERVER_SAFETY = `## 5. What teammates can see
 
 Sharing has two levels:
 
-- **One project.** "Share" on a project, \`lp invite <email>\`, and the invite link that \`lp share\` and \`lp invite\` print add a person to that project only. They see that project's threads and files.
+- **One project.** "Share" on a project, \`lp invite <email>\`, and the share link that \`lp share\` and \`lp invite\` print (the same link the Share dialog gives; anyone who has it can join) add a person to that project only. They see that project's threads and files.
 - **A workspace.** A workspace invite link ("Invite your team" in the app, or \`lp invite --workspace\`) makes the person a workspace member, and members work in **all** of that workspace's projects. Use a separate workspace for work you do not want everyone in it to see.
 
 What streams from your computer:
