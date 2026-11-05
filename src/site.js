@@ -27,7 +27,7 @@ export const OPEN_SOURCE = {
 };
 
 // The version the copy describes. DOWNLOADS.mac.version (below) is the shipped DMG and is set at release.
-export const CURRENT_VERSION = '0.1.14';
+export const CURRENT_VERSION = '0.1.15';
 
 // public/setup.md is the agent setup guide. Until it ships, Docs points at the repo
 // docs so nothing links a 404. The build sets __HAS_SETUP__ (vite.config.js).
@@ -51,18 +51,18 @@ export const DOWNLOADS = {
   mac: {
     // Versioned file names: Cloudflare caches release binaries, so a new
     // release gets a new name (and the ?v= tag) instead of reusing this one.
-    url: 'https://downloads.logicpacks.io/mac/LogicPacks-0.1.14-arm64.dmg?v=eede2b30',
+    url: 'https://downloads.logicpacks.io/mac/LogicPacks-0.1.15-arm64.dmg?v=af01f557',
     // Hex SHA-256 of the DMG, published next to the button.
-    sha256: 'eede2b30a5a1a75306bce8b884240b235ec02e0f9d33d8dedc261a60552de5e8',
-    version: '0.1.14',
+    sha256: 'af01f557326b51febc51449677413d8b7284174dd85d687e59968c4087c94626',
+    version: '0.1.15',
     size: '177 MB',
     requires: 'macOS 13 or later, Apple silicon',
   },
   // The Windows installer: per user (no admin), x64, not code-signed yet (SmartScreen may ask).
   windows: {
-    url: 'https://downloads.logicpacks.io/win/LogicPacks-0.1.14-x64.exe?v=15ca3736',
-    sha256: '15ca3736d9fe47ff6d58cd48ffe0544fa7a1b0813b9969ae7d41548e50d3609d',
-    version: '0.1.14',
+    url: 'https://downloads.logicpacks.io/win/LogicPacks-0.1.15-x64.exe?v=aa134ab8',
+    sha256: 'aa134ab894f0df1b2b7952083f79f59ff81b9349c15472c165c6adda1d33d2bc',
+    version: '0.1.15',
     size: '248 MB',
     requires: 'Windows 10 or 11, x64',
   },
@@ -185,7 +185,7 @@ export const STORY = [
   { when: 'Nov 2025', title: 'Started building', body: 'A shared workspace where people and their agents work on the same project.' },
   { when: 'Jan 2026', title: 'Internal testing', body: 'Opened to our own team after two months, used on our client work every day.' },
   { when: 'Feb to Oct 2026', title: 'Eight months of testing', body: 'Used in labs and by tech agencies on real projects.' },
-  { when: 'Nov 2026', title: 'Public beta', body: 'Version 0.1.14: the app for Mac and Windows with a code editor and agent workspace, projects, adding people and sharing, running on your own Claude Code or Codex. Our cloud is coming soon. App sharing is a Beta preview.' },
+  { when: 'Nov 2026', title: 'Public beta', body: 'Version 0.1.15: the app for Mac and Windows with a code editor and agent workspace, projects, adding people and sharing, running on your own Claude Code or Codex. Our cloud is coming soon. App sharing is a Beta preview.' },
 ];
 
 // Launches built with LogicPacks. Facts only from the project notes.
@@ -260,7 +260,7 @@ export const WHERE = [
   },
 ];
 
-// The shortest path for two people (the 0.1.14 app, Mac or Windows).
+// The shortest path for two people (the 0.1.15 app, Mac or Windows).
 export const FRIEND_PATH = [
   'Each of you installs the app (Mac or Windows) from https://logicpacks.io/download and has Claude Code or Codex installed and logged in. If the CLI is missing, the app shows the install command and tells you to log in in your terminal.',
   'The host adds a project in the app: an empty folder, or an existing folder or Git repository.',
