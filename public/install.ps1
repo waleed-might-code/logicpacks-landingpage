@@ -25,7 +25,7 @@ $Work = Join-Path ([System.IO.Path]::GetTempPath()) ('logicpacks-' + [guid]::New
 New-Item -ItemType Directory -Force -Path $Work | Out-Null
 $Setup = Join-Path $Work "LogicPacks-$($Release.version)-x64.exe"
 try {
-  Say "Downloading LogicPacks $($Release.version) ($([math]::Round($Release.size / 1MB)) MB)..."
+  Say "Downloading LogicPacks $($Release.version) ($([math]::Round($Release.size / 1MB)) MB, a few minutes on a slow link)..."
   # curl.exe (built into Windows 10 1803 and later) shows progress and is much faster than
   # Invoke-WebRequest in Windows PowerShell 5.1; fall back to Invoke-WebRequest without it.
   $Curl = Get-Command curl.exe -CommandType Application -ErrorAction SilentlyContinue | Select-Object -First 1
@@ -50,7 +50,8 @@ try {
     Start-Sleep -Seconds 2
   }
 
-  Say 'Installing for this user (no admin needed). If Windows shows a SmartScreen prompt for the unsigned app, choose More info, then Run anyway.'
+  Say 'Installing for this user, no admin needed (about a minute).'
+  Say 'If Windows SmartScreen asks: More info, then Run anyway.'
   $Installer = Start-Process -FilePath $Setup -ArgumentList '/S' -Wait -PassThru
   if ($Installer.ExitCode -ne 0) { Fail "the installer exited with code $($Installer.ExitCode)." }
 } finally {

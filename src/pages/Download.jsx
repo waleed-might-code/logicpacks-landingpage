@@ -189,6 +189,61 @@ const OTHERS = [
   },
 ];
 
+const WINDOWS_STEPS = [
+  {
+    src: '/windows/install-terminal.jpg',
+    alt: 'Windows PowerShell running the LogicPacks install line: checksum OK, installed, lp help OK, opening LogicPacks',
+    title: 'Paste one line in PowerShell',
+    body: 'It downloads the installer, checks its SHA-256, installs for your user without admin rights and puts lp.exe on your PATH.',
+  },
+  {
+    src: '/windows/setup-agents.jpg',
+    alt: 'The LogicPacks first-run window with Codex and Claude as agents to connect or install',
+    title: 'The app opens and checks for your agents',
+    body: 'It looks for Claude Code and Codex on this PC. Connect one, or install Claude Code from the same screen.',
+  },
+  {
+    src: '/windows/first-thread.jpg',
+    alt: 'A LogicPacks project on Windows with a finished Claude Haiku thread',
+    title: 'Add a folder and start a thread',
+    body: 'The agent runs on your PC, in your folder. Teammates and other agents see it in the project.',
+  },
+  {
+    src: '/windows/network-access.jpg',
+    alt: 'The Enable network access dialog explaining the Windows prompt',
+    title: 'Share with people on your network',
+    body: 'Turn on Network access in Settings to share a project link. Windows asks once whether LogicPacks may use the network; choose Allow.',
+  },
+  {
+    src: '/windows/smartscreen.jpg',
+    alt: 'Windows SmartScreen asking before it runs an app it does not recognize',
+    title: 'If SmartScreen asks',
+    body: 'The app is not code-signed yet. This appears when you open the downloaded .exe by hand: choose More info, then Run anyway. The PowerShell line does not show it.',
+  },
+];
+
+function WindowsWalkthrough() {
+  return (
+    <div id="windows-steps" className="mt-10">
+      <h2 className="text-[20px] font-normal tracking-[-0.015em] text-ink">Installing on Windows, as it looks</h2>
+      <p className="mt-2 text-[13px] leading-[1.45] text-muted">Captured on a Windows 11 PC with a standard user account.</p>
+      <div className="mt-5 grid gap-3 lg:grid-cols-2">
+        {WINDOWS_STEPS.map((step, i) => (
+          <figure key={step.src} className={`${box} flex flex-col`}>
+            <img src={step.src} alt={step.alt} loading="lazy" className="w-full rounded-md border border-line" />
+            <figcaption className="mt-4">
+              <p className="text-[14px] text-ink">
+                {i + 1}. {step.title}
+              </p>
+              <p className="mt-1 text-[13px] leading-[1.45] text-muted">{step.body}</p>
+            </figcaption>
+          </figure>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function Download() {
   return (
     <section aria-labelledby="download-title" className={`${container} pb-24 pt-16 sm:pb-32 sm:pt-24`}>
@@ -224,7 +279,9 @@ export default function Download() {
         </article>
       </div>
 
-      <div className="mt-3 grid overflow-hidden rounded-xl border border-line bg-panel sm:grid-cols-2">
+      <WindowsWalkthrough />
+
+      <div className="mt-10 grid overflow-hidden rounded-xl border border-line bg-panel sm:grid-cols-2">
         {OTHERS.map((item, i) => (
           <article
             key={item.id}

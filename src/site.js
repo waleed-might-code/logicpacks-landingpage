@@ -60,9 +60,9 @@ export const DOWNLOADS = {
   },
   // The Windows installer: per user (no admin), x64, not code-signed yet (SmartScreen may ask).
   windows: {
-    url: 'https://downloads.logicpacks.io/win/LogicPacks-0.1.12-x64.exe?v=5c75f0f4',
-    sha256: '5c75f0f496f78302639b63a2e6e0987f79c3e7e3798d4dba8a471886a3f3b92a',
-    version: '0.1.12',
+    url: 'https://downloads.logicpacks.io/win/LogicPacks-0.1.13-x64.exe?v=937350ef',
+    sha256: '937350ef067e5f27109f572ed2fa9a3df770a90da20c53680fa5eb99165a86d6',
+    version: '0.1.13',
     size: '248 MB',
     requires: 'Windows 10 or 11, x64',
   },
