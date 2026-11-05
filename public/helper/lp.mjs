@@ -455,6 +455,19 @@ const HARNESSES = [
 		docs: ["https://hermes-agent.nousresearch.com/docs/user-guide/features/context-files"]
 	},
 	{
+		id: "t3code",
+		name: "T3 Code",
+		global: {
+			kind: "ui",
+			steps: ["T3 Code runs the agents you have installed (Codex, Claude Code, OpenCode...) and has no file of its own.", "Set up each of those (lp setup --agent codex, --agent claude...); LogicPacks also writes this project's AGENTS.md."]
+		},
+		project: AGENTS_MD,
+		format: "markdown",
+		shell: true,
+		mcp: true,
+		docs: ["https://github.com/pingdotgg/t3code"]
+	},
+	{
 		id: "generic",
 		name: "Any other agent",
 		global: {
@@ -485,6 +498,8 @@ const ALIASES = {
 	factory: "droid",
 	"qwen-code": "qwen",
 	"hermes-agent": "hermes",
+	"t3-code": "t3code",
+	t3: "t3code",
 	other: "generic",
 	custom: "generic"
 };
@@ -524,16 +539,14 @@ const SETUP_URL = "https://logicpacks.io/setup.md";
 /** The global block: intents to `lp` commands. Kept short on purpose (about 20 lines). */
 const globalBlockBody = (projectTitle = null) => [
 	`## LogicPacks${projectTitle ? `: ${projectTitle}` : ""}`,
-	`Team work runs through the \`lp\` command (add \`--json\` to parse its output). If \`lp\` is the printer command (macOS, Linux), call \`~/.local/bin/lp\`; in Windows PowerShell type \`lp.cmd\`. If it is missing, follow ${SETUP_URL}.`,
+	`Team work runs through the \`lp\` command (add \`--json\` to parse its output). If \`lp\` is the printer command (macOS, Linux), call \`~/.local/bin/lp\`; in Windows PowerShell 5.1 type \`lp.exe\` (\`lp\` is an Out-Printer alias there). If it is missing, follow ${SETUP_URL}.`,
 	"- At the start of a session and after long tasks, run `lp inbox` and tell the user what is new (messages, questions from other agents, conflicts, drift, review requests).",
 	"- \"share this project\" / \"create a shared session\" -> `lp share`, then give the user the invite link.",
 	"- \"add my friend X\" / \"invite X\" -> `lp invite <email or name>` (this project only; `--workspace` for every project); \"remove X\" -> `lp remove <person>`; \"turn off the invite link\" -> `lp revoke-invite`.",
 	"- \"what is X working on\" -> `lp who X`; \"who is working right now\" -> `lp agents` (`--workspace` for every project).",
 	"- \"tell X ...\" -> `lp send X \"<message>\"`.",
 	"- To coordinate with a teammate's agent, use `lp ask <person> \"<question>\"` and `lp reply <id> \"<answer>\"`; check `lp inbox` for questions from other agents and answer them.",
-	"- \"request assistance\" / \"get an expert\" -> `lp assist request \"<brief>\"`.",
 	"- \"set goals\" / \"ask X to do Y by Friday\" -> `lp goals plan \"<goal>\" \"<person>: <task> by <day>\" ...`; your user confirms with `lp goals confirm <id>`. Milestones for you arrive in `lp inbox`: `lp goals start|done <id>`.",
-	"- \"save this as a pack\" -> `lp packs save \"<name>\"`; `lp packs list`, `lp packs use <id>`.",
 	"- Before you edit shared files, run `lp who <file or topic>`; if a teammate is on it, tell the user first.",
 	"- On a conflict or negotiation in `lp inbox`, answer with `lp reply <id>`; when it needs a person, ask the user, then `lp decide <id> mine|theirs|both`.",
 	"- If you cannot run shell commands, ask the user to run the `lp` command, or use the `logicpacks` MCP tools if they are set up.",
@@ -554,7 +567,7 @@ const setupPrompt = (variant = "new") => variant === "new" ? [
 const AGENT_COMMANDS = [
 	{
 		usage: "lp login [--cloud | --host <url>] [--start | --finish]",
-		does: "connect to the LogicPacks Mac app on this computer (no browser step); --cloud or --host <url> sign in to a hosted one with a device code"
+		does: "connect to the LogicPacks app on this computer (no browser step); --cloud or --host <url> sign in to a hosted one with a device code"
 	},
 	{
 		usage: "lp whoami",
@@ -618,15 +631,13 @@ const AGENT_COMMANDS = [
 	},
 	{
 		usage: "lp assist request \"<brief>\" [--expert <id>]",
-		does: "Request assistance: bring in an expert (beta)"
+		does: "Request assistance: bring in an expert (beta)",
+		feature: "talent"
 	},
 	{
 		usage: "lp assist experts | list | end <request id>",
-		does: "the expert catalog, this project's requests, end a request"
-	},
-	{
-		usage: "lp packs save \"<name>\" | list | use <id> [--to <person>]",
-		does: "save this session as a pack, list packs, hand one to a thread"
+		does: "the expert catalog, this project's requests, end a request",
+		feature: "talent"
 	},
 	{
 		usage: "lp goals plan \"<goal>\" \"<person>: <task> [by <day>]\"...",
@@ -686,12 +697,13 @@ const AGENT_COMMANDS = [
 	}
 ];
 const pad$1 = (text, width) => text.padEnd(width);
-const agentsHelp = () => {
-	const width = Math.max(...AGENT_COMMANDS.map((command) => command.usage.length)) + 2;
+const agentsHelp = (features = []) => {
+	const commands = AGENT_COMMANDS.filter((command) => command.feature === void 0 || features.includes(command.feature));
+	const width = Math.max(...commands.map((command) => command.usage.length)) + 2;
 	return [
 		"LogicPacks for agents. Every command prints readable text; add --json for machine output.",
 		"",
-		...AGENT_COMMANDS.map((command) => `  ${pad$1(command.usage, width)}${command.does}`),
+		...commands.map((command) => `  ${pad$1(command.usage, width)}${command.does}`),
 		"",
 		`Setup guide: ${SETUP_URL}`
 	].join("\n");
@@ -1195,6 +1207,24 @@ const writeClaudeMcp = (launch) => {
 	const after = `${JSON.stringify(withClaudeMcp(parsed, launch), null, 2)}\n`;
 	return commitFile(file, after) ? file : null;
 };
+const claudeMcpInstalled = () => {
+	try {
+		const parsed = asRecord(JSON.parse(NodeFS.readFileSync(claudeUserConfigFile(), "utf8")));
+		return asRecord(parsed?.mcpServers)?.[MCP_NAME] !== void 0;
+	} catch {
+		return false;
+	}
+};
+/** Whether the registered Claude Code MCP server already starts exactly this command. */
+const claudeMcpMatches = (launch) => {
+	try {
+		const parsed = asRecord(JSON.parse(NodeFS.readFileSync(claudeUserConfigFile(), "utf8")));
+		const entry = asRecord(asRecord(parsed?.mcpServers)?.[MCP_NAME]);
+		return entry?.command === launch.command && JSON.stringify(entry?.args ?? []) === JSON.stringify([...launch.args]);
+	} catch {
+		return false;
+	}
+};
 const AGENTS_START = "<!-- logicpacks:start -->";
 const AGENTS_END = "<!-- logicpacks:end -->";
 /**
@@ -1242,7 +1272,7 @@ const writeAgentsBlock = (folder, body) => {
 // src/localHost.ts
 /** The key file the app's server writes next to server-runtime.json (see helperHttp.ts). */
 const LOCAL_HELPER_KEY_FILE = "helper-local.key";
-const OPEN_THE_APP = "Open the LogicPacks Mac app (download: https://logicpacks.io/download), then run lp login again. LogicPacks cloud is coming soon.";
+const OPEN_THE_APP = "Open the LogicPacks app (download: https://logicpacks.io/download), then run lp login again. LogicPacks cloud is coming soon.";
 const NOT_CONNECTED = `LogicPacks is not connected on this computer. Run lp login. ${OPEN_THE_APP}`;
 const alive = (pid) => {
 	if (!Number.isInteger(pid) || pid <= 0) return false;
@@ -1557,7 +1587,12 @@ const systemdUnitFile = () => NodePath.join(NodeOS.homedir(), ".config", "system
 * Keeps `lp watch` running in the background: it tails Codex sessions (Codex has no
 * hooks), catches Claude Code output the hooks missed, and resends queued batches.
 */
-const installWatcher = (script) => {
+const installWatcher = (launch) => {
+	const argv = [
+		launch.command,
+		...launch.args,
+		"watch"
+	];
 	const log = NodePath.join(helperHome(), "watch.log");
 	const env = process.env.LP_HELPER_HOME ? { LP_HELPER_HOME: process.env.LP_HELPER_HOME } : {};
 	if (process.platform === "darwin") {
@@ -1567,7 +1602,7 @@ const installWatcher = (script) => {
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0"><dict>
 <key>Label</key><string>${LABEL}</string>
-<key>ProgramArguments</key><array><string>${xml(process.execPath)}</string><string>${xml(script)}</string><string>watch</string></array>
+<key>ProgramArguments</key><array>${argv.map((arg) => `<string>${xml(arg)}</string>`).join("")}</array>
 <key>EnvironmentVariables</key><dict>${envXml}</dict>
 <key>RunAtLoad</key><true/>
 <key>KeepAlive</key><true/>
@@ -1594,7 +1629,7 @@ const installWatcher = (script) => {
 	if (process.platform === "linux" && run("systemctl", ["--user", "--version"]).status === 0) {
 		const file = systemdUnitFile();
 		const envLines = Object.entries(env).map(([key, value]) => `Environment=${key}=${value}\n`).join("");
-		commitFile(file, `[Unit]\nDescription=LogicPacks helper\n\n[Service]\nExecStart="${process.execPath}" "${script}" watch\n${envLines}Restart=always\nRestartSec=5\n\n[Install]\nWantedBy=default.target\n`);
+		commitFile(file, `[Unit]\nDescription=LogicPacks helper\n\n[Service]\nExecStart=${argv.map((arg) => `"${arg}"`).join(" ")}\n${envLines}Restart=always\nRestartSec=5\n\n[Install]\nWantedBy=default.target\n`);
 		const enabled = runOrList("systemctl --user daemon-reload; systemctl --user enable --now logicpacks-helper.service", () => {
 			run("systemctl", ["--user", "daemon-reload"]);
 			return run("systemctl", [
@@ -1614,7 +1649,7 @@ const installWatcher = (script) => {
 		const file = startupFile();
 		const quote = (value) => `""${value}""`;
 		const envSet = Object.entries(env).map(([key, value]) => `env("${key}") = "${value}"\r\n`).join("");
-		commitFile(file, `Set shell = CreateObject("WScript.Shell")\r\nSet env = shell.Environment("Process")\r\n${envSet}shell.Run "${quote(process.execPath)} ${quote(script)} watch", 0, False\r\n`);
+		commitFile(file, `Set shell = CreateObject("WScript.Shell")\r\nSet env = shell.Environment("Process")\r\n${envSet}shell.Run "${argv.map(quote).join(" ")}", 0, False\r\n`);
 		const started = runOrList(`wscript.exe "${file}"`, () => run("wscript.exe", [file]), {
 			status: 0,
 			stderr: ""
@@ -1623,6 +1658,13 @@ const installWatcher = (script) => {
 		return `Startup launcher ${file}`;
 	}
 	throw new Error("No launchd or systemd here. Run `lp watch` in the background yourself.");
+};
+/** PowerShell that lists running watchers: lp.exe watch, or node running the older lp.mjs watch. */
+const WINDOWS_WATCHERS = "Get-CimInstance Win32_Process | Where-Object { ($_.Name -eq 'lp.exe' -and $_.CommandLine -like '* watch*') -or ($_.Name -eq 'node.exe' -and $_.CommandLine -like '*lp.mjs*watch*') }";
+/** Whether a watcher launcher is in place (launchd agent, systemd unit or Startup file). */
+const watcherInstalled = () => {
+	const file = process.platform === "darwin" ? launchAgentFile() : process.platform === "linux" ? systemdUnitFile() : process.platform === "win32" ? startupFile() : null;
+	return file !== null && NodeFS.existsSync(file);
 };
 const uninstallWatcher = () => {
 	if (process.platform === "darwin") {
@@ -1643,7 +1685,7 @@ const uninstallWatcher = () => {
 		run("powershell.exe", [
 			"-NoProfile",
 			"-Command",
-			"Get-CimInstance Win32_Process -Filter \"Name='node.exe'\" | Where-Object { $_.CommandLine -like '*lp.mjs*watch*' } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force }"
+			`${WINDOWS_WATCHERS} | ForEach-Object { Stop-Process -Id $_.ProcessId -Force }`
 		]);
 	}
 };
@@ -1658,12 +1700,35 @@ const watcherRunning = () => {
 		const found = run("powershell.exe", [
 			"-NoProfile",
 			"-Command",
-			"@(Get-CimInstance Win32_Process -Filter \"Name='node.exe'\" | Where-Object { $_.CommandLine -like '*lp.mjs*watch*' }).Count"
+			`@(${WINDOWS_WATCHERS}).Count`
 		]);
 		return Number(found.stdout.trim()) > 0;
 	}
 	return false;
 };
+// src/launcher.ts
+const isStandalone = () => typeof LP_STANDALONE !== "undefined" && LP_STANDALONE === true;
+const real = (path) => {
+	try {
+		return NodeFS.realpathSync(path);
+	} catch {
+		return path;
+	}
+};
+/** How to start this same lp again: the standalone binary itself, or Node with this script. */
+const selfLaunch = () => isStandalone() ? {
+	command: real(process.execPath),
+	args: []
+} : {
+	command: process.execPath,
+	args: [real(process.argv[1] ?? "lp")]
+};
+/** The program path alone: the binary, or the script when Node runs it. */
+const selfPath = () => {
+	const launch = selfLaunch();
+	return launch.args[0] ?? launch.command;
+};
+const helperVersion = () => typeof LP_VERSION === "string" ? LP_VERSION : "dev";
 // src/claude.ts
 const FILE_EDIT_TOOLS = /* @__PURE__ */ new Set([
 	"Edit",
@@ -2383,16 +2448,16 @@ const readStdin = async (timeoutMs) => new Promise((resolve) => {
 });
 /** Syncs in a detached process so a hook never holds up the agent. */
 const syncInBackground = (transcript) => {
-	const script = process.argv[1];
-	if (!script) return;
-	NodeChildProcess.spawn(process.execPath, [
-		script,
+	const self = selfLaunch();
+	NodeChildProcess.spawn(self.command, [
+		...self.args,
 		"sync",
 		"--source",
 		"claude",
 		"--file",
 		transcript
 	], {
+		windowsHide: true,
 		detached: true,
 		stdio: "ignore",
 		env: process.env
@@ -3085,7 +3150,7 @@ const projectLink = async (ctx, config, projectId) => {
 			projectId,
 			enabled: true
 		} })).link;
-		return new URL(link.path, config.server).toString();
+		return await linkUrl(link.path, config.server);
 	} catch (error) {
 		if (error instanceof RejectedError && error.status === 401) throw error;
 		return null;
@@ -3105,11 +3170,29 @@ const scopedLink = async (ctx, config, args, project) => {
 		note: link === null ? "Only the project's owner can make its invite link. Ask them, or add people by email: lp invite <email>." : null
 	};
 };
+const isLoopbackHost = (host) => host === "127.0.0.1" || host === "localhost" || host === "[::1]" || host === "::1";
+/**
+* A link for other people. The app on this computer answers on 127.0.0.1, which nobody else can
+* open: when Network access is on, the app also answers on this computer's address, so use that.
+*/
+const linkUrl = async (path, server) => {
+	const url = new URL(path, server);
+	if (!isLoopbackHost(url.hostname)) return url.toString();
+	const candidates = Object.values(NodeOS.networkInterfaces()).flatMap((list) => list ?? []).filter((entry) => entry.family === "IPv4" && !entry.internal).map((entry) => entry.address).sort((a, b) => Number(/^(192\.168|10\.|172\.(1[6-9]|2\d|3[01]))/.test(b)) - Number(/^(192\.168|10\.|172\.(1[6-9]|2\d|3[01]))/.test(a)));
+	for (const address of candidates) {
+		const probe = new URL(url.toString());
+		probe.hostname = address;
+		try {
+			if ((await fetch(new URL("/", probe), { signal: AbortSignal.timeout(1500) })).status < 500) return probe.toString();
+		} catch {}
+	}
+	return url.toString();
+};
 const linkLine = (label, scoped) => scoped.link === null ? null : `${label} (${SCOPE_TEXT[scoped.scope]}): ${scoped.link}`;
 const inviteLink = async (ctx, config, workspaceId) => {
 	if (workspaceId === null) return null;
 	const { path } = await ctx.call(config, `/api/lp/workspaces/invite?workspaceId=${encodeURIComponent(workspaceId)}`);
-	return new URL(path, config.server).toString();
+	return await linkUrl(path, config.server);
 };
 const repoName = (root) => NodePath.basename(root).replace(/[^A-Za-z0-9._-]+/g, "-").replace(/^-+|-+$/g, "") || "project";
 const shareCommand = async (ctx, args) => {
@@ -3125,7 +3208,8 @@ const shareCommand = async (ctx, args) => {
 	}
 	if (!git("rev-parse", "--verify", "HEAD").ok) {
 		git("add", "-A");
-		const commit = git("commit", "-m", "Share with LogicPacks", "--allow-empty");
+		let commit = git("commit", "-m", "Share with LogicPacks", "--allow-empty");
+		if (!commit.ok && /identity unknown|empty ident|unable to auto-detect/i.test(commit.stderr)) commit = git("-c", "user.name=LogicPacks", "-c", "user.email=noreply@logicpacks.io", "commit", "-m", "Share with LogicPacks", "--allow-empty");
 		if (!commit.ok) return refuse(`git commit failed: ${commit.stderr}`);
 		steps.push("Made a first commit.");
 	}
@@ -3212,7 +3296,7 @@ const inviteCommand = async (ctx, args) => {
 			added: shared.member.user,
 			...scopeData
 		});
-		const link = shared.invite ? new URL(shared.invite.path, config.server).toString() : null;
+		const link = shared.invite ? await linkUrl(shared.invite.path, config.server) : null;
 		return output([`Invited ${shared.invite?.email ?? who} to ${project.projectTitle} (this project only)${shared.emailSent ? "; they got an email" : ""}.`, link ? `Their personal invite link: ${link}` : ""].filter(Boolean).join("\n"), {
 			ok: true,
 			added: null,
@@ -3314,7 +3398,7 @@ const revokeInviteCommand = async (ctx, args) => {
 			dryRun: true
 		});
 		const { path } = await ctx.call(config, "/api/lp/workspaces/invite/reset", { body: { workspaceId: project.workspaceId } });
-		const link = new URL(path, config.server).toString();
+		const link = await linkUrl(path, config.server);
 		return output(`The old workspace invite link no longer works. New link (${SCOPE_TEXT.workspace}): ${link}`, {
 			ok: true,
 			inviteLink: link,
@@ -3352,7 +3436,7 @@ const revokeInviteCommand = async (ctx, args) => {
 		});
 	}
 	const { link } = await ctx.call(config, "/api/lp/shares/link/reset", { body: { projectId: project.projectId } });
-	const url = new URL(link.path, config.server).toString();
+	const url = await linkUrl(link.path, config.server);
 	return output(`The old invite link no longer works. New link (${SCOPE_TEXT.project}): ${url}`, {
 		ok: true,
 		inviteLink: url,
@@ -3644,52 +3728,6 @@ const assistCommand = async (ctx, args) => {
 	}
 	return refuse("Usage: lp assist request|list|experts|end");
 };
-const packsCommand = async (ctx, args) => {
-	const config = signedIn(ctx);
-	const [sub = "list", ...rest] = args.positionals;
-	const me = await register(ctx, args);
-	if (sub === "list") {
-		const { packs } = await ctx.call(config, `/api/lp/packs?projectId=${encodeURIComponent(me.projectId)}`);
-		return output(packs.length === 0 ? "No packs in this project yet. Save one with lp packs save \"<name>\"." : packs.map(({ pack }) => `${pack.id}  ${pack.name}`).join("\n"), { packs: packs.map(({ pack }) => pack) });
-	}
-	if (sub === "save") {
-		const name = rest.join(" ").trim();
-		const saved = await ctx.call(config, "/api/lp/packs/save", {
-			body: {
-				threadId: me.threadId,
-				...name ? { name } : {}
-			},
-			timeoutMs: 3e4
-		});
-		return output(`Saved pack ${saved.pack.name} (${saved.pack.id}).`, {
-			ok: true,
-			pack: saved.pack
-		});
-	}
-	if (sub === "use") {
-		const packId = rest[0];
-		if (!packId) return refuse("Usage: lp packs use <id> [--to <person>]");
-		let targetThreadId = me.threadId;
-		const to = flagValue(args, "to");
-		if (to !== null) {
-			const { agents } = await ctx.call(config, `/api/lp/connect/agents?projectId=${encodeURIComponent(me.projectId)}&all=1`);
-			const target = agents.find((agent) => agent.person?.toLowerCase() === to.toLowerCase());
-			if (target === void 0) return refuse(`No thread for ${to} in this project.`);
-			targetThreadId = target.threadId;
-		}
-		await ctx.call(config, "/api/lp/packs/use", { body: {
-			projectId: me.projectId,
-			packId,
-			targetThreadId
-		} });
-		return output(`Handed pack ${packId} to ${to ?? "your thread"}; the agent reads it on its next turn.`, {
-			ok: true,
-			packId,
-			targetThreadId
-		});
-	}
-	return refuse("Usage: lp packs save|list|use");
-};
 const GOALS_UNAVAILABLE = "Goals are not available on this host yet.";
 const DUE_WORDS = /\s+(?:by|due)\s+((?:today|tomorrow|tonight|(?:next\s+)?(?:mon|tues|wednes|thurs|fri|satur|sun)day|end of (?:day|week)|in \d+ (?:days?|weeks?)|\d{4}-\d{2}-\d{2}))\.?$/i;
 /**
@@ -3942,7 +3980,7 @@ const setupBlockCommand = () => {
 	const block = `<!-- logicpacks:start -->\n${globalBlockBody()}\n<!-- logicpacks:end -->`;
 	return output(block, { block });
 };
-const helpAgentsCommand = () => output(agentsHelp(), { help: agentsHelp() });
+const helpAgentsCommand = (features = []) => output(agentsHelp(features), { help: agentsHelp(features) });
 /** Every agent-facing command, by name. */
 const CONNECT_COMMANDS = {
 	whoami: whoamiCommand,
@@ -3963,7 +4001,6 @@ const CONNECT_COMMANDS = {
 	inbox: inboxCommand,
 	editing: editingCommand,
 	assist: assistCommand,
-	packs: packsCommand,
 	goals: goalsCommand,
 	setup: setupCommand,
 	"setup-prompt": (_ctx, args) => setupPromptCommand(args),
@@ -4231,14 +4268,6 @@ const LEDGER_TOOLS = [
 				goal: { type: "string" },
 				decision: { type: "string" }
 			}
-		}
-	},
-	{
-		name: "packs",
-		description: "Packs saved in this project carry context between threads and apps: summary, decisions, file and app references, workflow steps. No query lists them; query = a pack id reads one in full.",
-		inputSchema: {
-			type: "object",
-			properties: { query: { type: "string" } }
 		}
 	},
 	{
@@ -4612,7 +4641,7 @@ const HELP = `LogicPacks helper (lp): use LogicPacks from any agent harness, no 
   lp share | lp invite <email|name>          share this folder, add a teammate or print the invite link
   lp members | lp who [x] | lp agents        who is in the project, working on what, which agents are active
   lp send | lp ask | lp reply | lp inbox     talk to teammates and their agents
-  lp assist | lp packs | lp goals            Request assistance, packs, goals (beta)
+  lp goals                                   goals (beta)
   lp clone <project> [folder]                clone a project onto this computer and link it
   lp app ops | run <op> [args] | log         work in the apps the host shares (Blender, Resolve, any app)
   lp setup --agent <id>                      add the LogicPacks block to an agent's global instructions
@@ -4620,6 +4649,7 @@ const HELP = `LogicPacks helper (lp): use LogicPacks from any agent harness, no 
   lp help agents                             every command, for agents
 
   lp status                                  connection, this folder's project, queue
+  lp version                                 which lp this is
   lp stream --status                         what this folder's sessions send to the project
   lp pause | lp resume                       stop or restart streaming sessions
   lp unlink [folder] | lp link [folder]      keep a folder's sessions private, or share them again
@@ -4628,15 +4658,28 @@ const HELP = `LogicPacks helper (lp): use LogicPacks from any agent harness, no 
   lp uninstall                               remove every block, rules file, hook and MCP registration
   lp logout                                  forget this computer's token
 
+Add --json to any agent command for machine-readable output. Guide: https://logicpacks.io/setup.md
+`;
+const TALENT_HELP = `  lp assist                                  Request assistance (beta)
+
 Vetted freelancers (invite-only beta):
   lp jobs search [--role <role>] [--skills <a,b>]   open jobs (briefs redacted until you are accepted)
   lp jobs show <id>                           one job's brief
   lp jobs apply <id> --note "..." [--hours N] apply for it
   lp jobs mine                                your applications and accepted jobs
   lp talent search [words] [--role <role>] [--need "..."]   vetted freelancers for your project
-
-Add --json to any agent command for machine-readable output. Guide: https://logicpacks.io/setup.md
 `;
+/** The features this account has, asked of the host; none when offline or not connected. */
+const accountFeatures = async () => {
+	try {
+		const config = loadConfig();
+		if (!config.server || !config.token) return [];
+		return (await callHost(config, "/api/lp/features", { timeoutMs: 2500 })).features ?? [];
+	} catch {
+		return [];
+	}
+};
+const helpText = async () => (await accountFeatures()).includes("talent") ? HELP.replace("\nAdd --json", `\n${TALENT_HELP}\nAdd --json`) : HELP;
 const flag = (args, name) => {
 	const index = args.indexOf(`--${name}`);
 	return index >= 0 ? args[index + 1] ?? null : null;
@@ -4647,31 +4690,33 @@ const folderArg = (args) => {
 	const folder = NodePath.resolve(given ?? process.cwd());
 	return gitInfo(folder).root ?? folder;
 };
-const scriptPath = () => NodeFS.realpathSync(process.argv[1] ?? "lp");
 /**
-* The launcher hooks call: the installer's wrapper when present, else this script through node.
+* The launcher hooks call: the installer's wrapper when present, else this lp itself (the
+* standalone binary, or this script, which then needs node on the PATH).
 * On Windows, Claude Code runs hooks through Git Bash, so the path uses forward slashes and
 * points at the installer's sh wrapper (bin/lp); lp.cmd next to it serves PowerShell and cmd.
 */
 const lpCommandPath = () => {
 	const wrapper = NodePath.join(helperHome(), "bin", "lp");
-	const path = NodeFS.existsSync(wrapper) ? wrapper : scriptPath();
+	const path = NodeFS.existsSync(wrapper) ? wrapper : selfPath();
 	return process.platform === "win32" ? path.replaceAll("\\", "/") : path;
 };
-/** How Codex and Claude Code start `lp mcp`. Windows cannot spawn the sh wrapper, so node runs the script. */
+/** How Codex and Claude Code start `lp mcp`. Windows cannot spawn the sh wrapper, so it starts lp.exe. */
 const mcpLaunch = (source) => {
 	const wrapper = NodePath.join(helperHome(), "bin", "lp");
-	return NodeFS.existsSync(wrapper) && process.platform !== "win32" ? {
+	if (NodeFS.existsSync(wrapper) && process.platform !== "win32") return {
 		command: wrapper,
 		args: [
 			"mcp",
 			"--source",
 			source
 		]
-	} : {
-		command: process.execPath,
+	};
+	const self = selfLaunch();
+	return {
+		command: self.command,
 		args: [
-			scriptPath(),
+			...self.args,
 			"mcp",
 			"--source",
 			source
@@ -4703,7 +4748,7 @@ const syncAgentsFile = async (folder, timeoutMs = 3e3) => {
 };
 const status = async () => {
 	const config = loadConfig();
-	say(`Host:      ${config.server ?? "not connected (open the LogicPacks Mac app, then run lp login)"}`);
+	say(`Host:      ${config.server ?? "not connected (open the LogicPacks app, then run lp login)"}`);
 	if (config.server && config.token) try {
 		const me = await callHost(config, "/api/lp/helper/whoami", { timeoutMs: 3e3 });
 		say(`Signed in: ${me.who}`);
@@ -4760,10 +4805,31 @@ const watch = async (args) => {
 		await new Promise((resolve) => setTimeout(resolve, interval));
 	}
 };
+/**
+* `lp install --refresh`: after the helper itself was replaced (the installers run it), point the
+* hooks, watcher and MCP entries that are already installed at this lp. Adds nothing new.
+*/
+const refreshSteps = (lines) => {
+	if (watcherInstalled()) try {
+		lines.push(`Background watcher restarted: ${installWatcher(selfLaunch())}`);
+	} catch (error) {
+		lines.push(error.message);
+	}
+	if (codexMcpInstalled()) {
+		const file = writeCodexMcp(mcpLaunch("codex"));
+		if (file) lines.push(`Codex MCP server updated in ${file}`);
+	}
+	if (claudeMcpInstalled() && !claudeMcpMatches(mcpLaunch("claude"))) {
+		const file = writeClaudeMcp(mcpLaunch("claude"));
+		if (file) lines.push(`Claude Code MCP server updated in ${file}`);
+	}
+	if (lines.length === 0) lines.push("Nothing to refresh: no hooks, watcher or MCP server installed.");
+};
 const installSteps = (args, lines) => {
+	if (args.includes("--refresh")) return refreshSteps(lines);
 	if (!args.includes("--no-hooks")) lines.push(`Claude Code hooks added to ${writeClaudeHooks(lpCommandPath())}`);
 	if (!args.includes("--no-watcher")) try {
-		lines.push(`Background watcher: ${installWatcher(scriptPath())}`);
+		lines.push(`Background watcher: ${installWatcher(selfLaunch())}`);
 	} catch (error) {
 		lines.push(error.message);
 	}
@@ -4833,7 +4899,7 @@ const main = async () => {
 			}
 			const config = loadConfig();
 			if (!config.server || !config.token) {
-				say("Connect this computer first: open the LogicPacks Mac app, then run lp login.");
+				say("Connect this computer first: open the LogicPacks app, then run lp login.");
 				process.exitCode = 1;
 				return;
 			}
@@ -4921,9 +4987,11 @@ const main = async () => {
 			if (backups) say(backups);
 			return;
 		}
+		case "version":
+		case "--version": return say(`lp ${helperVersion()}${isStandalone() ? "" : " (node script)"}`);
 		case "help":
-			if (args[0] === "agents") return say(helpAgentsCommand().text);
-			return say(HELP);
+			if (args[0] === "agents") return say(helpAgentsCommand(await accountFeatures()).text);
+			return say(await helpText());
 		case "mcp": {
 			const cwd = NodePath.resolve(flag(args, "cwd") ?? process.cwd());
 			const sourceArg = flag(args, "source");
@@ -4961,7 +5029,7 @@ const main = async () => {
 					}));
 				}
 				case "mine": return say(await jobsMine(config));
-				default: return say(HELP);
+				default: return say(await helpText());
 			}
 		}
 		case "talent": {
@@ -4980,7 +5048,7 @@ const main = async () => {
 		case "app": return appCommand(args);
 		default: {
 			const run = CONNECT_COMMANDS[command];
-			if (run === void 0) return say(HELP);
+			if (run === void 0) return say(await helpText());
 			const ctx = defaultContext();
 			const parsed = parseArgs([command, ...args]);
 			try {

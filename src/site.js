@@ -22,12 +22,12 @@ export const OPEN_SOURCE = {
   license: 'MIT',
   licenseUrl: 'https://opensource.org/licenses/MIT',
   label: 'Open source',
-  message: 'The collaborative workspace is open source under MIT; Cloud, Talent, Apps and Enterprise are hosted services.',
-  hosted: ['LogicPacks Cloud (coming soon)', 'Talent', 'Apps', 'Enterprise'],
+  message: 'The collaborative workspace is open source under MIT; Cloud and Enterprise are hosted services, not available yet.',
+  hosted: ['LogicPacks Cloud (coming soon)', 'Enterprise'],
 };
 
 // The version the copy describes. DOWNLOADS.mac.version (below) is the shipped DMG and is set at release.
-export const CURRENT_VERSION = '0.1.12';
+export const CURRENT_VERSION = '0.1.14';
 
 // public/setup.md is the agent setup guide. Until it ships, Docs points at the repo
 // docs so nothing links a 404. The build sets __HAS_SETUP__ (vite.config.js).
@@ -51,18 +51,18 @@ export const DOWNLOADS = {
   mac: {
     // Versioned file names: Cloudflare caches release binaries, so a new
     // release gets a new name (and the ?v= tag) instead of reusing this one.
-    url: 'https://downloads.logicpacks.io/mac/LogicPacks-0.1.12-arm64.dmg?v=40f2c39e',
+    url: 'https://downloads.logicpacks.io/mac/LogicPacks-0.1.14-arm64.dmg?v=eede2b30',
     // Hex SHA-256 of the DMG, published next to the button.
-    sha256: '40f2c39e0ba0fc731c2b8d3ba07fdec03123a61b99cde81272813c13dabfe216',
-    version: '0.1.12',
+    sha256: 'eede2b30a5a1a75306bce8b884240b235ec02e0f9d33d8dedc261a60552de5e8',
+    version: '0.1.14',
     size: '177 MB',
     requires: 'macOS 13 or later, Apple silicon',
   },
   // The Windows installer: per user (no admin), x64, not code-signed yet (SmartScreen may ask).
   windows: {
-    url: 'https://downloads.logicpacks.io/win/LogicPacks-0.1.13-x64.exe?v=937350ef',
-    sha256: '937350ef067e5f27109f572ed2fa9a3df770a90da20c53680fa5eb99165a86d6',
-    version: '0.1.13',
+    url: 'https://downloads.logicpacks.io/win/LogicPacks-0.1.14-x64.exe?v=15ca3736',
+    sha256: '15ca3736d9fe47ff6d58cd48ffe0544fa7a1b0813b9969ae7d41548e50d3609d',
+    version: '0.1.14',
     size: '248 MB',
     requires: 'Windows 10 or 11, x64',
   },
@@ -156,24 +156,6 @@ export const CONNECT_PROMPT = `Set up LogicPacks for me: read ${SETUP_URL} and f
 Once the app is open, run lp login to connect the helper to it on this computer; there is no account. Do not send me to app.logicpacks.io: our cloud is coming soon.
 Show me anything you would change on this machine and wait for my OK first.`;
 
-// Sample experts for the Request assistance release on /new. Not real people: the
-// portraits are generated and the page says so. The app seeds the same eight.
-export const EXPERTS = [
-  { id: 'ingrid-solberg', name: 'Ingrid Solberg', role: 'Blender artist', line: 'Scenes, lighting and clean topology.' },
-  { id: 'tomas-reyes', name: 'Tomás Reyes', role: 'DaVinci colourist', line: 'Grades and conforms edits ready to deliver.' },
-  { id: 'anika-rao', name: 'Anika Rao', role: 'Frontend engineer', line: 'React, accessibility and fast pages.' },
-  { id: 'jonas-weber', name: 'Jonas Weber', role: 'Backend engineer', line: 'Postgres, APIs and the slow query.' },
-  { id: 'kofi-mensah', name: 'Kofi Mensah', role: 'DevOps engineer', line: 'Builds, deploys and cloud hosts.' },
-  { id: 'lea-moreau', name: 'Léa Moreau', role: 'Motion designer', line: 'Titles and product shots you can edit.' },
-  { id: 'yuna-park', name: 'Yuna Park', role: 'AI/ML engineer', line: 'Evals and retrieval for your agents.' },
-  { id: 'karim-haddad', name: 'Karim Haddad', role: 'QA engineer', line: 'Tests and release checks before it ships.' },
-];
-
-export const expertPortrait = (id) => `/experts/${id}.webp`;
-
-// The expert cards show once their portraits are in public/experts.
-export const EXPERT_PORTRAITS_READY = true;
-
 // The operator, named in the footer and on /privacy and /terms.
 // Details come from src/confirm.js (from the trade licence).
 export const COMPANY = {
@@ -203,7 +185,7 @@ export const STORY = [
   { when: 'Nov 2025', title: 'Started building', body: 'A shared workspace where people and their agents work on the same project.' },
   { when: 'Jan 2026', title: 'Internal testing', body: 'Opened to our own team after two months, used on our client work every day.' },
   { when: 'Feb to Oct 2026', title: 'Eight months of testing', body: 'Used in labs and by tech agencies on real projects.' },
-  { when: 'Nov 2026', title: 'Public beta', body: 'Version 0.1.12: the app for Mac and Windows with a code editor and agent workspace, projects, adding people and sharing, running on your own Claude Code or Codex. Our cloud is coming soon. App sharing and Request assistance are Beta.' },
+  { when: 'Nov 2026', title: 'Public beta', body: 'Version 0.1.14: the app for Mac and Windows with a code editor and agent workspace, projects, adding people and sharing, running on your own Claude Code or Codex. Our cloud is coming soon. App sharing is a Beta preview.' },
 ];
 
 // Launches built with LogicPacks. Facts only from the project notes.
@@ -260,7 +242,7 @@ export const PRICING = {
     per: ENTERPRISE_PER,
     note: 'For companies that want more control.',
     features: ['Everything in Individuals'],
-    soon: ['Single sign-on', 'Admin controls and audit log', 'Our cloud, and your own cloud host', 'Vetted freelancers on request'],
+    soon: ['Single sign-on', 'Admin controls and audit log', 'Our cloud, and your own cloud host'],
   },
 };
 
@@ -278,11 +260,7 @@ export const WHERE = [
   },
 ];
 
-// Vetted freelancers (Request assistance, Beta): /new and /about.md.
-export const FREELANCERS =
-  'Sometimes it is cheaper to save tokens and bring in a freelancer vetted by LogicPacks. They bring their own Claude and tools and use none of your tokens: you pay for their hours, with their AI included. Every freelancer works under NDA and your keys are never shared with them. Secret files such as .env are hidden from them, and milestones and drift alerts keep their work on plan.';
-
-// The shortest path for two people (the 0.1.12 app, Mac or Windows).
+// The shortest path for two people (the 0.1.14 app, Mac or Windows).
 export const FRIEND_PATH = [
   'Each of you installs the app (Mac or Windows) from https://logicpacks.io/download and has Claude Code or Codex installed and logged in. If the CLI is missing, the app shows the install command and tells you to log in in your terminal.',
   'The host adds a project in the app: an empty folder, or an existing folder or Git repository.',

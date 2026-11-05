@@ -1,7 +1,7 @@
 {
   "source": {
-    "repo": "feat/v2-win",
-    "commit": "ceeaf7345c",
+    "repo": "feat/v2-public",
+    "commit": "56339a66e9",
     "file": "packages/helper/src/connectText.ts"
   },
   "helperInstall": "curl -fsSL https://logicpacks.io/helper.sh | bash",
@@ -16,7 +16,7 @@
     "end": "# logicpacks:end"
   },
   "ownFileMark": "<!-- logicpacks: this file is managed by `lp setup`; lp uninstall removes it -->",
-  "block": "## LogicPacks\nTeam work runs through the `lp` command (add `--json` to parse its output). If `lp` is the printer command (macOS, Linux), call `~/.local/bin/lp`; in Windows PowerShell 5.1 type `lp.exe` (`lp` is an Out-Printer alias there). If it is missing, follow https://logicpacks.io/setup.md.\n- At the start of a session and after long tasks, run `lp inbox` and tell the user what is new (messages, questions from other agents, conflicts, drift, review requests).\n- \"share this project\" / \"create a shared session\" -> `lp share`, then give the user the invite link.\n- \"add my friend X\" / \"invite X\" -> `lp invite <email or name>` (this project only; `--workspace` for every project); \"remove X\" -> `lp remove <person>`; \"turn off the invite link\" -> `lp revoke-invite`.\n- \"what is X working on\" -> `lp who X`; \"who is working right now\" -> `lp agents` (`--workspace` for every project).\n- \"tell X ...\" -> `lp send X \"<message>\"`.\n- To coordinate with a teammate's agent, use `lp ask <person> \"<question>\"` and `lp reply <id> \"<answer>\"`; check `lp inbox` for questions from other agents and answer them.\n- \"request assistance\" / \"get an expert\" -> `lp assist request \"<brief>\"`.\n- \"set goals\" / \"ask X to do Y by Friday\" -> `lp goals plan \"<goal>\" \"<person>: <task> by <day>\" ...`; your user confirms with `lp goals confirm <id>`. Milestones for you arrive in `lp inbox`: `lp goals start|done <id>`.\n- Before you edit shared files, run `lp who <file or topic>`; if a teammate is on it, tell the user first.\n- On a conflict or negotiation in `lp inbox`, answer with `lp reply <id>`; when it needs a person, ask the user, then `lp decide <id> mine|theirs|both`.\n- If you cannot run shell commands, ask the user to run the `lp` command, or use the `logicpacks` MCP tools if they are set up.\n- Everything else: `lp help agents` or https://logicpacks.io/setup.md. `lp uninstall` removes this block.",
+  "block": "## LogicPacks\nTeam work runs through the `lp` command (add `--json` to parse its output). If `lp` is the printer command (macOS, Linux), call `~/.local/bin/lp`; in Windows PowerShell 5.1 type `lp.exe` (`lp` is an Out-Printer alias there). If it is missing, follow https://logicpacks.io/setup.md.\n- At the start of a session and after long tasks, run `lp inbox` and tell the user what is new (messages, questions from other agents, conflicts, drift, review requests).\n- \"share this project\" / \"create a shared session\" -> `lp share`, then give the user the invite link.\n- \"add my friend X\" / \"invite X\" -> `lp invite <email or name>` (this project only; `--workspace` for every project); \"remove X\" -> `lp remove <person>`; \"turn off the invite link\" -> `lp revoke-invite`.\n- \"what is X working on\" -> `lp who X`; \"who is working right now\" -> `lp agents` (`--workspace` for every project).\n- \"tell X ...\" -> `lp send X \"<message>\"`.\n- To coordinate with a teammate's agent, use `lp ask <person> \"<question>\"` and `lp reply <id> \"<answer>\"`; check `lp inbox` for questions from other agents and answer them.\n- \"set goals\" / \"ask X to do Y by Friday\" -> `lp goals plan \"<goal>\" \"<person>: <task> by <day>\" ...`; your user confirms with `lp goals confirm <id>`. Milestones for you arrive in `lp inbox`: `lp goals start|done <id>`.\n- Before you edit shared files, run `lp who <file or topic>`; if a teammate is on it, tell the user first.\n- On a conflict or negotiation in `lp inbox`, answer with `lp reply <id>`; when it needs a person, ask the user, then `lp decide <id> mine|theirs|both`.\n- If you cannot run shell commands, ask the user to run the `lp` command, or use the `logicpacks` MCP tools if they are set up.\n- Everything else: `lp help agents` or https://logicpacks.io/setup.md. `lp uninstall` removes this block.",
   "setupPrompt": "Set up LogicPacks for me: read https://logicpacks.io/setup.md and follow it.\nInstall the helper, connect it to the LogicPacks app on this computer, and add the LogicPacks block to your global instructions.\nShow me what you'll change first and wait for my OK before you write anything.\nThen share this project and give me an invite link.",
   "harnesses": [
     {
@@ -287,11 +287,13 @@
     },
     {
       "usage": "lp assist request \"<brief>\" [--expert <id>]",
-      "does": "Request assistance: bring in an expert (beta)"
+      "does": "Request assistance: bring in an expert (beta)",
+      "feature": "talent"
     },
     {
       "usage": "lp assist experts | list | end <request id>",
-      "does": "the expert catalog, this project's requests, end a request"
+      "does": "the expert catalog, this project's requests, end a request",
+      "feature": "talent"
     },
     {
       "usage": "lp goals plan \"<goal>\" \"<person>: <task> [by <day>]\"...",

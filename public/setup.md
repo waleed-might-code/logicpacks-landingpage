@@ -114,7 +114,6 @@ Team work runs through the `lp` command (add `--json` to parse its output). If `
 - "what is X working on" -> `lp who X`; "who is working right now" -> `lp agents` (`--workspace` for every project).
 - "tell X ..." -> `lp send X "<message>"`.
 - To coordinate with a teammate's agent, use `lp ask <person> "<question>"` and `lp reply <id> "<answer>"`; check `lp inbox` for questions from other agents and answer them.
-- "request assistance" / "get an expert" -> `lp assist request "<brief>"`.
 - "set goals" / "ask X to do Y by Friday" -> `lp goals plan "<goal>" "<person>: <task> by <day>" ...`; your user confirms with `lp goals confirm <id>`. Milestones for you arrive in `lp inbox`: `lp goals start|done <id>`.
 - Before you edit shared files, run `lp who <file or topic>`; if a teammate is on it, tell the user first.
 - On a conflict or negotiation in `lp inbox`, answer with `lp reply <id>`; when it needs a person, ask the user, then `lp decide <id> mine|theirs|both`.
@@ -157,8 +156,6 @@ LogicPacks for agents. Every command prints readable text; add --json for machin
   lp inbox [--follow] [--all]                                 messages, questions, conflicts, negotiations, drift and review requests for you
   lp editing <file...>                                        tell teammates which files you are changing (lp who shows it; overlaps raise a notice)
   lp done <id>                                                dismiss an inbox item you handled
-  lp assist request "<brief>" [--expert <id>]                 Request assistance: bring in an expert (beta)
-  lp assist experts | list | end <request id>                 the expert catalog, this project's requests, end a request
   lp goals plan "<goal>" "<person>: <task> [by <day>]"...     draft a goal with milestones for people or experts (beta); nothing is sent yet
   lp goals list | show <id> | confirm <goal> | cancel <goal>  see goals; confirm a draft (sends the milestones) once your user agrees
   lp goals start|blocked|done <milestone> [--note "<text>"]   report on a milestone assigned to you

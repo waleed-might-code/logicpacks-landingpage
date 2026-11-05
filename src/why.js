@@ -31,15 +31,11 @@ Teammates join one project. Each person works with their own agent in their own 
 
 ## Guardrails for delegated work (Beta)
 
-Hand work to a teammate, an outside team or an expert as a goal with milestones (\`lp goals plan\`, confirmed by you before anything is sent). Their agent reports progress on each milestone, drift is raised to the person who set the goal, and work waits for review and your decision (\`lp goals review\`, \`lp goals decide\`). You can message the thread or watch it live at any point.
+Hand work to a teammate as a goal with milestones (\`lp goals plan\`, confirmed by you before anything is sent). Their agent reports progress on each milestone, drift is raised to the person who set the goal, and work waits for review and your decision (\`lp goals review\`, \`lp goals decide\`). You can message the thread or watch it live at any point.
 
 ## Your own apps, shared (Beta preview)
 
 The plan: people and agents share the host machine's apps, from Blender to DaVinci Resolve, with a named cursor for each person and agent and snapshots that merge back. Today this is a preview, not a released feature: the demo on the site is scripted, and sharing apps between people is not generally available yet. Nothing in the core product needs access to your machine. What works today is app recipes in the desktop app, which let your own agent drive an app on your own computer (Blender in preview). Latency and frame rate benchmarks are ${pendingStreaming ? 'still pending' : 'published'} in [/research.md](/research.md).
-
-## Request help from a person (Beta)
-
-When an agent is not enough, request a freelancer vetted by LogicPacks. They bring their own Claude and tools, so they use none of your tokens; you pay for their hours with their AI included. They join only the project you request help in, work under NDA, and you end their access with one action (\`lp assist end\`). In that project, secret files such as \`.env\` and keys are hidden from them and secrets pasted into threads are redacted, and milestones keep their work on plan ([/safety.md](/safety.md) section 6). Details: [/new.md](/new.md).
 
 ## Delivered with it
 

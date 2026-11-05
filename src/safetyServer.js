@@ -19,14 +19,13 @@ What streams from your computer:
 What teammates cannot do:
 
 - Run your local agent, your MCP servers or your tools. Each person's agent runs on their own login, on their own computer. Teammates can send messages and questions to your agent's thread (\`lp send\`, \`lp ask\`), and your agent sees their thread titles and the files they are editing as project context.
-- Use your model login. Each member's turns run only on the login that member has on their own computer. The one exception is "Share my agent login" in Request assistance, which lets that expert run turns on your login in that one project until you revoke it (section 7).
+- Use your model login. Each member's turns run only on the login that member has on their own computer.
 
 ## 6. Secrets and access to files
 
 - A member reaches only their own folder, the projects shared with them and those projects' worktrees. Every request is checked against their current role. Host-level actions are refused, and terminals are off for members.
 - When you share a project, the host is your own laptop: its owner can reach everything on it, and teammates connect and sync to it while it is on. Our cloud, where each member's agent would run as its own isolated user with a scrubbed environment (no host credentials, no GitHub token, no SSH agent), is coming soon and is not available yet. Checks of that design: [/research.md](/research.md) (Member sandbox).
-- **A member can read everything in a shared project folder, including \`.env\` and key files.** Experts from Request assistance join as ordinary project members, so the same applies to them. Neither files nor pasted text are filtered or redacted for them.
-- **Vetted freelancers (Beta) are the exception:** in the projects they are assigned to, secret files (\`.env\`, keys and similar) are hidden from them, secrets pasted into threads are redacted in what they see, and they run on their own AI login unless you allow yours for that offer. Their access ends when the work is completed or cancelled.
+- **A member can read everything in a shared project folder, including \`.env\` and key files.** Neither files nor pasted text are filtered or redacted for them.
 - Keep secrets out of shared projects: use \`.gitignore\` for \`.env\` and key files, keep them outside the project folder, or use a secrets manager. Do not paste keys into a shared thread. \`lp share\` pushes the project to its GitHub remote, so anything committed is in that repository as well.
 - Do not put access to other machines (servers, home lab, VPN, SSH keys) in a shared project.
 
@@ -36,8 +35,6 @@ What teammates cannot do:
 - **From a workspace:** workspace menu, "Manage workspace", "People", "Remove" (owner only). This removes their workspace membership and every project share they had in that workspace.
 - **A workspace invite link:** "Manage workspace", "Advanced", "Reset invite link". The old link stops working ("This invite link has expired"); people who already joined stay until you remove them.
 - **A project's invite link:** the project's "Share" dialog turns the link off or resets it; \`lp revoke-invite\` does the same from the command line (\`lp revoke-invite <email>\` cancels one pending invite).
-- **An expert (Request assistance):** "End session" in the Request assistance panel, or \`lp assist end <request id>\`. It revokes their use of your login and removes them from the project if that request is what added them.
-- **A shared agent login:** "Revoke login" in the Request assistance panel. Their next turn on your login is refused; their project membership stays until you end the session.
 - **From the command line:** \`lp members\` lists who is in the project; \`lp remove <person>\` removes them from the project and its workspace (\`--project-only\` for just the project, \`--dry-run\` to see what it would do).
 - **Timing:** removal applies to the person's next request (each request checks their current access), and their helper can no longer stream into the project. An agent turn that is already running is not stopped and keeps its access until it ends. Removal does not touch GitHub: LogicPacks does not add teammates as collaborators on your repository, and any copy a person already cloned stays with them.
 

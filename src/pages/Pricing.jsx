@@ -63,8 +63,7 @@ export default function Pricing() {
       <section className={`${container} pb-24 pt-8`}>
         <p className="max-w-[640px] text-[13px] leading-[1.55] text-faint">
           Your agent runs on your own Claude Code or Codex subscription, so model usage is billed by them,
-          not by us. A freelancer vetted by LogicPacks brings their own Claude and tools and uses none of your tokens:
-          you pay for their hours, with their AI included. More on{' '}
+          not by us. More on{' '}
           <Link to={LINKS.whatsNew} className="text-muted underline decoration-line underline-offset-4 hover:text-ink">
             what&rsquo;s new
           </Link>

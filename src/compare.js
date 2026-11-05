@@ -12,7 +12,7 @@ const COLUMNS = [
   'Agent to agent messaging across people',
   'Guardrails and drift',
   'Share apps on a host machine',
-  'Vetted human help',
+  'Hiring outside people',
   'Local or self-host',
   'Price (entry)',
 ];
@@ -25,7 +25,7 @@ const LP = {
     'yes: `lp ask`, `lp reply`, `lp send`',
     'Beta: goals, milestones, drift alerts, review',
     'Beta preview (scripted demo), not released',
-    'Beta: vetted freelancers on request',
+    'not offered: LogicPacks does not hire out or place freelancers',
     'yes: open source (MIT), runs on your own machine; hosted Cloud coming soon',
     `${PRICING.individual.price} for individuals; ${PRICING.enterprise.price} ${PRICING.enterprise.per}`,
   ],
@@ -120,19 +120,6 @@ const ROWS = [
         ['https://zed.dev/pricing', 'https://zed.dev/docs/collaboration/overview']],
     ],
   },
-  {
-    group: 'Hiring help',
-    rows: [
-      ['Upwork', [ND, ND, ND, ND, ND, 'yes: open marketplace (vetted tier not verified here)', ND, 'marketplace and contract fees (see source; not verified here)'],
-        'Marketplace scale: the widest choice of talent at any budget.',
-        'You need a broad choice of freelancers or a long engagement outside your project tools.',
-        ['https://www.upwork.com/pricing']],
-      ['Toptal', [ND, ND, ND, ND, ND, 'yes: screened experts, trial period', ND, '$79/mo platform fee; rates not listed'],
-        'Heavily screened senior experts, usually matched within a day.',
-        'You need a vetted senior hire for a longer engagement.',
-        ['https://www.toptal.com/faq']],
-    ],
-  },
 ];
 
 const esc = (v) => String(v).replace(/\|/g, '\\|');
@@ -160,9 +147,9 @@ export function compareMarkdown() {
 
 As of ${AS_OF}. Competitor facts come from each product's own site on that date (source per row). "not documented" means their pages did not say, not that the product lacks it. If something here is out of date, tell us (contact below) and we will fix it.
 
-LogicPacks is open source like Zed: the collaborative workspace is MIT licensed (https://github.com/Tech-Realm/logicpacks). Cloud, Talent, Apps and Enterprise are hosted services.
+LogicPacks is open source like Zed: the collaborative workspace is MIT licensed (https://github.com/Tech-Realm/logicpacks). Cloud and Enterprise are hosted services, not available yet.
 
-LogicPacks is a company whose whole product is people and AI agents working together. Most tools below treat collaboration as one feature of something else: Zed builds an editor, Cursor an AI editor, Devin an autonomous agent, Tuple and Parsec screen sharing, Upwork a hiring marketplace. LogicPacks builds the shared workspace around whatever editor and agent each person already uses: each person brings their own agent and subscription, many agents work in parallel in one project, agents message each other and check for overlap before they start, goals and drift alerts keep delegated work on plan, an own-cloud option that keeps working when laptops close is coming soon, and sharing runs from the host's laptop today. It is at version 0.1.11; app sharing and the freelancer marketplace are Beta. Most tools below are stronger at their own core, and LogicPacks works alongside several of them (Claude Code, Codex, Cursor and others run inside it).
+LogicPacks is a company whose whole product is people and AI agents working together. Most tools below treat collaboration as one feature of something else: Zed builds an editor, Cursor an AI editor, Devin an autonomous agent, Tuple and Parsec screen sharing. LogicPacks builds the shared workspace around whatever editor and agent each person already uses: each person brings their own agent and subscription, many agents work in parallel in one project, agents message each other and check for overlap before they start, goals and drift alerts keep delegated work on plan, an own-cloud option that keeps working when laptops close is coming soon, and sharing runs from the host's laptop today. It is at version 0.1.14; app sharing is a Beta preview. Most tools below are stronger at their own core, and LogicPacks works alongside several of them (Claude Code, Codex, Cursor and others run inside it).
 
 ## Which to pick
 
@@ -171,7 +158,6 @@ LogicPacks is a company whose whole product is people and AI agents working toge
 - **One person who wants the best AI editor:** Cursor (or Zed). Add LogicPacks when others join.
 - **Hand a whole ticket to an autonomous agent:** Devin.
 - **Live pairing with great video and remote control:** Tuple or Parsec.
-- **Hiring at marketplace scale:** Upwork or Toptal.
 
 ## Table
 
@@ -189,10 +175,9 @@ ${sections}
 
 ## Where LogicPacks is weaker today
 
-- Young: version 0.1.12, with app sharing and the freelancer marketplace in Beta. The Mac app needs macOS 13 or later on Apple silicon; the Windows app (x64) is new in 0.1.12, is not code-signed yet and cannot host app sharing (that is macOS only); there is no Linux desktop or iOS app yet, and our cloud is coming soon. Sharing is host-based: teammates sync to the host's laptop while it is on.
+- Young: version 0.1.14, with app sharing in Beta. The Mac app needs macOS 13 or later on Apple silicon; the Windows app (x64) is new since 0.1.12, is not code-signed yet and cannot host app sharing (that is macOS only); there is no Linux desktop or iOS app yet, and our cloud is coming soon. Sharing is host-based: teammates sync to the host's laptop while it is on.
 - App sharing between people is a Beta preview, not generally released; its first latency and frame rate benchmarks were measured with the viewer on the same Mac, not over a network ([/research.md](/research.md)); Parsec and Tuple are far more mature at streaming and pairing.
 - No independent security certification is documented. What is in place and what is pending: [/research.md](/research.md) and [/safety.md](/safety.md).
-- The freelancer network is new and small next to Upwork or Toptal.
 - Single sign-on, admin controls and audit log, and our cloud and your own cloud host are coming soon, not available ([/pricing.md](/pricing.md)).
 
 Why teams pick LogicPacks: [/why.md](/why.md).`;

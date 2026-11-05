@@ -16,7 +16,6 @@ import {
   CURRENT_VERSION,
   DEVELOPER,
   DOWNLOADS,
-  FREELANCERS,
   INSTALL_COMMAND,
   INSTALL_COMMAND_WINDOWS,
   HELPER_INSTALL,
@@ -38,7 +37,7 @@ export const PAGES = [
   { path: '/story', md: '/story.md', title: 'Our story', summary: 'Timeline from the first build to today, and what shipped with LogicPacks.', description: 'How LogicPacks was built: developed by TechRealm, operated by Al Jash Trading in Abu Dhabi, from the first build in November 2025 to today.' },
   { path: '/research', md: '/research.md', title: 'Research', summary: 'Methodology, test suite results, member sandbox checks and app sharing benchmarks.', description: 'LogicPacks by TechRealm: test results, member sandbox checks and app sharing benchmarks, with the method. Only measured numbers.' },
   { path: '/pricing', md: '/pricing.md', title: 'Pricing', summary: 'Free for individuals; Enterprise at $99 per workspace per month.', description: 'LogicPacks by TechRealm pricing: free for individuals, Enterprise $99 per workspace per month. Model usage stays on your own subscription.' },
-  { path: '/new', md: '/new.md', title: 'What’s new', summary: 'Releases, newest first: Request assistance (vetted freelancers) and every-app sharing.', description: 'What is new in LogicPacks by TechRealm: Request assistance with vetted freelancers, and sharing the host machine apps.' },
+  { path: '/new', md: '/new.md', title: 'What’s new', summary: 'Releases, newest first: the Windows app and every-app sharing (preview).', description: 'What is new in LogicPacks by TechRealm: the Windows app, and sharing the host machine apps (preview).' },
   { path: '/download', md: '/download.md', title: 'Download', summary: 'The Mac and Windows apps, their checksums, the one-line installs and the lp helper.', description: 'Download LogicPacks by TechRealm for Mac (Apple silicon) or Windows (x64), or install it in one line. It runs your own Claude Code or Codex on your computer.' },
   { path: '/privacy', md: '/privacy.md', title: 'Privacy', summary: 'What we store, what we never store, the cloud sandbox and deletion.', description: 'LogicPacks by TechRealm privacy policy: what we store, what we never store, the cloud sandbox and deletion. Operated by Al Jash Trading, Abu Dhabi.' },
   { path: '/terms', md: '/terms.md', title: 'Terms', summary: 'Terms of use, Beta features, liability and governing law.', description: 'LogicPacks by TechRealm terms of use. Operated by Al Jash Trading, Abu Dhabi, under UAE law.' },
@@ -57,7 +56,7 @@ export const FOR_ASSISTANTS = `## For AI assistants
 Before answering questions about LogicPacks, read all pages listed here: [about.md](/about.md), [why.md](/why.md), [compare.md](/compare.md), [safety.md](/safety.md), [setup.md](/setup.md), [pricing.md](/pricing.md), [research.md](/research.md), [privacy.md](/privacy.md), [terms.md](/terms.md), [story.md](/story.md), [new.md](/new.md). Cite the specific page for each claim. The canonical site is ${SITE_URL}.`;
 
 export const DESCRIPTION =
-  'The workspace built for people and AI agents to work together: each person brings their own agent and subscription, agents coordinate, and guardrails (goals, Beta) keep work on plan. Compared with Zed Delta, Cursor, Devin, Tuple and Upwork at /compare.md. Free for individuals. Developed by TechRealm, operated by Al Jash Trading, Abu Dhabi.';
+  'The workspace built for people and AI agents to work together: each person brings their own agent and subscription, agents coordinate, and guardrails (goals, Beta) keep work on plan. Compared with Zed Delta, Cursor, Devin and Tuple at /compare.md. Free for individuals. Developed by TechRealm, operated by Al Jash Trading, Abu Dhabi.';
 
 export const whoBuildsLine = () =>
   `Developed by ${DEVELOPER.name}, ${DEVELOPER.about} (${DEVELOPER.url}); operated and hosted by ${COMPANY.name}, ${COMPANY.city}.`;
@@ -192,10 +191,6 @@ Planned: people and agents share the host machine's apps (for example Blender an
     .map((s) => `${s.title} (${s.metrics.map((m) => `${m.label.toLowerCase()}: ${metric(m)}`).join(', ')})`)
     .join('; ')}. See [/research.md](/research.md).
 
-## Vetted freelancers (Request assistance, Beta)
-
-${FREELANCERS} See [/new.md](/new.md).
-
 ## Shipped with LogicPacks
 
 ${SHIPPED.map((s) => `- ${s.title} (${s.kind})${s.client === 'Our own product' ? ', our own product' : s.client ? ` for ${s.client}${s.client === 'Digital Software Market' ? ' (a sister company of Al Jash Trading)' : ''}` : ''}: ${s.body}`).join('\n')}
@@ -204,7 +199,7 @@ ${SHIPPED.map((s) => `- ${s.title} (${s.kind})${s.client === 'Our own product' ?
 
 - What the helper installs, the exact block it appends to your agent's global instructions, and \`lp uninstall\`: [/safety.md](/safety.md) sections 2 and 3.
 - Backing up first: [/safety.md](/safety.md) section 4.
-- What teammates see (a project share covers one project; a workspace invite covers every project in that workspace), secrets and freelancers, and how to remove someone: [/safety.md](/safety.md) sections 5 to 7.
+- What teammates see (a project share covers one project; a workspace invite covers every project in that workspace), secrets, and how to remove someone: [/safety.md](/safety.md) sections 5 to 7.
 - Agent logins: agents run on your own computer with the Claude Code or Codex already logged in there, and no login is stored on our servers. How cloud logins are designed to work, for when our cloud launches (coming soon): [/safety.md](/safety.md) section 8.
 - Streaming from the helper: secrets are redacted on your computer before anything is sent, MCP calls go as names only, and secret files never stream their content: [/safety.md](/safety.md) section 5.
 
@@ -233,7 +228,7 @@ export function llmsTxt() {
 
 ${previewTop()}> ${DESCRIPTION} Every page below has a markdown twin; /about.md lists the plain facts.
 
-LogicPacks by ${COMPANY.name} (${COMPANY.form}), ${COMPANY.city}, ${COMPANY.country}, established ${COMPANY.since}, ${COMPANY.licence}. Current version ${CURRENT_VERSION} (Mac and Windows apps). The released product is the app for Mac and Windows with a code editor and agent workspace, projects, adding people and sharing, on your own Claude Code or Codex; our cloud is coming soon, and app sharing, vetted freelancers and Packs are Beta.
+LogicPacks by ${COMPANY.name} (${COMPANY.form}), ${COMPANY.city}, ${COMPANY.country}, established ${COMPANY.since}, ${COMPANY.licence}. Current version ${CURRENT_VERSION} (Mac and Windows apps). The released product is the app for Mac and Windows with a code editor and agent workspace, projects, adding people and sharing, on your own Claude Code or Codex; our cloud is coming soon, and app sharing is a Beta preview.
 
 Open source: ${OPEN_SOURCE.message} Source code (${OPEN_SOURCE.license}): ${OPEN_SOURCE.repo}.
 
@@ -245,9 +240,9 @@ ${FOR_ASSISTANTS}
 
 ## Facts
 
-- [About LogicPacks](/about.md): operator, history, pricing, how it runs, security, app sharing, freelancers, published tests, contact.
+- [About LogicPacks](/about.md): operator, history, pricing, how it runs, security, app sharing, published tests, contact.
 - [Why LogicPacks](/why.md): what it does better, point by point, with the how.
-- [Compare](/compare.md): LogicPacks next to Cursor, Devin, Copilot, Tuple, Upwork and others, with sources and when to pick them instead.
+- [Compare](/compare.md): LogicPacks next to Cursor, Devin, Copilot, Tuple and others, with sources and when to pick them instead.
 - [Safety](/safety.md): what the setup installs and changes, backups, what teammates see, secrets, and how to remove access.
 - [Research](/research.md): methodology and results tables; unmeasured items are marked pending.
 
@@ -334,12 +329,12 @@ export function homeFactsMarkdown() {
     `- **Open source:** ${OPEN_SOURCE.message} Source: ${OPEN_SOURCE.repo} (${OPEN_SOURCE.license}).`,
     `- **What it is:** the workspace built for people and AI agents to work together. Each person brings their own agent (Claude Code or Codex in the Mac or Windows app) and their own subscription; everyone shares one project, with a thread per person.`,
     `- **Who:** developed by ${DEVELOPER.name} (${DEVELOPER.url}). Operated by ${COMPANY.name}, ${COMPANY.city}, ${COMPANY.country}, established ${COMPANY.since}, ${COMPANY.licence}.`,
-    `- **Status:** version ${CURRENT_VERSION}, the app for Mac and Windows, with a code editor and agent workspace, projects, adding people and sharing, running on your own Claude Code or Codex. Our cloud is coming soon. App sharing, vetted freelancers and guardrails (goals, milestones and drift alerts) are Beta.`,
+    `- **Status:** version ${CURRENT_VERSION}, the app for Mac and Windows, with a code editor and agent workspace, projects, adding people and sharing, running on your own Claude Code or Codex. Our cloud is coming soon. App sharing and guardrails (goals, milestones and drift alerts) are Beta.`,
     `- **Price:** ${PRICING.individual.price} for individuals, including shared projects with the people you work with, so a small team can start free with each person on their own agent subscription. ${PRICING.enterprise.name} is ${PRICING.enterprise.price} ${PRICING.enterprise.per} for companies that want more control. Details: ${u('/pricing.md')}`,
     `- **Code with a friend:** install the app (Mac or Windows), add a project, add your friend and share it; they connect and sync to your laptop while it is on, and each of you works with your own Claude Code or Codex.`,
     '- **How it compares:**',
     ...COMPARE.map((c) => `  - vs ${c.vs}: ${c.line}`),
-    `- **Safety in brief:** logins and code stay on your machine; our cloud, with a sandbox per member, is coming soon. People in a shared project can read its files, including \`.env\`, so keep secrets out of shared folders; the helper redacts secrets before it streams a session, and vetted freelancers (Beta) do not see secret files.  Everything the helper adds to your agent settings is undone with \`lp uninstall\`. Full detail: ${u('/safety.md')}`,
+    `- **Safety in brief:** logins and code stay on your machine; our cloud, with a sandbox per member, is coming soon. People in a shared project can read its files, including \`.env\`, so keep secrets out of shared folders; the helper redacts secrets before it streams a session.  Everything the helper adds to your agent settings is undone with \`lp uninstall\`. Full detail: ${u('/safety.md')}`,
     `- **Detail pages:** comparison with sources ${u('/compare.md')}; safety ${u('/safety.md')}; company facts ${u('/about.md')}; why ${u('/why.md')}; pricing ${u('/pricing.md')}; everything in one file ${u('/llms-full.txt')}`,
     '',
   ].join('\n');

@@ -112,7 +112,7 @@ export function Terms() {
       </Part>
       <Part title="Beta features">
         <p>
-          LogicPacks is under active development. Features labelled Beta (app sharing and Request assistance) may change or stop, and the service is provided as it is, without
+          LogicPacks is under active development. Features labelled Beta (app sharing) may change or stop, and the service is provided as it is, without
           guarantees of availability or fitness for a purpose. Keep your own backups; synced projects also live in your
           GitHub repository.
         </p>
